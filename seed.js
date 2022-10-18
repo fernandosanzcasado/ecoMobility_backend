@@ -16,16 +16,13 @@ function fillNullId(obj){
 }
 
 
-
-
-
 const seedData = async () => {
     try {
         const items = stringToJSON();
         fillNullId(items);
-        for (var i=0; i < items.length; ++i) {
-            addOrUpdateItem(items[i]);
-        }
+        const itemPromises = items.map((item, i) =>
+            addOrUpdateItem({ ...item, id: i + '' })
+        );
         await Promise.all(itemPromises);
     } catch (err) {
         console.error(err);
