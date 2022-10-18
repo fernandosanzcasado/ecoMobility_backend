@@ -17,7 +17,7 @@ var  params = {
     
     {
           AttributeName: "Id", //ATTRIBUTE_NAME_1
-          AttributeType: "N", //ATTRIBUTE_TYPE
+          AttributeType: "S", //ATTRIBUTE_TYPE
         },
   ],
   KeySchema: [
@@ -30,7 +30,7 @@ var  params = {
     ReadCapacityUnits: 1,
     WriteCapacityUnits: 1,
   },
-  TableName: "Usuaris", //TABLE_NAME
+  TableName: "Usuarios", //TABLE_NAME
   StreamSpecification: {
     StreamEnabled: false,
   },
