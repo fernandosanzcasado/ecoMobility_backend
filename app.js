@@ -1,4 +1,4 @@
-const server = require('./server');
+const server = require(`./server`);
 
-require('dotenv').config();
+require(`dotenv`).config();
 server.createServer();

@@ -1,22 +1,20 @@
 const express = require('express')
-const app = express();
+const app = express()
+const port = 3000
 
-const PORT = 8000;
+const bodyParser = require('body-parser')
 
-const bodyParser = require('body-parser');
+const createServer = async () => {
+    app.use(bodyParser.json())
 
-const createServer = async() => {
-    app.use(bodyParser.json());
+    // routes
+    require(`./src/routes/api`)(app);
 
-    //rutes
-    require('./src/routes/api')(app);
-
-    app.listen(PORT,() =>{
-        console.log('App listening at http://localhost:${PORT}')
+    app.listen(port, () => {
+        console.log(`App listening at http://localhost:${port}`)
     })
-
 };
 
 module.exports = {
-    createServer
-}
+    createServer,
+};
