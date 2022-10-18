@@ -3,8 +3,8 @@ const userService = require('../service/user.service');
 //fitxer que s'encarrega de gestiona les request i responses dels usuaris
 class userController{
 
-    async findByID(req, res) {
-        const data = await UserService.findByID(req.params.UserID)
+    async findById(req, res) {
+        const data = await userService.findById(req.params.Id);
         res.json(data)
     }
 

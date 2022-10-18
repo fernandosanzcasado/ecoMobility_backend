@@ -10,13 +10,14 @@ class userRepository{
         this.tableName = 'Usuarios'
     }
 
-    async findById(userId){
+    async findById(UserID) {
         const params = {
             TableName: this.tableName,
             Key: {
-                userId,
+                Id:UserID,
             },
         };
+        console.log(UserID)
         return await db.get(params).promise();
     }
 
