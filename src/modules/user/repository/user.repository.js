@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 //borrar objectes o fer un get dels objectes).
 class userRepository {
   constructor() {
-    this.tableName = "Usuarios";
+    this.tableName = "Users";
   }
 
   async findById(UserID) {
