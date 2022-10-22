@@ -1,41 +1,38 @@
-const db = require('../../../helpers/database');
-const  {v4: uuidv4} = require('uuid');
-
+const db = require("../../../helpers/database");
+const { v4: uuidv4 } = require("uuid");
 
 //fitxer que s'encarrega de gestionar operacions a la base de dades de la taula usuaris(ex:crear objectes, fer update dels objectes,
 //borrar objectes o fer un get dels objectes).
-class userRepository{
+class userRepository {
+  constructor() {
+    this.tableName = "Usuarios";
+  }
 
-    constructor(){
-        this.tableName = 'Usuarios'
-    }
+  async findById(UserID) {
+    const params = {
+      TableName: this.tableName,
+      Key: {
+        Id: UserID,
+      },
+    };
+    console.log(UserID);
+    return await db.get(params).promise();
+  }
 
-    async findById(UserID) {
-        const params = {
-            TableName: this.tableName,
-            Key: {
-                Id:UserID,
-            },
-        };
-        console.log(UserID)
-        return await db.get(params).promise();
-    }
+  async createUser(data) {
+    const params = {
+      TableName: this.tableName,
+      Item: {
+        Id: uuidv4(),
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      },
+    };
 
-    async createUser(data){
-        const params = {
-            TableName: this.tableName,
-            Item:{
-                Id: uuidv4(),
-                username: data.username,
-                email: data.email,
-                password: data.password,
-            },
-        };
-
-        await db.put(params).promise();
-        return params.Item;
-    }
-
+    await db.put(params).promise();
+    return params.Item;
+  }
 }
 
 module.exports = new userRepository();
