@@ -8,23 +8,12 @@ AWS.config.update({
 });
 
 var dynamodb = new AWS.DynamoDB();
-/* 
-var params = {
-    TableName: 'Usuaris',
-    Item: {
-      'Id' : {N: '003'},
-      'User_email' : {S: 'francisco@gmail.com'},
-      'CP' : {N: '08021'},
-      'Password' : {S: 'Thisismypass'},
-      }
-  };
-  */
 
 var params = {
-  TableName: "",
+  TableName: "Users",
   Item: {
-    Id: { N: "003" },
-    User_email: { S: "francisco@gmail.com" },
+    Email: { S: "francisco@gmail.com" },
+    User_nick: { S: "francisc" },
     CP: { N: "08021" },
     Password: { S: "Thisismypass" },
   },
