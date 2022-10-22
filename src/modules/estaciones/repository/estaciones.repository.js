@@ -10,6 +10,38 @@ class estacionesRepository{
         this.tableName = 'Estaciones_Vehiculos'
     }
 
+    async scanTable() {
+        const params = {
+            TableName: this.tableName,
+        };
+        return await db.scan(params).promise();
+    }
+
+    async getTableCoord() {
+        const params = {
+            ExpressionAttributeNames: {
+                "#LAT": "LATITUD", 
+                "#LONG": "LONGITUD",
+                "#ID": "ID"
+            }, 
+            ProjectionExpression: "#ID, #LAT, #LONG", 
+            TableName: this.tableName,
+        };
+        return await db.scan(params).promise();
+    }
+
+    async getTableDir() {
+        const params = {
+            ExpressionAttributeNames: {
+                "#DIR": "ADREÇA", 
+                "#ID": "ID"
+            }, 
+            ProjectionExpression: "#ID, #DIR", 
+            TableName: this.tableName,
+        };
+        return await db.scan(params).promise();
+    }
+
     async findById(estacionID) {
         const params = {
             TableName: this.tableName,
@@ -21,18 +53,17 @@ class estacionesRepository{
         return await db.get(params).promise();
     }
 
-    async createEstacion(data){
+
+    /*async createEstacion(data){
         const params = {
             TableName: this.tableName,
             Item:{
                 ID: uuidv4(),
                 ACCES: data.ACCES,
                 ADREÇA: data.ADREÇA,
-                CODIMUN: data.CODIMUN,
                 CODIPROV: data.CODIPROV,
                 Columna_amb_georeferencia: data.COLUMNA_AMB_GEOREFERENCIA,
                 DESIGNACIO_DESCRIPTIVA: data.DESIGNACIO_DESCRIPTIVA,
-                id: data.id,
                 INDENTIFICADOR: data.INDENTIFICADOR,
                 LATITUD: data.LATITUD,
                 LONGITUD: data.LONGITUD,
@@ -50,7 +81,7 @@ class estacionesRepository{
 
         await db.put(params).promise();
         return params.Item;
-    }
+    }*/
 
     /*async update(estacionID, data) {
         const params = {
@@ -73,7 +104,7 @@ class estacionesRepository{
         return update.Attributes;
     }*/
 
-    async deleteByID(estacionID) {
+    /*async deleteByID(estacionID) {
         const params = {
             TableName: this.tableName,
             Key: {
@@ -82,7 +113,7 @@ class estacionesRepository{
         };
 
         return await db.delete(params).promise();
-    }
+    }*/
 
 }
 
