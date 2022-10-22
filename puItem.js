@@ -20,6 +20,8 @@ var params = {
 };
 
 // Call DynamoDB to add the item to the table
+// Example
+
 dynamodb.putItem(params, function (err, data) {
   if (err) {
     console.log("Error", err);
