@@ -1,4 +1,5 @@
-const userController = require("../modules/user/controller/user.controller");
+const userController = require('../modules/user/controller/user.controller');
+const estacionesController = require('../modules/estaciones/controller/estaciones.controller');
 
 
 module.exports = async(app) =>{
@@ -6,4 +7,14 @@ module.exports = async(app) =>{
     app.post(`/api/users`, userController.create);
     app.put(`/api/users/:email`, userController.updateUserInfo);
     app.delete(`/api/users/:email`, userController.deleteByEmail);
+
+    app.get(`/api/v1/estaciones`, estacionesController.scanTable)
+    app.get(`/api/v1/estaciones/coordenadas`, estacionesController.getTableCoord)
+    app.get(`/api/v1/estaciones/direccion`, estacionesController.getTableDir)
+    app.get(`/api/v1/estaciones/:Id`, estacionesController.findById)
+    app.get(`/api/v1/estaciones/:Id/coordenadas`, estacionesController.getCoordById);
+    app.get(`/api/v1/estaciones/:Id/direccion`, estacionesController.getDirById);
+    //app.delete(`/api/v1/estaciones(:ID)`, estacionesController.deleteByID);
+    //app.post(`/api/v1/estaciones`, estacionesController.create);
 };
+
