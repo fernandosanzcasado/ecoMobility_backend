@@ -3,8 +3,10 @@ const estacionesController = require('../modules/estaciones/controller/estacione
 
 
 module.exports = async(app) =>{
-    app.get(`/api/v1/users/:Id`, userController.findById);
-    app.post(`/api/v1/users`, userController.create);
+    app.get(`/api/users/:email`, userController.findByEmail);
+    app.post(`/api/users`, userController.create);
+    app.put(`/api/users/:email`, userController.updateUserInfo);
+    app.delete(`/api/users/:email`, userController.deleteByEmail);
 
     app.get(`/api/v1/estaciones`, estacionesController.scanTable)
     app.get(`/api/v1/estaciones/coordenadas`, estacionesController.getTableCoord)
@@ -15,3 +17,4 @@ module.exports = async(app) =>{
     //app.delete(`/api/v1/estaciones(:ID)`, estacionesController.deleteByID);
     //app.post(`/api/v1/estaciones`, estacionesController.create);
 };
+
