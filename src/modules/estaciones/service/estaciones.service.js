@@ -1,59 +1,93 @@
 const estacionesRepository = require('../repository/estaciones.repository');
+const  {v4: uuidv4} = require('uuid');
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class estacionesService{
 
     async scanTable(){
-        const data = await estacionesRepository.scanTable();
-
-        if(data){
+        try{
+            const data = await estacionesRepository.scanTable();
             return data.Items;
         }
-        return data;
+        catch{
+            console.error(err);
+            res.status(500).json({ err: 'Something went wrong' });
+        }
     }
 
     async getTableCoord(){
-        const data = await estacionesRepository.getTableCoord();
-        if(data){
+        try{
+            const data = await estacionesRepository.getTableCoord();
             return data.Items;
         }
-        return data;
+        catch{
+            console.error(err);
+            res.status(500).json({ err: 'Something went wrong' });
+        };
     }
 
     async getTableDir(){
-        const data = await estacionesRepository.getTableDir();
-        if(data){
+        try{
+            const data = await estacionesRepository.getTableDir();
             return data.Items;
         }
-        return data;
+        catch{
+            console.error(err);
+            res.status(500).json({ err: 'Something went wrong' });
+        }
     }
     
     async findById(estacionId){
-        const data = await estacionesRepository.findById(estacionId);
-
-        if(data){
+        try{
+            const data = await estacionesRepository.findById(estacionId);
             return data.Item;
         }
-        return data;
+        catch{
+            console.error(err);
+            res.status(500).json({ err: 'Something went wrong' });
+        }
     }
 
     async getCoordById(estacionId){
-        const data = await estacionesRepository.findById(estacionId);
-
-        if(data){
+        try{
+            const data = await estacionesRepository.findById(estacionId);
             return [data.Item.ID, data.Item.LATITUD, data.Item.LONGITUD];
         }
-        return data;
+        catch{
+            console.error(err);
+            res.status(500).json({ err: 'Something went wrong' });
+        }
     }
 
-    async getDirById(estacionId){
+    async getDirById(estacionId, res){
         const data = await estacionesRepository.findById(estacionId);
-
-        if(data){
+        
+        try{
             return [data.Item.ID, data.Item.ADREÇA];
         }
-        return data;
+        catch{
+            console.error(err);
+            res.status(500).json({ err: 'Something went wrong' });
+        }
     }
+
+    async postEstacion(params, res){
+        const estacion = params;
+        estacion.ID = uuidv4();
+        estacion.ACCES = "";
+        estacion.CODIMUN = "bbbbbbbbbbbbbbbb";
+        estacion.ADREÇA=params.ADREÇA;
+        console.log(estacion.ADREÇA);
+        try {
+            const newEstacion = await estacionesRepository.addOrUpdateCharacter(estacion);
+            res.json(newEstacion);
+        } 
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ err: 'Something went wrong' });
+        }
+    }
+    
 
     /*async create(data){
         return await estacionesRepository.createEstacion({
@@ -82,10 +116,16 @@ class estacionesService{
         return await estacionesRepository.update(estacionID, data);
     }*/
 
-    /*async deleteByID(estacionID) {
-        return await UserRepository.deleteByID(estacionID);
-    }*/
-
+    async deleteByID(estacionID) {
+        try{
+            return await estacionesRepository.deleteByID(estacionID);
+    
+        }
+        catch (err){
+            console.error(err);
+            res.status(500).json({ err: 'Something went wrong' });
+        }
+    }
 }
 
 module.exports = new estacionesService();
