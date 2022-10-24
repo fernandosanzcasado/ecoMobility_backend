@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class userService{
 
+
     async findByEmail(email){
         const data = await userRepository.findByEmail(email);
     if (data) {
@@ -14,7 +15,6 @@ class userService{
     return data;
   }
 
-  
 
     async create(data){
         
@@ -33,6 +33,7 @@ class userService{
     async deleteByEmail(email){
         return await userRepository.deleteUserByEmail(email);
     }
+
 
 
     async loginUser(data){
@@ -61,11 +62,6 @@ class userService{
         console.log(hash)
     }
 
-
-    
-
-
-    
 }
 
 

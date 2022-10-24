@@ -11,7 +11,7 @@ class userRepository{
     }
 
     async findByEmail(email) {
-        
+
         const params = {
             TableName: this.tableName,
             Key: {
@@ -34,7 +34,7 @@ class userRepository{
                     Is_superuser: false,
                 },
             };
-            
+
            return await db.put(params).promise();       
     }
 
@@ -70,6 +70,7 @@ class userRepository{
         };
         return await db.delete(params).promise();
     }
+
 
 }
 

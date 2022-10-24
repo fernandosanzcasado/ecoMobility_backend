@@ -58,6 +58,7 @@ class userController{
         }
         const data = await userService.registerUser(req.body);
         res.status(201).send({msg: 'Created User'});
+
     }
 }
 
