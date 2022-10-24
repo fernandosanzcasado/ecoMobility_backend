@@ -11,6 +11,7 @@ class userRepository{
     }
 
     async findByEmail(email) {
+
         const params = {
             TableName: this.tableName,
             Key: {
@@ -21,7 +22,6 @@ class userRepository{
     }
 
     async createUser(data){
-        try{
             const params = {
                 TableName: this.tableName,
                 ConditionExpression: "attribute_not_exists(Email)",
@@ -34,12 +34,8 @@ class userRepository{
                     Is_superuser: false,
                 },
             };
-            
-            await db.put(params).promise();
-            return params.Item;
-        }catch(err){
-            return err;
-        }
+
+           return await db.put(params).promise();       
     }
 
 
@@ -74,8 +70,6 @@ class userRepository{
         };
         return await db.delete(params).promise();
     }
-
-
 
 
 }
