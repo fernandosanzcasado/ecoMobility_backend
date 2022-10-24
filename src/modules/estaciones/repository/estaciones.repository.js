@@ -1,5 +1,4 @@
 const db = require('../../../helpers/database');
-const  {v4: uuidv4} = require('uuid');
 
 
 //fitxer que s'encarrega de gestionar operacions a la base de dades de la taula usuaris(ex:crear objectes, fer update dels objectes,
@@ -53,6 +52,13 @@ class estacionesRepository{
         return await db.get(params).promise();
     }
 
+    async addOrUpdateCharacter(character) {
+        const params = {
+            TableName: this.tableName,
+            Item: character,
+        };
+        return await db.put(params).promise();
+    };
 
     /*async createEstacion(data){
         const params = {
@@ -83,37 +89,17 @@ class estacionesRepository{
         return params.Item;
     }*/
 
-    /*async update(estacionID, data) {
+    
+
+    async deleteByID(estacionID) {
         const params = {
             TableName: this.tableName,
             Key: {
-                ID: estacionID
-            },
-            UpdateExpression: `set #Username = :Username`,
-            ExpressionAttributeNames: {
-                '#Username': `Username`,
-            },
-            ExpressionAttributeValues: {
-                ":Username": data.Username,
-            },
-            ReturnValues: `UPDATED_NEW`,
-        };
-
-        const update = await db.update(params).promise();
-
-        return update.Attributes;
-    }*/
-
-    /*async deleteByID(estacionID) {
-        const params = {
-            TableName: this.tableName,
-            Key: {
-                estacionID,
+                ID:estacionID,
             },
         };
-
         return await db.delete(params).promise();
-    }*/
+    }
 
 }
 

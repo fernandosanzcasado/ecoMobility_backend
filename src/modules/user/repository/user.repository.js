@@ -1,5 +1,4 @@
 const db = require('../../../helpers/database');
-const  {v4: uuidv4} = require('uuid');
 const { json } = require('body-parser');
 
 //fitxer que s'encarrega de gestionar operacions a la base de dades de la taula usuaris(ex:crear objectes, fer update dels objectes,
