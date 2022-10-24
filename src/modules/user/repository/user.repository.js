@@ -1,38 +1,76 @@
-const db = require("../../../helpers/database");
-const { v4: uuidv4 } = require("uuid");
+const db = require('../../../helpers/database');
+const  {v4: uuidv4} = require('uuid');
+const { json } = require('body-parser');
 
 //fitxer que s'encarrega de gestionar operacions a la base de dades de la taula usuaris(ex:crear objectes, fer update dels objectes,
 //borrar objectes o fer un get dels objectes).
-class userRepository {
-  constructor() {
-    this.tableName = "Users";
-  }
+class userRepository{
 
-  async findById(UserID) {
-    const params = {
-      TableName: this.tableName,
-      Key: {
-        Id: UserID,
-      },
-    };
-    console.log(UserID);
-    return await db.get(params).promise();
-  }
+    constructor(){
+        this.tableName = 'Users'
+    }
 
-  async createUser(data) {
-    const params = {
-      TableName: this.tableName,
-      Item: {
-        Id: uuidv4(),
-        username: data.username,
-        email: data.email,
-        password: data.password,
-      },
-    };
+    async findByEmail(email) {
+        
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                Email:email,
+            },
+        };
+        return await db.get(params).promise();
+    }
 
-    await db.put(params).promise();
-    return params.Item;
-  }
+    async createUser(data){
+            const params = {
+                TableName: this.tableName,
+                ConditionExpression: "attribute_not_exists(Email)",
+                Item: {
+                    Email: data.email,
+                    Name: data.name,
+                    Surnames: data.surnames,
+                    Password: data.password,
+                    Date_joined: Date.now(),
+                    Is_superuser: false,
+                },
+            };
+            
+           return await db.put(params).promise();       
+    }
+
+
+    async updateUserInfo(email,data){
+        console.log(data.name);
+        
+        const params = {
+            ExpressionAttributeNames: {
+                "#UN": "Name", 
+                "#US": "Surnames"
+               }, 
+               ExpressionAttributeValues: {
+                ':n' : data.name,
+                ':s' : data.surnames,
+              }, 
+               Key: {
+                Email: email
+               }, 
+               TableName: this.tableName, 
+               UpdateExpression: "SET #UN = :n, #US = :s"   
+        };
+        return await db.update(params).promise();
+    }
+
+    async deleteUserByEmail(email){
+        console.log(email);
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                Email : email
+            },
+        };
+        return await db.delete(params).promise();
+    }
+
 }
 
 module.exports = new userRepository();
