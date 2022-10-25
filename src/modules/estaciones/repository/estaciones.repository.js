@@ -52,44 +52,14 @@ class estacionesRepository{
         return await db.get(params).promise();
     }
 
-    async addOrUpdateCharacter(character) {
+    async postOrUpdateEstacion(estacion) {
         const params = {
             TableName: this.tableName,
-            Item: character,
+            Item: estacion,
         };
-        return await db.put(params).promise();
-    };
-
-    /*async createEstacion(data){
-        const params = {
-            TableName: this.tableName,
-            Item:{
-                ID: uuidv4(),
-                ACCES: data.ACCES,
-                ADREÇA: data.ADREÇA,
-                CODIPROV: data.CODIPROV,
-                Columna_amb_georeferencia: data.COLUMNA_AMB_GEOREFERENCIA,
-                DESIGNACIO_DESCRIPTIVA: data.DESIGNACIO_DESCRIPTIVA,
-                INDENTIFICADOR: data.INDENTIFICADOR,
-                LATITUD: data.LATITUD,
-                LONGITUD: data.LONGITUD,
-                MUNICIPI: data.MUNICIPI,
-                NPLACES_ESTACIO: data.NPLACES_ESTACIO,
-                POTENCIA: data.POTENCIA,
-                PROMOTOR_GESTOR: data.PROMOTOR_GESTOR,
-                PROVINCIA: data.PROVINCIA,
-                TIPUS_CONNEXIO: data.TIPUS_CONNEXIO,
-                TIPUS_DE_CORRENT: data.TIPUS_DE_CORRENT,
-                TIPUS_VEHICLE: data.TIPUS_VEHICLE,
-                TIPUS_VELOCITAT: data.TIPUS_VELOCITAT
-            },
-        };
-
         await db.put(params).promise();
-        return params.Item;
-    }*/
-
-    
+        return estacion;
+    };
 
     async deleteByID(estacionID) {
         const params = {
@@ -99,6 +69,7 @@ class estacionesRepository{
             },
         };
         return await db.delete(params).promise();
+
     }
 
 }

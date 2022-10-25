@@ -35,15 +35,14 @@ class estacionesController{
     }
 
     async create(req,res){
-        const data = await estacionesService.postEstacion(req.params, res);
+        const data = await estacionesService.postEstacion(req.body);
         res.json(data);
     }
 
-    /*async update(req, res) {
+    async update(req, res) {
         const data = await estacionesService.update(req.params.Id, req.body)
-
         res.json(data)
-    }*/
+    }
 
     async deleteByID(req, res) {
         await estacionesService.deleteByID(req.params.Id);
