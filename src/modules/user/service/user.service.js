@@ -1,6 +1,8 @@
 const { json } = require("body-parser");
 const userRepository = require("../repository/user.repository");
 const bcrypt = require('bcrypt')
+const UserNotFoundError = require("../../../errors/user.errors/user.not.found");
+const IncorrectPassword = require("../../../errors/user.errors/incorrect.password");
 
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
@@ -36,13 +38,13 @@ class userService{
 
 
 
-    async loginUser(data){
+    async  loginUser(data){
         const user = await userRepository.findByEmail(data.email);
         
         if(!user.Item){
-            return Promise.reject({ msg: 'User does not exist.'});
+           throw new UserNotFoundError();
         }else if(user.Item.Password !== data.password){
-            return Promise.reject({ msg: 'Incorrect Password.'});
+            throw new IncorrectPassword();
         }else{
         return user;
         } 

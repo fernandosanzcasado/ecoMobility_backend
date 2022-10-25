@@ -47,7 +47,7 @@ class userController{
             const data = await userService.loginUser(req.body);
             res.json(data);    
         }catch(err){
-           res.status(400).json(err);
+            res.status(400).json(err);
         }
     }
 
