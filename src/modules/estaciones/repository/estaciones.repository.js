@@ -1,5 +1,4 @@
 const db = require('../../../helpers/database');
-const  {v4: uuidv4} = require('uuid');
 
 
 //fitxer que s'encarrega de gestionar operacions a la base de dades de la taula usuaris(ex:crear objectes, fer update dels objectes,
@@ -53,67 +52,25 @@ class estacionesRepository{
         return await db.get(params).promise();
     }
 
-
-    /*async createEstacion(data){
+    async postOrUpdateEstacion(estacion) {
         const params = {
             TableName: this.tableName,
-            Item:{
-                ID: uuidv4(),
-                ACCES: data.ACCES,
-                ADREÇA: data.ADREÇA,
-                CODIPROV: data.CODIPROV,
-                Columna_amb_georeferencia: data.COLUMNA_AMB_GEOREFERENCIA,
-                DESIGNACIO_DESCRIPTIVA: data.DESIGNACIO_DESCRIPTIVA,
-                INDENTIFICADOR: data.INDENTIFICADOR,
-                LATITUD: data.LATITUD,
-                LONGITUD: data.LONGITUD,
-                MUNICIPI: data.MUNICIPI,
-                NPLACES_ESTACIO: data.NPLACES_ESTACIO,
-                POTENCIA: data.POTENCIA,
-                PROMOTOR_GESTOR: data.PROMOTOR_GESTOR,
-                PROVINCIA: data.PROVINCIA,
-                TIPUS_CONNEXIO: data.TIPUS_CONNEXIO,
-                TIPUS_DE_CORRENT: data.TIPUS_DE_CORRENT,
-                TIPUS_VEHICLE: data.TIPUS_VEHICLE,
-                TIPUS_VELOCITAT: data.TIPUS_VELOCITAT
-            },
+            Item: estacion,
         };
-
         await db.put(params).promise();
-        return params.Item;
-    }*/
+        return estacion;
+    };
 
-    /*async update(estacionID, data) {
+    async deleteByID(estacionID) {
         const params = {
             TableName: this.tableName,
             Key: {
-                ID: estacionID
-            },
-            UpdateExpression: `set #Username = :Username`,
-            ExpressionAttributeNames: {
-                '#Username': `Username`,
-            },
-            ExpressionAttributeValues: {
-                ":Username": data.Username,
-            },
-            ReturnValues: `UPDATED_NEW`,
-        };
-
-        const update = await db.update(params).promise();
-
-        return update.Attributes;
-    }*/
-
-    /*async deleteByID(estacionID) {
-        const params = {
-            TableName: this.tableName,
-            Key: {
-                estacionID,
+                ID:estacionID,
             },
         };
-
         return await db.delete(params).promise();
-    }*/
+
+    }
 
 }
 
