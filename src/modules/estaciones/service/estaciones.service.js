@@ -24,13 +24,13 @@ class estacionesService {
   }
 
   async getCoordById(estacionId) {
-    const data = await estacionesRepository.findById(estacionId);
-    return [data.Item.ID, data.Item.LATITUD, data.Item.LONGITUD];
+    const data = await estacionesRepository.coordById(estacionId);
+    return data.Item;
   }
 
   async getDirById(estacionId) {
-    const data = await estacionesRepository.findById(estacionId);
-    return [data.Item.ID, data.Item.ADREÇA];
+    const data = await estacionesRepository.dirById(estacionId);
+    return data.Item;
   }
 
   async postEstacion(data) {

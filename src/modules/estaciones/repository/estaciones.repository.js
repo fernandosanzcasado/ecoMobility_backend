@@ -49,6 +49,37 @@ class estacionesRepository {
     return await db.get(params).promise();
   }
 
+  async coordById(estacionID) {
+    const params = {
+      ExpressionAttributeNames: {
+        "#LAT": "LATITUD",
+        "#LONG": "LONGITUD",
+        "#ID": "ID",
+      },
+      ProjectionExpression: "#ID, #LAT, #LONG",
+      TableName: this.tableName,
+      Key: {
+        ID: estacionID,
+      },
+    };
+    return await db.get(params).promise();
+  }
+
+  async dirById(estacionID) {
+    const params = {
+      ExpressionAttributeNames: {
+        "#DIR": "ADREÇA",
+        "#ID": "ID",
+      },
+      ProjectionExpression: "#ID, #DIR",
+      TableName: this.tableName,
+      Key: {
+        ID: estacionID,
+      },
+    };
+    return await db.get(params).promise();
+  }
+
   async postOrUpdateEstacion(estacion) {
     const params = {
       TableName: this.tableName,
