@@ -34,22 +34,20 @@ class estacionesController{
         res.json(data)
     }
 
-    /*async create(req,res){
-        const data = await estacionesService.create(req.body);
+    async create(req,res){
+        const data = await estacionesService.postEstacion(req.body);
         res.json(data);
-    }*/
+    }
 
-    /*async update(req, res) {
+    async update(req, res) {
         const data = await estacionesService.update(req.params.Id, req.body)
-
         res.json(data)
-    }*/
+    }
 
-    /*async deleteByID(req, res) {
-        await estacionesService.deleteByID(req.params.Id)
-
+    async deleteByID(req, res) {
+        await estacionesService.deleteByID(req.params.Id);
         res.json(`Success`)
-    }*/
+    }
 }
 
 module.exports = new estacionesController();

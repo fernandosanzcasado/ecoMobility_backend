@@ -15,10 +15,10 @@ router.get(`/:Id/coordenadas`, estacionesController.getCoordById);
 
 router.get(`/:Id/direccion`, estacionesController.getDirById);
 
+router.post(`/`, estacionesController.create);
+
 router.delete(`/:Id`, estacionesController.deleteByID);
 
 router.put(`/:Id`, estacionesController.update);
-
-router.post(`/`, estacionesController.create);
 
 module.exports = router;
