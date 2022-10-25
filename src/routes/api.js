@@ -16,5 +16,6 @@ module.exports = async(app) =>{
     app.get(`/api/v1/estaciones/:Id/direccion`, estacionesController.getDirById);
     app.delete(`/api/v1/estaciones/:Id`, estacionesController.deleteByID);
     app.post(`/api/v1/estaciones`, estacionesController.create);
+    app.put(`/api/v1/estaciones/:Id`, estacionesController.update);
 };
 

@@ -42,9 +42,12 @@ class estacionesService{
     }
     
     async update(estacionID, data) {
-        const estacion = data;
-        estacion.ID= estacionID;
-        const updatedEst = await estacionesRepository.postOrUpdateEstacion(estacion);
+        const keys = Object.keys(data);
+        const estacion = await estacionesRepository.findById(estacionID);
+        for (var i = 0; i < keys.length; i++) {
+            estacion.Item[keys[i]] = Object.values(data)[i];
+        }
+        const updatedEst = await estacionesRepository.postOrUpdateEstacion(estacion.Item);
         return updatedEst;
     }
 
