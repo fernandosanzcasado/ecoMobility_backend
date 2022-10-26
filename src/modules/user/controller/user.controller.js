@@ -47,18 +47,17 @@ class userController{
             const data = await userService.loginUser(req.body);
             res.json(data);    
         }catch(err){
-            res.status(400).json(err);
+            res.status(err.status).json(err);
         }
     }
 
     async registerUser(req,res){
-        const errors = validationResult(req);
-        if(!errors.isEmpty()){
-            return res.status(400).json({errors: errors.array()})
-        }
-        const data = await userService.registerUser(req.body);
-        res.status(201).send({msg: 'Created User'});
-
+       try{
+        const newUser = await userService.registerUser(req.body);
+        res.json(newUser);
+       }catch(err){
+        res.status(err.status).json(err);
+       }
     }
 }
 

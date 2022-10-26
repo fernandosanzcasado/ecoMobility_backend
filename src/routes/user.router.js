@@ -13,10 +13,6 @@ router.put(`/:email`, userController.updateUserInfo);
 router.delete(`/:email`, userController.deleteByEmail);
 
 router.post(`/login`, userController.loginUser);
-router.post(
-  `/register`,
-  [check("email").notEmpty().isEmail(), check("password").isLength({ min: 5 })],
-  userController.registerUser
-);
+router.post(`/register`,userController.registerUser);
 
 module.exports = router;

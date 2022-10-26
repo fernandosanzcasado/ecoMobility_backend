@@ -60,7 +60,6 @@ class userRepository{
     }
 
     async deleteUserByEmail(email){
-        console.log(email);
         const params = {
             TableName: this.tableName,
             Key: {
