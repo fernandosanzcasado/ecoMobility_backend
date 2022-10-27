@@ -15,8 +15,8 @@ afterEach(() => {
   jest.spyOn(userRepository, "deleteUserByEmail").mockRestore();
 });
 
-describe("Scan Table estaciones testing!", () => {
-  test("Passarà el test ja que només ha de cridar a la funció scanTable de estacionesRepository", () => {
+describe("deletebyEmail Tests!", () => {
+  test("Crida a la funció deleteUserByEmail de Rep ", () => {
     userService.deleteByEmail();
     expect(userRepository.deleteUserByEmail()).toHaveBeenCalled();
   });

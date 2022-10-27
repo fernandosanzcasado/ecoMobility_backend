@@ -15,10 +15,10 @@ afterEach(() => {
   jest.spyOn(userRepository, "loginUser").mockRestore();
 });
 
-describe("Scan Table estaciones testing!", () => {
-  test("Passarà el test ja que només ha de cridar a la funció scanTable de estacionesRepository", () => {
+describe("loginUser test", () => {
+  test("Crida a findbyEmail", () => {
     userService.loginUser();
     expect(userRepository.findByEmail()).toHaveBeenCalled();
   });
 });
-create - test.js;
+loginUsertest - test.js;
