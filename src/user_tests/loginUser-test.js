@@ -20,7 +20,11 @@ describe("loginUser test", () => {
     userService.loginUser();
     expect(userRepository.findByEmail()).toHaveBeenCalled();
   });
-  test("Crida a loginUser", () => {
+  test("Crida sense User () => {
+    userService.loginUser();
+    expect(userRepository.findByEmail()).toHaveBeenCalled();
+  });
+  test("Crida amb User", () => {
     userService.loginUser();
     expect(userRepository.findByEmail()).toHaveBeenCalled();
   });
