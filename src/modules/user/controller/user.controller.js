@@ -56,7 +56,7 @@ class userController{
         const newUser = await userService.registerUser(req.body);
         res.json(newUser);
        }catch(err){
-        res.status(err.status).json(err);
+        res.status(err.status ?? 500).json(err);
        }
     }
 }
