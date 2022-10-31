@@ -11,18 +11,18 @@ const mockResponse = {
 };
 
 beforeEach(() => {
-  jest.spyOn(estacionesRepository, "findById").mockImplementation((id) => {
+  jest.spyOn(estacionesRepository, "dirById").mockImplementation((id) => {
     if (id == 10) {
       return mockResponse;
-    } else return false;
+    } else return "1";
   });
 });
 afterEach(() => {
-  jest.spyOn(estacionesRepository, "findById").mockRestore();
+  jest.spyOn(estacionesRepository, "dirById").mockRestore();
 });
 
-describe("Get estació by Id testing!", () => {
-  test("Passarà amb éxit ja que crida a la funció findById de estacionesRepository amb un id vàlid", () => {
+describe("Get direcció de estació by Id testing!", () => {
+  test("Passarà amb éxit ja que crida a la funció dirById de estacionesRepository amb un id vàlid", () => {
     const input = 10;
     const output = {
       ID: "10",
@@ -31,14 +31,14 @@ describe("Get estació by Id testing!", () => {
     };
     expect.assertions(1);
     estacionesService
-      .findById(input)
+      .getDirById(input)
       .then((returnData) => expect(returnData).toEqual(output));
   });
 
-  test("Passarà ja que s'espera un error per cridar a la funció findById de estacionesRepository amb un id invàlid", () => {
+  test("Passarà ja que s'espera un error per cridar a la funció dirById de estacionesRepository amb un id invàlid", () => {
     const input = 15;
     expect.assertions(1);
-    expect(estacionesService.findById(input)).rejects.toThrow(
+    expect(estacionesService.getDirById(input)).rejects.toThrow(
       new EstacionNotFoundError()
     );
   });

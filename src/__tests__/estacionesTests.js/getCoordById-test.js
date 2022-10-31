@@ -5,40 +5,38 @@ const EstacionNotFoundError = require("../../errors/estaciones.errors/estacionNo
 const mockResponse = {
   Item: {
     ID: "10",
-    LATITUD: "23.89135485",
-    LONGITUD: "81.68531686",
+    DIRECCIO: "C/Jordi Girona, 1-3",
   },
 };
 
 beforeEach(() => {
-  jest.spyOn(estacionesRepository, "findById").mockImplementation((id) => {
+  jest.spyOn(estacionesRepository, "coordById").mockImplementation((id) => {
     if (id == 10) {
       return mockResponse;
-    } else return false;
+    } else return "1";
   });
 });
 afterEach(() => {
-  jest.spyOn(estacionesRepository, "findById").mockRestore();
+  jest.spyOn(estacionesRepository, "coordById").mockRestore();
 });
 
-describe("Get estació by Id testing!", () => {
-  test("Passarà amb éxit ja que crida a la funció findById de estacionesRepository amb un id vàlid", () => {
+describe("Get coordenades de estació by Id testing!", () => {
+  test("Passarà ja que crida a la funció coordById de estacionesRepository amb un id vàlid", () => {
     const input = 10;
     const output = {
       ID: "10",
-      LATITUD: "23.89135485",
-      LONGITUD: "81.68531686",
+      DIRECCIO: "C/Jordi Girona, 1-3",
     };
     expect.assertions(1);
     estacionesService
-      .findById(input)
+      .getCoordById(input)
       .then((returnData) => expect(returnData).toEqual(output));
   });
 
-  test("Passarà ja que s'espera un error per cridar a la funció findById de estacionesRepository amb un id invàlid", () => {
+  test("Passarà ja que s'espera un error per cridar a la funció coordById de estacionesRepository amb un id invàlid", () => {
     const input = 15;
     expect.assertions(1);
-    expect(estacionesService.findById(input)).rejects.toThrow(
+    expect(estacionesService.getCoordById(input)).rejects.toThrow(
       new EstacionNotFoundError()
     );
   });
