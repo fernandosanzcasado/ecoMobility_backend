@@ -6,36 +6,36 @@ const { v4: uuidv4 } = require("uuid");
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class estacionesService {
   async scanTable() {
-    const data = estacionesRepository.scanTable();
+    const data = await estacionesRepository.scanTable();
     return data.Items;
   }
 
   async getTableCoord() {
-    const data = estacionesRepository.getTableCoord();
+    const data = await estacionesRepository.getTableCoord();
     return data.Items;
   }
 
   async getTableDir() {
-    const data = estacionesRepository.getTableDir();
+    const data = await estacionesRepository.getTableDir();
     return data.Items;
   }
 
   async findById(estacionId) {
-    const data = estacionesRepository.findById(estacionId);
+    const data = await estacionesRepository.findById(estacionId);
     if (!data.Item) {
       throw new EstacionNotFoundError();
     } else return data.Item;
   }
 
   async getCoordById(estacionId) {
-    const data = estacionesRepository.coordById(estacionId);
+    const data = await estacionesRepository.coordById(estacionId);
     if (!data.Item) {
       throw new EstacionNotFoundError();
     } else return data.Item;
   }
 
   async getDirById(estacionId) {
-    const data = estacionesRepository.dirById(estacionId);
+    const data = await estacionesRepository.dirById(estacionId);
     if (!data.Item) {
       throw new EstacionNotFoundError();
     } else return data.Item;
@@ -49,7 +49,7 @@ class estacionesService {
   }
 
   async update(estacionID, data) {
-    const estacion = estacionesRepository.findById(estacionID);
+    const estacion = await estacionesRepository.findById(estacionID);
     if (!estacion.Item) {
       throw new EstacionNotFoundError();
     } else {
@@ -57,13 +57,16 @@ class estacionesService {
         estacion.Item[key] = value;
       });
     }
-    const updatedEst = estacionesRepository.postOrUpdateEstacion(estacion.Item);
+    const updatedEst = await estacionesRepository.postOrUpdateEstacion(
+      estacion.Item
+    );
     return updatedEst;
   }
 
   async deleteByID(estacionID) {
-    const data = estacionesRepository.deleteByID(estacionID);
-    if (!data.Item) {
+    const data = await estacionesRepository.deleteByID(estacionID);
+    console.log(data);
+    if (!data.Attributes) {
       throw new EstacionNotFoundError();
     } else return data.Item;
   }
