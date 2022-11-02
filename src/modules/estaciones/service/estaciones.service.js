@@ -44,9 +44,7 @@ class estacionesService {
   async postEstacion(data) {
     const estacion = data;
     estacion.ID = uuidv4();
-    const newEstacion = await estacionesRepository.postOrUpdateEstacion(
-      estacion
-    );
+    const newEstacion = estacionesRepository.postOrUpdateEstacion(estacion);
     return newEstacion;
   }
 
@@ -67,9 +65,9 @@ class estacionesService {
 
   async deleteByID(estacionID) {
     const data = await estacionesRepository.deleteByID(estacionID);
-    if (!data) {
+    if (!data.Attributes) {
       throw new EstacionNotFoundError();
-    } else return data.Item;
+    } else return data.Attributes;
   }
 }
 
