@@ -65,10 +65,9 @@ class estacionesService {
 
   async deleteByID(estacionID) {
     const data = await estacionesRepository.deleteByID(estacionID);
-    console.log(data);
     if (!data.Attributes) {
       throw new EstacionNotFoundError();
-    } else return data.Item;
+    } else return data.Attributes;
   }
 }
 

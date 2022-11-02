@@ -3,7 +3,7 @@ const estacionesRepository = require("../../modules/estaciones/repository/estaci
 const EstacionNotFoundError = require("../../errors/estaciones.errors/estacionNotFound");
 
 const mockResponse = {
-  Item: {
+  Attributes: {
     ID: "10",
     LATITUD: "23.89135485",
     LONGITUD: "81.68531686",
