@@ -1,9 +1,10 @@
 const { json } = require("body-parser");
 const userRepository = require("../repository/user.repository");
 const bcrypt = require('bcrypt')
-const UserNotFoundError = require("../../../errors/user.errors/user.not.found");
-const IncorrectPassword = require("../../../errors/user.errors/incorrect.password");
 
+const UserNotFoundError = require("../../../errors/user.errors/userNotFound");
+const IncorrectPassword = require("../../../errors/user.errors/incorrectPassword");
+const UserAlreadyExists = require("../../../errors/user.errors/userAlreadyExists");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class userService{
@@ -51,17 +52,19 @@ class userService{
     }
 
     async registerUser(data){
-        console.log(data.password);
-        this.hashPassword(data.password);
+        const userInDB = await userRepository.findByEmail(data.email);
+        if(userInDB.Item){
+            throw new UserAlreadyExists();
+        }
         
+        const hashedPassword = await bcrypt.hash(data.password, 10);
         
-    }
-
-
-    async hashPassword(password) {
-        const salt = await bcrypt.genSalt(10)
-        const hash = await bcrypt.hash(password, salt)
-        console.log(hash)
+        return await userRepository.createUser({
+            email: data.email,
+            name: data.name,
+            surnames: data.surnames,
+            password: hashedPassword,
+        })     
     }
 
 }
