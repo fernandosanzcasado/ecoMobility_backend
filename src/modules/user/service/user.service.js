@@ -11,30 +11,43 @@ class userService{
 
 
     async findByEmail(email){
-        const data = await userRepository.findByEmail(email);
-    if (data) {
-      return data.Item;
-    }
-    return data;
+        const user = await userRepository.findByEmail(email);
+
+        if(!user.Item){
+            throw new UserNotFoundError();
+         }else{
+         return user;
+         } 
   }
 
 
     async create(data){
         
-        return await userRepository.createUser({
+         const newUser =  await userRepository.createUser({
             email: data.email,
             name: data.name,
             surnames: data.surnames,
             password: data.password,
         });
+        return newUser;
     }
 
     async updateUserInfo(email,data){
+        const user = await userRepository.findByEmail(email);
+        if(!user.Item){
+            throw new UserNotFoundError();
+        }
         return await userRepository.updateUserInfo(email,data);
     }
 
     async deleteByEmail(email){
-        return await userRepository.deleteUserByEmail(email);
+
+        const deletedUser =  await userRepository.deleteUserByEmail(email);
+        if(!deletedUser.Attributes){
+            throw new UserNotFoundError();
+        }
+        console.log(deletedUser.Attributes);
+        return deletedUser.Attributes;
     }
 
 
@@ -59,12 +72,13 @@ class userService{
         
         const hashedPassword = await bcrypt.hash(data.password, 10);
         
-        return await userRepository.createUser({
+        const newUser =  await userRepository.createUser({
             email: data.email,
             name: data.name,
             surnames: data.surnames,
             password: hashedPassword,
-        })     
+        }) 
+        return newUser;    
     }
 
 }

@@ -32,9 +32,11 @@ class userRepository{
                     Date_joined: Date.now(),
                     Is_superuser: false,
                 },
+                
             };
 
-           return await db.put(params).promise();       
+           await db.put(params).promise();
+           return data;       
     }
 
 
@@ -54,7 +56,9 @@ class userRepository{
                 Email: email
                }, 
                TableName: this.tableName, 
-               UpdateExpression: "SET #UN = :n, #US = :s"   
+               UpdateExpression: "SET #UN = :n, #US = :s" ,
+               ReturnValues: "ALL_NEW"
+
         };
         return await db.update(params).promise();
     }
@@ -65,6 +69,7 @@ class userRepository{
             Key: {
                 Email : email
             },
+            ReturnValues: "ALL_OLD"
         };
         return await db.delete(params).promise();
     }

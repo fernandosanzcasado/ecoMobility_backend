@@ -10,7 +10,7 @@ class userController{
             const data = await userService.findByEmail(req.params.email);
             res.json(data)
         }catch(err){
-            res.json(err);
+            res.status(err.status ?? 500).json(err);
         }   
     }
 
@@ -20,7 +20,7 @@ class userController{
             res.json(data);
         }catch(err){
             console.log(err);
-            res.json(err);
+            res.status(err.status ?? 500).json(err);
         }    
     }
 
@@ -29,16 +29,16 @@ class userController{
             const data = await userService.updateUserInfo(req.params.email, req.body);
             res.json(data);
         }catch(err){
-            res.json(err);
+            res.status(err.status ?? 500).json(err);
         }
     }
 
     async deleteByEmail(req,res){
         try{
-            await userService.deleteByEmail(req.params.email);
-            res.json('User deleted successfully');
+            const deletedUser = await userService.deleteByEmail(req.params.email);
+            res.json("User with the email: " + deletedUser.Email + " deleted successfully");
         }catch(err){
-            res.json(err);
+            res.status(err.status ?? 500).json(err);
         }    
     }
 
@@ -47,7 +47,7 @@ class userController{
             const data = await userService.loginUser(req.body);
             res.json(data);    
         }catch(err){
-            res.status(err.status).json(err);
+            res.status(err.status ?? 500).json(err);
         }
     }
 
