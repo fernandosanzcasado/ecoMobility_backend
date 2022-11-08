@@ -44,7 +44,7 @@ class userController{
 
     async loginUser(req,res){
         try{
-            const data = await userService.loginUser(req.body);
+            const data = await userService.findByEmail(req.body.email);
             res.json(data);    
         }catch(err){
             res.status(err.status).json(err);

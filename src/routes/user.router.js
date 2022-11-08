@@ -1,19 +1,21 @@
 const express = require("express");
 const passport = require("passport")
 const session = require("express-session")
-
 const { check, validationResult } = require("express-validator");
+const { application } = require("express");
 
 const userController = require("../modules/user/controller/user.controller");
+const userService = require("../modules/user/service/user.service")
 const registerSchema = require('../schemas/registerSchema');
 const loginSchema = require('../schemas/loginSchema');
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 
+
 const initializePassport = require('../middleware/passport');
-const { application } = require("express");
+
 initializePassport(passport, 
     email =>
-    userController.findByEmail(email)
+    userService.findByEmail(email)
 )
 
 const router = express.Router();
@@ -33,7 +35,7 @@ router.get(`/:email`, userController.findByEmail);
 router.put(`/:email`, userController.updateUserInfo);
 router.delete(`/:email`, userController.deleteByEmail);
 
-router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'));
+router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
 
 module.exports = router;
