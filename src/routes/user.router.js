@@ -26,6 +26,15 @@ router.use(session({
     saveUninitialized: false,
 }))
 
+function handleError(err, req, res, next) {
+    if (err) {
+    res.status(err.status).json(err.message);
+    }
+    else {
+        next();
+    }
+}
+
 router.use(passport.initialize())
 router.use(passport.session())
 
@@ -37,5 +46,7 @@ router.delete(`/:email`, userController.deleteByEmail);
 
 router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
+
+router.use(handleError)
 
 module.exports = router;

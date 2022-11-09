@@ -4,9 +4,6 @@ const bcrpyt = require('bcrypt');
 const IncorrectPassword = require('../errors/user.errors/incorrectPassword');
 
 
-
-
-
 function initialize(passport, findUserByEmail){
     const authenticateUser = async (email, password, done) => {
     
@@ -29,7 +26,7 @@ function initialize(passport, findUserByEmail){
     passport.use(new LocalStrategy({usernameField: 'email'}, 
     authenticateUser))
     passport.serializeUser((user, done) => done(null,user.Email))
-    passport.deserializeUser((id, done) =>{  
+    passport.deserializeUser((email, done) =>{  
         return done(null, findUserByEmail(email));
     })
 }
