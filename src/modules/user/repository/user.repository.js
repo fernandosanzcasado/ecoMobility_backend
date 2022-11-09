@@ -1,5 +1,4 @@
 const db = require('../../../helpers/database');
-const  {v4: uuidv4} = require('uuid');
 const { json } = require('body-parser');
 
 //fitxer que s'encarrega de gestionar operacions a la base de dades de la taula usuaris(ex:crear objectes, fer update dels objectes,
@@ -33,9 +32,11 @@ class userRepository{
                     Date_joined: Date.now(),
                     Is_superuser: false,
                 },
+                
             };
 
-           return await db.put(params).promise();       
+           await db.put(params).promise();
+           return data;       
     }
 
 
@@ -55,18 +56,20 @@ class userRepository{
                 Email: email
                }, 
                TableName: this.tableName, 
-               UpdateExpression: "SET #UN = :n, #US = :s"   
+               UpdateExpression: "SET #UN = :n, #US = :s" ,
+               ReturnValues: "ALL_NEW"
+
         };
         return await db.update(params).promise();
     }
 
     async deleteUserByEmail(email){
-        console.log(email);
         const params = {
             TableName: this.tableName,
             Key: {
                 Email : email
             },
+            ReturnValues: "ALL_OLD"
         };
         return await db.delete(params).promise();
     }
