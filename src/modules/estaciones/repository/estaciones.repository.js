@@ -95,6 +95,7 @@ class estacionesRepository {
       Key: {
         ID: estacionID,
       },
+      ReturnValues: "ALL_OLD",
     };
     return await db.delete(params).promise();
   }

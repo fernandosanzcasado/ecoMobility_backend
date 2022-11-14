@@ -32,9 +32,11 @@ class userRepository{
                     Date_joined: Date.now(),
                     Is_superuser: false,
                 },
+                
             };
 
-           return await db.put(params).promise();       
+           await db.put(params).promise();
+           return data;       
     }
 
 

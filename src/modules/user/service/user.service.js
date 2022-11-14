@@ -30,6 +30,7 @@ class userService{
             password: data.password,
         });
         return newUser.Attributes;
+
     }
 
     async updateUserInfo(email,data){

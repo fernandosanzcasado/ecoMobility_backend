@@ -1,4 +1,6 @@
 const estacionesRepository = require("../repository/estaciones.repository");
+const EstacionNotFoundError = require("../../../errors/estaciones.errors/estacionNotFound");
+
 const { v4: uuidv4 } = require("uuid");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
@@ -20,35 +22,41 @@ class estacionesService {
 
   async findById(estacionId) {
     const data = await estacionesRepository.findById(estacionId);
-    return data.Item;
+    if (!data.Item) {
+      throw new EstacionNotFoundError();
+    } else return data.Item;
   }
 
   async getCoordById(estacionId) {
     const data = await estacionesRepository.coordById(estacionId);
-    return data.Item;
+    if (!data.Item) {
+      throw new EstacionNotFoundError();
+    } else return data.Item;
   }
 
   async getDirById(estacionId) {
     const data = await estacionesRepository.dirById(estacionId);
-    return data.Item;
+    if (!data.Item) {
+      throw new EstacionNotFoundError();
+    } else return data.Item;
   }
 
   async postEstacion(data) {
     const estacion = data;
     estacion.ID = uuidv4();
-    const newEstacion = await estacionesRepository.postOrUpdateEstacion(
-      estacion
-    );
+    const newEstacion = estacionesRepository.postOrUpdateEstacion(estacion);
     return newEstacion;
   }
 
   async update(estacionID, data) {
     const estacion = await estacionesRepository.findById(estacionID);
-
-    Object.entries(data).forEach(([key, value]) => {
-      estacion.Item[key] = value;
-    });
-
+    if (!estacion.Item) {
+      throw new EstacionNotFoundError();
+    } else {
+      Object.entries(data).forEach(([key, value]) => {
+        estacion.Item[key] = value;
+      });
+    }
     const updatedEst = await estacionesRepository.postOrUpdateEstacion(
       estacion.Item
     );
@@ -56,7 +64,10 @@ class estacionesService {
   }
 
   async deleteByID(estacionID) {
-    return await estacionesRepository.deleteByID(estacionID);
+    const data = await estacionesRepository.deleteByID(estacionID);
+    if (!data.Attributes) {
+      throw new EstacionNotFoundError();
+    } else return data.Attributes;
   }
 }
 
