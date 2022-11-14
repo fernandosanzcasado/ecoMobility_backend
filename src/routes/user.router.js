@@ -1,24 +1,25 @@
 const express = require("express");
+const { application } = require("express");
 const passport = require("passport")
 const session = require("express-session")
 const { check, validationResult } = require("express-validator");
-const { application } = require("express");
+
 
 const userController = require("../modules/user/controller/user.controller");
 const userService = require("../modules/user/service/user.service")
 const registerSchema = require('../schemas/registerSchema');
 const loginSchema = require('../schemas/loginSchema');
+
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
-
-
 const initializePassport = require('../middleware/passport');
+const handleError = require("../middleware/errorHandler");
+
+const router = express.Router();
 
 initializePassport(passport, 
     email =>
     userService.findByEmail(email)
 )
-
-const router = express.Router();
 
 router.use(session({
     secret: 'YUNG_BEEF',
@@ -26,17 +27,9 @@ router.use(session({
     saveUninitialized: false,
 }))
 
-function handleError(err, req, res, next) {
-    if (err) {
-    res.status(err.status).json(err.message);
-    }
-    else {
-        next();
-    }
-}
+router.use(passport.session());
+router.use(passport.initialize());
 
-router.use(passport.initialize())
-router.use(passport.session())
 
 router.post(`/`, userController.create);
 

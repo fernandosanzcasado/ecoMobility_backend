@@ -5,58 +5,59 @@ const {check, validationResult} = require('express-validator');
 //fitxer que s'encarrega de gestiona les request i responses dels usuaris
 class userController{
 
-    async findByEmail(req, res) {
+    async findByEmail(req, res,next) {
+
         try{
             const data = await userService.findByEmail(req.params.email);
-            res.json(data)
+            res.json(data);
         }catch(err){
-            res.json(err);
+            next(err);
         }   
     }
 
-    async create(req,res){
+    async create(req,res,next){
         try{
             const data = await userService.create(req.body);
             res.json(data);
         }catch(err){
-            console.log(err);
-            res.json(err);
+            next(err);
         }    
     }
 
-    async updateUserInfo(req,res){
+    async updateUserInfo(req,res,next){
+
         try{
             const data = await userService.updateUserInfo(req.params.email, req.body);
             res.json(data);
         }catch(err){
-            res.json(err);
+            next(err);
         }
     }
 
-    async deleteByEmail(req,res){
+    async deleteByEmail(req,res,next){
         try{
-            await userService.deleteByEmail(req.params.email);
-            res.json('User deleted successfully');
+            const deletedUser = await userService.deleteByEmail(req.params.email);
+            res.json({message: 'User ' + deletedUser.Email +  ' deleted successfully'});
         }catch(err){
-            res.json(err);
+            next(err);
         }    
     }
 
-    async loginUser(req,res){
+    async loginUser(req,res,next){
         try{
             const data = await userService.findByEmail(req.body.email);
             res.json(data);    
         }catch(err){
-            res.status(err.status).json(err);
+            next(err);
         }
     }
 
-    async registerUser(req,res){
+    async registerUser(req,res,next){
        try{
         const newUser = await userService.registerUser(req.body);
-        res.json(newUser);
+        res.json({message: "New user registered"});
        }catch(err){
-        res.status(err.status ?? 500).json(err);
+        next(err);
        }
     }
 }

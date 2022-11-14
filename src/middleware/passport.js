@@ -26,8 +26,9 @@ function initialize(passport, findUserByEmail){
     passport.use(new LocalStrategy({usernameField: 'email'}, 
     authenticateUser))
     passport.serializeUser((user, done) => done(null,user.Email))
-    passport.deserializeUser((email, done) =>{  
-        return done(null, findUserByEmail(email));
+    passport.deserializeUser(async (email, done) =>{ 
+        //const user = await findUserByEmail(email);
+        return done(null, await findUserByEmail(email));
     })
 }
 

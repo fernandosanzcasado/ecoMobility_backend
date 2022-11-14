@@ -29,7 +29,7 @@ class userService{
             surnames: data.surnames,
             password: data.password,
         });
-        return newUser;
+        return newUser.Attributes;
     }
 
     async updateUserInfo(email,data){
@@ -37,7 +37,8 @@ class userService{
         if(!user.Item){
             throw new UserNotFoundError();
         }
-        return await userRepository.updateUserInfo(email,data);
+        const updatedUser = await userRepository.updateUserInfo(email,data);
+        return updatedUser.Attributes;
     }
 
     async deleteByEmail(email){
@@ -46,7 +47,6 @@ class userService{
         if(!deletedUser.Attributes){
             throw new UserNotFoundError();
         }
-        console.log(deletedUser.Attributes);
         return deletedUser.Attributes;
     }
 
