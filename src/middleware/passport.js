@@ -27,7 +27,6 @@ function initialize(passport, findUserByEmail){
     authenticateUser))
     passport.serializeUser((user, done) => done(null,user.Email))
     passport.deserializeUser(async (email, done) =>{ 
-        //const user = await findUserByEmail(email);
         return done(null, await findUserByEmail(email));
     })
 }

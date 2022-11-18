@@ -1,7 +1,7 @@
 const express = require("express");
 const { application } = require("express");
-const passport = require("passport")
-const session = require("express-session")
+const passport = require("passport");
+const session = require("express-session");
 const { check, validationResult } = require("express-validator");
 
 
@@ -13,6 +13,7 @@ const loginSchema = require('../schemas/loginSchema');
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
 const handleError = require("../middleware/errorHandler");
+const userLoginAuthentication = require("../middleware/userLoginAuthentication")
 
 const router = express.Router();
 
@@ -33,13 +34,14 @@ router.use(passport.initialize());
 
 router.post(`/`, userController.create);
 
-router.get(`/:email`, userController.findByEmail);
+router.get(`/:email`,userController.findByEmail);
 router.put(`/:email`, userController.updateUserInfo);
-router.delete(`/:email`, userController.deleteByEmail);
+router.delete(`/:email`,userLoginAuthentication.checkAuthenticated, userController.deleteByEmail);
 
 router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
+router.post(`/logout`,userLoginAuthentication.checkAuthenticated,userController.logOut);
 
-router.use(handleError)
+router.use(handleError);
 
 module.exports = router;

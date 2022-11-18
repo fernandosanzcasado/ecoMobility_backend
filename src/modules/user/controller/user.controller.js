@@ -1,6 +1,7 @@
 const { json } = require("body-parser");
 const userService = require("../service/user.service");
 const {check, validationResult} = require('express-validator');
+const passport = require("passport");
 
 //fitxer que s'encarrega de gestiona les request i responses dels usuaris
 class userController{
@@ -60,6 +61,15 @@ class userController{
         next(err);
        }
     }
+
+    logOut(req,res,next) {
+        req.logOut(function(err) {
+            if (err) { return next(err); }
+            res.json({message: "User logged out successfully"});
+          });    
+    }
 }
+
+
 
 module.exports = new userController();
