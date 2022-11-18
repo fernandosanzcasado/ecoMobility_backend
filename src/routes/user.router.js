@@ -34,14 +34,14 @@ router.use(passport.initialize());
 
 router.post(`/`, userController.create);
 
-router.get(`/:email`,userLoginAuthentication.checkAuthenticated,userController.findByEmail);
+router.get(`/:email`,userController.findByEmail);
 router.put(`/:email`, userController.updateUserInfo);
-router.delete(`/:email`, userController.deleteByEmail);
+router.delete(`/:email`,userLoginAuthentication.checkAuthenticated, userController.deleteByEmail);
 
 router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
 router.post(`/logout`,userLoginAuthentication.checkAuthenticated,userController.logOut);
 
-router.use(handleError)
+router.use(handleError);
 
 module.exports = router;
