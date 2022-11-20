@@ -37,7 +37,7 @@ router.post(`/`, userController.create);
 
 router.get(`/:email`,userController.findByEmail);
 router.put(`/:email`, userController.updateUserInfo);
-router.put(`/me/changePassword/`,userLoginAuthentication.checkAuthenticated,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
+router.put(`/me/updatePassword/`,userLoginAuthentication.checkAuthenticated,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
 router.delete(`/:email`,userLoginAuthentication.checkAuthenticated, userController.deleteByEmail);
 
 router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
