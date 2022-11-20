@@ -36,8 +36,13 @@ class userController{
     }
 
     async updatePassword(req,res,next){
-        await userService.updatePassword(req.user.Email,req.body.password);
-        res.json({message: "Password updated successfully"});
+        try{
+            await userService.updatePassword(req.user.Email, req.user.Password, req.body.checkOldPassword, req.body.newPassword);
+            res.json({message: "Password updated successfully"});
+        }catch(err){
+            next(err);
+        }
+        
 
     }
 

@@ -42,9 +42,15 @@ class userService{
         return updatedUser.Attributes;
     }
 
-    async updatePassword(email, newPassword){
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        return await userRepository.updatePassword(email, hashedPassword);
+    async updatePassword(email,oldPassword, checkOldPassword, newPassword){
+        console.log(oldPassword);
+        console.log(checkOldPassword);
+        if(await bcrypt.compare(checkOldPassword, oldPassword )){
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            return await userRepository.updatePassword(email, hashedPassword);
+        }else{
+            throw new IncorrectPassword();
+        }
     }
 
     async deleteByEmail(email){
