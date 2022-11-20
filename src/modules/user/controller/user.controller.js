@@ -35,6 +35,12 @@ class userController{
         }
     }
 
+    async updatePassword(req,res,next){
+        await userService.updatePassword(req.user.Email,req.body.password);
+        res.json({message: "Password updated successfully"});
+
+    }
+
     async deleteByEmail(req,res,next){
         try{
             const deletedUser = await userService.deleteByEmail(req.params.email);
@@ -69,6 +75,7 @@ class userController{
           });    
     }
 }
+
 
 
 
