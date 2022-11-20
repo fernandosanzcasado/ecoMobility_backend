@@ -9,6 +9,7 @@ const userController = require("../modules/user/controller/user.controller");
 const userService = require("../modules/user/service/user.service")
 const registerSchema = require('../schemas/registerSchema');
 const loginSchema = require('../schemas/loginSchema');
+const updatePasswordSchema = require('../schemas/updatePasswordSchema');
 
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
@@ -36,6 +37,7 @@ router.post(`/`, userController.create);
 
 router.get(`/:email`,userController.findByEmail);
 router.put(`/:email`, userController.updateUserInfo);
+router.put(`/me/updatePassword/`,userLoginAuthentication.checkAuthenticated,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
 router.delete(`/:email`,userLoginAuthentication.checkAuthenticated, userController.deleteByEmail);
 
 router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);

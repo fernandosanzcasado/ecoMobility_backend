@@ -60,6 +60,24 @@ class userRepository{
         return await db.update(params).promise();
     }
 
+    async updatePassword(email, hashedPassword){
+        const params = {
+            ExpressionAttributeNames: {
+                "#P": "Password", 
+               }, 
+               ExpressionAttributeValues: {
+                ':p' : hashedPassword,
+              }, 
+               Key: {
+                Email: email
+               }, 
+               TableName: this.tableName, 
+               UpdateExpression: "SET #P = :p",
+        };
+        return await db.update(params).promise();
+
+    }
+
     async deleteUserByEmail(email){
         const params = {
             TableName: this.tableName,
