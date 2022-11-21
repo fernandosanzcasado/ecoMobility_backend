@@ -39,6 +39,18 @@ class estacionesRepository {
     return await db.scan(params).promise();
   }
 
+  async filterByPotencia(p) {
+    const params = {
+      TableName: this.tableName,
+      FilterExpression: "#p <= :potencia",
+      ExpressionAttributeNames: { "#p": "potencia" },
+      ExpressionAttributeValues: {
+        ":potencia": p,
+      },
+    };
+    return await db.scan(params).promise();
+  }
+
   async findById(estacionID) {
     const params = {
       TableName: this.tableName,

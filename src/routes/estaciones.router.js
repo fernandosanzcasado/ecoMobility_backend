@@ -9,6 +9,8 @@ router.get(`/coordenadas`, estacionesController.getTableCoord);
 
 router.get(`/direccion`, estacionesController.getTableDir);
 
+router.get(`/:potencia`, estacionesController.filterByPotencia);
+
 router.get(`/:Id`, estacionesController.findById);
 
 router.get(`/:Id/coordenadas`, estacionesController.getCoordById);

@@ -20,6 +20,11 @@ class estacionesService {
     return data.Items;
   }
 
+  async filterByPotencia(p) {
+    const data = await estacionesRepository.filterByPotencia(p);
+    return data.Items;
+  }
+
   async findById(estacionId) {
     const data = await estacionesRepository.findById(estacionId);
     if (!data.Item) {

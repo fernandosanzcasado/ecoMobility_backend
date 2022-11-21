@@ -17,6 +17,11 @@ class estacionesController {
     res.json(data);
   }
 
+  async filterByPotencia(req, res) {
+    const data = await estacionesService.filterByPotencia(req.params.p);
+    res.json(data);
+  }
+
   async findById(req, res) {
     try {
       const data = await estacionesService.findById(req.params.Id);

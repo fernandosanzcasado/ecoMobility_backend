@@ -227,6 +227,161 @@ paths:
                 example:
                   $ref: "#/components/examples/204"
 
+  /estaciones/{potencia}:
+    get:
+      tags:
+        - Estaciones
+      summary: Obtener todas las estaciones que tengas hasta un máximo de potencia
+      description: Obtener todas las estaciones cuyo atributo "potencia" sea menor a un valor específico.
+      operationId: filterByPotencia
+      parameters:
+        - name: potencia
+          in: path
+          description: valor máximo de potencia que pueden tener las estaciones obtenidas.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estacion"
+        204:
+          description: "No content"
+          content:
+            application/json:
+              examples:
+                example:
+                  $ref: "#/components/examples/204"
+
+    /estaciones/{vehiculo}:
+      get:
+        tags:
+          - Estaciones
+        summary: Obtener todas las estaciones compatibles con un vehículo
+        description: Obtener todas las estaciones cuyo atributo "tipoVehiculo" incluya un vehículo especificado.
+        operationId: filterByVehiculo
+        parameters:
+          - name: vehiculo
+            in: path
+            description: valor que ha de estar presente en el atributo "tipoVehiculo" de las estaciones obtenidas.
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Estacion"
+          204:
+            description: "No content"
+            content:
+              application/json:
+                examples:
+                  example:
+                    $ref: "#/components/examples/204"
+
+    /estaciones/{velocidad}:
+      get:
+        tags:
+          - Estaciones
+        summary: Obtener todas las estaciones que tengan una velocidad de carga mínima
+        description: Obtener todas las estaciones cuyo atributo "tipoVelocidad" sea mayor o igual al valor especificado.
+        operationId: filterByVelocidad
+        parameters:
+          - name: valocidad
+            in: path
+            description: valor que ha de ser mayor al atributo "tipoVelocidad" de las estaciones obtenidas.
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Estacion"
+          204:
+            description: "No content"
+            content:
+              application/json:
+                examples:
+                  example:
+                    $ref: "#/components/examples/204"
+
+    /estaciones/{corriente}:
+      get:
+        tags:
+          - Estaciones
+        summary: Obtener todas las estaciones compatibles con un tipo de corriente de carga
+        description: Obtener todas las estaciones cuyo atributo "tipoCorriente" incluya el tipo de corriente especificada.
+        operationId: filterByCorriente
+        parameters:
+          - name: corriente
+            in: path
+            description: valor que ha de estar presente en el atributo "tipoCorriente" de las estaciones obtenidas.
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Estacion"
+          204:
+            description: "No content"
+            content:
+              application/json:
+                examples:
+                  example:
+                    $ref: "#/components/examples/204"
+
+    /estaciones/{conexion}:
+      get:
+        tags:
+          - Estaciones
+        summary: Obtener todas las estaciones compatibles con un tipo de conexión
+        description: Obtener todas las estaciones cuyo atributo "tipoConexion" incluya el tipo de conexión especificada.
+        operationId: filterByConexion
+        parameters:
+          - name: conexion.
+            in: path
+            description: valor que ha de estar presente en el atributo "tipoConexion" de las estaciones obtenidas.
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Estacion"
+          204:
+            description: "No content"
+            content:
+              application/json:
+                examples:
+                  example:
+                    $ref: "#/components/examples/204"
+
   /estaciones/{id}:
     get:
       tags:
@@ -250,13 +405,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Estacion"
-        204:
-          description: "No content"
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/204"
         400:
           description: Bad request
           content:
@@ -571,7 +719,7 @@ components:
           format: int64
           example: 3
         potencia:
-          type: string
+          type: integer
           example: "22"
         promotor:
           type: string
