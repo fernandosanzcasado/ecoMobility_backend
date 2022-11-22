@@ -10,6 +10,7 @@ const userService = require("../modules/user/service/user.service")
 const registerSchema = require('../schemas/registerSchema');
 const loginSchema = require('../schemas/loginSchema');
 const updatePasswordSchema = require('../schemas/updatePasswordSchema');
+const updateUserInfoSchema = require('../schemas/updateUserInfoSchema');
 
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
@@ -37,11 +38,15 @@ router.post(`/`, userController.create);
 
 router.get(`/:email`,userController.findByEmail);
 router.put(`/:email`, userController.updateUserInfo);
-router.put(`/me/updatePassword/`,userLoginAuthentication.checkAuthenticated,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
 router.delete(`/:email`,userLoginAuthentication.checkAuthenticated, userController.deleteByEmail);
 
-router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
+router.put(`/me/updatePassword/`,userLoginAuthentication.checkAuthenticated,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
+router.put(`/me/updateInfo/`, userLoginAuthentication.checkAuthenticated, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
+router.delete(`/me/deleteUser/`, userLoginAuthentication.checkAuthenticated, userController.deleteUser);
+router.get(`/me/getInfo/`, userLoginAuthentication.checkAuthenticated, userController.getInfo);
+
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
+router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/logout`,userLoginAuthentication.checkAuthenticated,userController.logOut);
 
 router.use(handleError);

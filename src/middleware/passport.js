@@ -11,7 +11,7 @@ function initialize(passport, findUserByEmail){
             const user = await findUserByEmail(email);
 
             try{
-                if(await bcrpyt.compare(password, user.Password)){
+                if(await bcrpyt.compare(password, user.password)){
                     return done(null, user)
                 }else{
                     return done(new IncorrectPassword(), false)
@@ -25,7 +25,7 @@ function initialize(passport, findUserByEmail){
     }
     passport.use(new LocalStrategy({usernameField: 'email'}, 
     authenticateUser))
-    passport.serializeUser((user, done) => done(null,user.Email))
+    passport.serializeUser((user, done) => done(null,user.email))
     passport.deserializeUser(async (email, done) =>{ 
         return done(null, await findUserByEmail(email));
     })

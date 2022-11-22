@@ -43,14 +43,21 @@ class userService{
     }
 
     async updatePassword(email,oldPassword, checkOldPassword, newPassword){
-        console.log(oldPassword);
-        console.log(checkOldPassword);
         if(await bcrypt.compare(checkOldPassword, oldPassword )){
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             return await userRepository.updatePassword(email, hashedPassword);
         }else{
             throw new IncorrectPassword();
         }
+    }
+
+    async updateInfo(email, info){
+        return await userRepository.updateUserInfo(email,info);
+    }
+
+    async deleteUser(email){
+        return await userRepository.deleteUserByEmail(email);
+
     }
 
     async deleteByEmail(email){
@@ -69,7 +76,7 @@ class userService{
         
         if(!user.Item){
            throw new UserNotFoundError();
-        }else if(user.Item.Password !== data.password){
+        }else if(user.Item.password !== data.password){
             throw new IncorrectPassword();
         }else{
         return user;
