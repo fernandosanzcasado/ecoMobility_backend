@@ -99,6 +99,15 @@ class estacionesRepository {
     };
     return await db.delete(params).promise();
   }
+
+  async prueba(estacion) {
+    const params = {
+      TableName: this.tableName,
+      Item: estacion,
+    };
+    await db.put(params).promise();
+    return estacion;
+  }
 }
 
 module.exports = new estacionesRepository();

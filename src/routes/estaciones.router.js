@@ -9,6 +9,8 @@ router.get(`/coordenadas`, estacionesController.getTableCoord);
 
 router.get(`/direccion`, estacionesController.getTableDir);
 
+router.get("/bicing", estacionesController.bicing);
+
 router.get(`/:Id`, estacionesController.findById);
 
 router.get(`/:Id/coordenadas`, estacionesController.getCoordById);
@@ -20,5 +22,7 @@ router.post(`/`, estacionesController.create);
 router.delete(`/:Id`, estacionesController.deleteByID);
 
 router.put(`/:Id`, estacionesController.update);
+
+router.get(`/atributs`, estacionesController.contratributs);
 
 module.exports = router;

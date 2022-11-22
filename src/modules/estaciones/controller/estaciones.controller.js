@@ -70,6 +70,28 @@ class estacionesController {
       res.json(err);
     }
   }
+
+  async contratributs(req, res) {
+    await estacionesService.canviatributs();
+  }
+
+  async bicing() {
+    let ret;
+    await estacionesService.bicing().then((data) => (ret = data.message));
+  }
+
+  async bicing(req, res) {
+    try {
+      const url =
+        "https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/station_information";
+      const data = await estacionesService.bicing(url);
+      console.log("CONTROLLER ####################################");
+      // console.log(data);
+      res.json(data);
+    } catch (err) {
+      res.json(err);
+    }
+  }
 }
 
 module.exports = new estacionesController();
