@@ -1,3 +1,5 @@
+
+  
 openapi: 3.0.1
 
 info:
@@ -51,8 +53,6 @@ tags:
           explode: false
           schema:
             type: string
-   
- 
 
       responses:
         201:
@@ -119,36 +119,6 @@ tags:
                 example:
                   $ref: "#/components/examples/204"
 
-  /users/{ID}:
-    get:
-      tags:
-        - Users
-      summary: Obtener un usuario concreto
-      description: Obtener todos los atributos de un usuario especificado en el path.
-      operationId: getUsuario
-      parameters:
-        - name: ID
-          in: path
-          description: Identificador de el usuario que queremos consultar
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
-        204:
-          description: "No content"
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/204"
         400:
           description: Bad request
           content:
@@ -163,6 +133,7 @@ tags:
               examples:
                 example:
                   $ref: "#/components/examples/404"
+
     put:
       tags:
         - Users
@@ -248,7 +219,7 @@ tags:
                 example:
                   $ref: "#/components/examples/404"
 
-  /users/{ID}/nombre:
+  /users/login:
     get:
       tags:
         - User
@@ -293,7 +264,7 @@ tags:
                 example:
                   $ref: "#/components/examples/404"
 
-  /users/{ID}/Ultima_conexion:
+  /users/register:
     get:
       tags:
         - Users
@@ -337,22 +308,6 @@ tags:
               examples:
                 example:
                   $ref: "#/components/examples/404"
-
-components:
-  schemas:
-    User:
-      type: object
-      properties:
-        ID:
-          type: string
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        ADREÇA:
-          type: string
-          example: "Avinguda Meridiana, 66"
-        CODIPROV:
-          type: string
-          example: "08"
-
 
 components:
   schemas:
