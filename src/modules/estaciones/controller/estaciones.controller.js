@@ -92,6 +92,32 @@ class estacionesController {
       res.json(err);
     }
   }
+
+  async bicing_segundo(req, res) {
+    try {
+      const url_segundo =
+        "https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/station_status/";
+      const data = await estacionesService.bicing_segundo(url_segundo);
+      console.log("CONTROLLER ##########SEGUNDOOOOO##########################");
+      // console.log(data);
+      res.json(data);
+    } catch (err) {
+      res.json(err);
+    }
+  }
+
+  async bicing_tercero(req, res) {
+    try {
+      const url_tercero =
+        "https://api.bsmsa.eu/ext/api/bsm/chargepoints/states";
+      const data = await estacionesService.bicing_tercero(url_tercero);
+      console.log("CONTROLLER ###########TERCEROOOOO#########################");
+      // console.log(data);
+      res.json(data);
+    } catch (err) {
+      res.json(err);
+    }
+  }
 }
 
 module.exports = new estacionesController();

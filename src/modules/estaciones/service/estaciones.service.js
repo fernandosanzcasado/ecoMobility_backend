@@ -115,6 +115,15 @@ class estacionesService {
     let data = await axios(url);
     return data.data.data.stations;
   }
+
+  async bicing_segundo(url_segundo) {
+    let data_segundo = await axios(url_segundo);
+    return data_segundo.data.data.stations;
+  }
+  async bicing_tercero(url_tercero) {
+    let data_tercero = await axios(url_tercero);
+    return data_tercero.data.data.stations;
+  }
 }
 
 module.exports = new estacionesService();

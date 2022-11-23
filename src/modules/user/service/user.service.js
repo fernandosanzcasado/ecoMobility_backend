@@ -74,23 +74,22 @@ class userService {
     return newUser;
   }
 
-  async canviatrbutsUser() {
-    Object.entries(data).forEach(([key, value]) => {
-      estacion.Item[key] = value;
-      const keys = Object.keys(data);
-      Object.keys(data).forEach((key) => {
-        if (key == "Is_superuser") newKey = isSuperuser;
-        if (key == "Date_joined") newKey = dateJoined;
-        if (key == "Password") newKey = password;
-        if (key == "Surnames") newKey = surnames;
-        if (key == "Email") newKey = email;
-        if (key == "Name") newKey = name;
-        // renameKey ( Object, key, newKey );
-        Object[newKey] = Object[oldKey];
-        delete Object[oldKey];
-      });
-    });
-  }
+  // async canviatrbutsUser() {
+  //   const data = await userRepository.scanTable(); //CAL CREARLO Crec
+  //   data.forEach((item) => {
+  //     for (let key in item) {
+  //       if (key == "Is_superuser") newKey = isSuperuser;
+  //       if (key == "Date_joined") newKey = dateJoined;
+  //       if (key == "Password") newKey = password;
+  //       if (key == "Surnames") newKey = surnames;
+  //       if (key == "Email") newKey = email;
+  //       if (key == "Name") newKey = name;
+  //       // renameKey ( Object, key, newKey );
+  //       Object[newKey] = Object[oldKey];
+  //       delete Object[oldKey];
+  //     }
+  //   });
+  // }
 }
 
 module.exports = new userService();
