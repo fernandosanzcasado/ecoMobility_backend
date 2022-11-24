@@ -9,18 +9,16 @@ router.get(`/coordenadas`, estacionesController.getTableCoord);
 
 router.get(`/direccion`, estacionesController.getTableDir);
 
-router.get(`/:potencia`, estacionesController.filterByPotencia);
+router.get(`/id/:Id`, estacionesController.findById);
 
-router.get(`/:Id`, estacionesController.findById);
+router.get(`/id/:Id/coordenadas`, estacionesController.getCoordById);
 
-router.get(`/:Id/coordenadas`, estacionesController.getCoordById);
-
-router.get(`/:Id/direccion`, estacionesController.getDirById);
+router.get(`/id/:Id/direccion`, estacionesController.getDirById);
 
 router.post(`/`, estacionesController.create);
 
-router.delete(`/:Id`, estacionesController.deleteByID);
+router.delete(`/id/:Id`, estacionesController.deleteByID);
 
-router.put(`/:Id`, estacionesController.update);
+router.put(`/id/:Id`, estacionesController.update);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const estacionesService = require("../service/estaciones.service");
 //fitxer que s'encarrega de gestiona les request i responses dels usuaris
 class estacionesController {
   async scanTable(req, res) {
-    const data = await estacionesService.scanTable();
+    const data = await estacionesService.scanTable(req.query);
     res.json(data);
   }
 
@@ -14,11 +14,6 @@ class estacionesController {
 
   async getTableDir(req, res) {
     const data = await estacionesService.getTableDir();
-    res.json(data);
-  }
-
-  async filterByPotencia(req, res) {
-    const data = await estacionesService.filterByPotencia(req.params.p);
     res.json(data);
   }
 

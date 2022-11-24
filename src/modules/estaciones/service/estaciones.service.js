@@ -1,13 +1,35 @@
 const estacionesRepository = require("../repository/estaciones.repository");
+const dist = require("./distancia");
 const EstacionNotFoundError = require("../../../errors/estaciones.errors/estacionNotFound");
 
 const { v4: uuidv4 } = require("uuid");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class estacionesService {
-  async scanTable() {
+  async scanTable(req) {
     const data = await estacionesRepository.scanTable();
-    return data.Items;
+    data = data.Items;
+    if (Object.keys(data.Items).length == 0) {
+      throw new EstacionNotFoundError();
+    } else {
+      for (var param in req) {
+        if (param == "potencia") {
+          data = data.filter((d) => d.potencia <= req[param]);
+        } else if (param == "tipoConexion") {
+          data = data.filter((d) => d.tipoConexion == req[param]);
+        } else if (param == "tipoCorriente") {
+          data = data.filter((d) => d.tipoCorriente == req[param]);
+        } else if (param == "tipoVehiculo") {
+          data = data.filter((d) => d.tipoVehiculo == req[param]);
+        } else if (param == "distancia") {
+          data = data.filter(
+            (d) =>
+              dist.distance(d.latitud, d.longitud, "USER POS") == req[param]
+          );
+        }
+      }
+    }
+    return data;
   }
 
   async getTableCoord() {
@@ -17,11 +39,6 @@ class estacionesService {
 
   async getTableDir() {
     const data = await estacionesRepository.getTableDir();
-    return data.Items;
-  }
-
-  async filterByPotencia(p) {
-    const data = await estacionesRepository.filterByPotencia(p);
     return data.Items;
   }
 

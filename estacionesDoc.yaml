@@ -720,7 +720,8 @@ components:
           example: 3
         potencia:
           type: integer
-          example: "22"
+          format: int64
+          example: 22
         promotor:
           type: string
           example: "Generalitat de Catalunya"
