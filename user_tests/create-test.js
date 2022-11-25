@@ -1,5 +1,5 @@
-const userService = require("../../modules/estaciones/service/user.service");
-const userRepository = require("../modules/user/repository/user.repository");
+const userService = require("../../modules/user/service/user.service");
+const userRepository = require("../../modules/user/repository/user.repository");
 
 const mockResponse = {
   Item: {
