@@ -20,9 +20,72 @@ paths:
     get:
       tags:
         - Estaciones
-      summary: Obtener todas las estaciones
-      description: Obtener todas las estaciones de la DB con todos sus atributos.
+      summary: Obtener todas las estaciones con filtros.
+      description: Obtener todas las estaciones de la DB que cumplan con todos los requisitos (si están declarados) con todos sus atributos.
       operationId: getAllEstaciones
+      parameters:
+        - name: tipoCorriente
+          in: query
+          description: Tipo de corriente que han de tener las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: string
+            enum:
+              - AC
+              - DC
+              - AC-DC
+        - name: tipoVelocidad
+          in: query
+          description: Tipo de velocidad de carga que han de tener las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: string
+            enum:
+              - RAPID
+              - semiRAPID
+              - NORMAL
+              - RAPID
+              - RAPID i NORMAL
+              - RAPID i semiRAPID
+              - semiRAPID i NORMAL
+              - superRAPID
+        - name: tipoVehiculo
+          in: query
+          description: Tipo de vehicullo que ha de ser compatible con las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: string
+            enum:
+              - mercaderies
+              - cotxe
+              - moto
+              - moto i cotxe
+              - taxi
+        - name: tipoConexion
+          in: query
+          description: Tipo de conexión que han de tener las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: string
+        - name: potencia
+          in: query
+          description: Potencia mínima en kw que han de tener las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: integer
+        - name: distancia
+          in: query
+          description: Distancia en km máxima a la qu pueden estar las estaciones de carga del usuario.
+          required: false
+          explode: false
+          schema:
+            type: integer
+
       responses:
         200:
           description: Successful operation
@@ -39,6 +102,15 @@ paths:
               examples:
                 example:
                   $ref: "#/components/examples/204"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                example-1:
+                  $ref: "#/components/examples/400atributos"
+                example-2:
+                  $ref: "#/components/examples/400value"
     post:
       tags:
         - Estaciones
@@ -176,8 +248,10 @@ paths:
           content:
             application/json:
               examples:
-                example:
-                  $ref: "#/components/examples/400"
+                example-1:
+                  $ref: "#/components/examples/400atributos"
+                example-2:
+                  $ref: "#/components/examples/400value"
 
   /estaciones/direccion:
     get:
@@ -227,161 +301,6 @@ paths:
                 example:
                   $ref: "#/components/examples/204"
 
-  /estaciones/{potencia}:
-    get:
-      tags:
-        - Estaciones
-      summary: Obtener todas las estaciones que tengas hasta un máximo de potencia
-      description: Obtener todas las estaciones cuyo atributo "potencia" sea menor a un valor específico.
-      operationId: filterByPotencia
-      parameters:
-        - name: potencia
-          in: path
-          description: valor máximo de potencia que pueden tener las estaciones obtenidas.
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Estacion"
-        204:
-          description: "No content"
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/204"
-
-    /estaciones/{vehiculo}:
-      get:
-        tags:
-          - Estaciones
-        summary: Obtener todas las estaciones compatibles con un vehículo
-        description: Obtener todas las estaciones cuyo atributo "tipoVehiculo" incluya un vehículo especificado.
-        operationId: filterByVehiculo
-        parameters:
-          - name: vehiculo
-            in: path
-            description: valor que ha de estar presente en el atributo "tipoVehiculo" de las estaciones obtenidas.
-            required: true
-            schema:
-              type: string
-        responses:
-          200:
-            description: Successful operation
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/Estacion"
-          204:
-            description: "No content"
-            content:
-              application/json:
-                examples:
-                  example:
-                    $ref: "#/components/examples/204"
-
-    /estaciones/{velocidad}:
-      get:
-        tags:
-          - Estaciones
-        summary: Obtener todas las estaciones que tengan una velocidad de carga mínima
-        description: Obtener todas las estaciones cuyo atributo "tipoVelocidad" sea mayor o igual al valor especificado.
-        operationId: filterByVelocidad
-        parameters:
-          - name: valocidad
-            in: path
-            description: valor que ha de ser mayor al atributo "tipoVelocidad" de las estaciones obtenidas.
-            required: true
-            schema:
-              type: string
-        responses:
-          200:
-            description: Successful operation
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/Estacion"
-          204:
-            description: "No content"
-            content:
-              application/json:
-                examples:
-                  example:
-                    $ref: "#/components/examples/204"
-
-    /estaciones/{corriente}:
-      get:
-        tags:
-          - Estaciones
-        summary: Obtener todas las estaciones compatibles con un tipo de corriente de carga
-        description: Obtener todas las estaciones cuyo atributo "tipoCorriente" incluya el tipo de corriente especificada.
-        operationId: filterByCorriente
-        parameters:
-          - name: corriente
-            in: path
-            description: valor que ha de estar presente en el atributo "tipoCorriente" de las estaciones obtenidas.
-            required: true
-            schema:
-              type: string
-        responses:
-          200:
-            description: Successful operation
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/Estacion"
-          204:
-            description: "No content"
-            content:
-              application/json:
-                examples:
-                  example:
-                    $ref: "#/components/examples/204"
-
-    /estaciones/{conexion}:
-      get:
-        tags:
-          - Estaciones
-        summary: Obtener todas las estaciones compatibles con un tipo de conexión
-        description: Obtener todas las estaciones cuyo atributo "tipoConexion" incluya el tipo de conexión especificada.
-        operationId: filterByConexion
-        parameters:
-          - name: conexion.
-            in: path
-            description: valor que ha de estar presente en el atributo "tipoConexion" de las estaciones obtenidas.
-            required: true
-            schema:
-              type: string
-        responses:
-          200:
-            description: Successful operation
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/Estacion"
-          204:
-            description: "No content"
-            content:
-              application/json:
-                examples:
-                  example:
-                    $ref: "#/components/examples/204"
-
   /estaciones/{id}:
     get:
       tags:
@@ -411,7 +330,7 @@ paths:
             application/json:
               examples:
                 example:
-                  $ref: "#/components/examples/400"
+                  $ref: "#/components/examples/400value"
         404:
           description: Not found
           content:
@@ -490,7 +409,7 @@ paths:
               - AC
               - DC
               - AC-DC
-        - name: TipoVelocidad
+        - name: tipoVelocidad
           in: query
           description: Tipo de velocidad de carga de la que dispondrá la estación de carga actualizada.
           required: false
@@ -506,7 +425,7 @@ paths:
               - RAPID i semiRAPID
               - semiRAPID i NORMAL
               - superRAPID
-        - name: TipoVehiculo
+        - name: tipoVehiculo
           in: query
           description: Tipos de vehiculos que podrán cargarse en la estación de carga actualizada.
           required: false
@@ -562,8 +481,10 @@ paths:
           content:
             application/json:
               examples:
-                example:
-                  $ref: "#/components/examples/400"
+                example-1:
+                  $ref: "#/components/examples/400atributos"
+                example-2:
+                  $ref: "#/components/examples/400value"
         404:
           description: Bad request
           content:
@@ -631,13 +552,6 @@ paths:
               examples:
                 example:
                   $ref: "#/components/examples/204"
-        400:
-          description: Bad request
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/400"
         404:
           description: Not found
           content:
@@ -676,13 +590,6 @@ paths:
               examples:
                 example:
                   $ref: "#/components/examples/204"
-        400:
-          description: Bad request
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/400"
         404:
           description: Not found
           content:
@@ -804,11 +711,16 @@ components:
         status: 200
         error: "Successful operation"
         message: "Successful delete"
-    400:
+    400atributos:
       value:
         status: 400
         error: "Bad request"
         message: "Missing attributes"
+    400value:
+      value:
+        status: 400
+        error: "Bad request"
+        message: "Invalid value"
     404:
       value:
         status: 404

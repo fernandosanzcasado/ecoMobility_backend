@@ -7,9 +7,9 @@ const { v4: uuidv4 } = require("uuid");
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class estacionesService {
   async scanTable(req) {
-    const data = await estacionesRepository.scanTable();
+    var data = await estacionesRepository.scanTable();
     data = data.Items;
-    if (Object.keys(data.Items).length == 0) {
+    if (Object.keys(data).length == 0) {
       throw new EstacionNotFoundError();
     } else {
       for (var param in req) {
@@ -21,12 +21,15 @@ class estacionesService {
           data = data.filter((d) => d.tipoCorriente == req[param]);
         } else if (param == "tipoVehiculo") {
           data = data.filter((d) => d.tipoVehiculo == req[param]);
-        } else if (param == "distancia") {
-          data = data.filter(
-            (d) =>
-              dist.distance(d.latitud, d.longitud, "USER POS") == req[param]
-          );
+        } else if (param == "tipoVelocidad") {
+          data = data.filter((d) => d.tipoVelocidad == req[param]);
         }
+        // } else if (param == "distancia") {
+        //   data = data.filter(
+        //     (d) =>
+        //       dist.distance(d.latitud, d.longitud, "USER POS") == req[param]
+        //   );
+        // }
       }
     }
     return data;
