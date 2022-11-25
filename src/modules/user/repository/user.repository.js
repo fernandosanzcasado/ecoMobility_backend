@@ -41,8 +41,6 @@ class userRepository{
 
 
     async updateUserInfo(email,data){
-        console.log(data.name);
-        
         const params = {
             ExpressionAttributeNames: {
                 "#UN": "Name", 
@@ -56,9 +54,8 @@ class userRepository{
                 Email: email
                }, 
                TableName: this.tableName, 
-               UpdateExpression: "SET #UN = :n, #US = :s" ,
-               ReturnValues: "ALL_NEW"
-
+               UpdateExpression: "SET #UN = :n, #US = :s",
+               ReturnValues: "ALL_NEW", 
         };
         return await db.update(params).promise();
     }
@@ -69,7 +66,7 @@ class userRepository{
             Key: {
                 Email : email
             },
-            ReturnValues: "ALL_OLD"
+            ReturnValues: "ALL_OLD",
         };
         return await db.delete(params).promise();
     }
