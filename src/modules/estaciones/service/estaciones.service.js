@@ -1,35 +1,35 @@
 const estacionesRepository = require("../repository/estaciones.repository");
-const dist = require("./distancia");
 const EstacionNotFoundError = require("../../../errors/estaciones.errors/estacionNotFound");
 
 const { v4: uuidv4 } = require("uuid");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class estacionesService {
-  async scanTable(req) {
+  async scanTable(query, body) {
     var data = await estacionesRepository.scanTable();
     data = data.Items;
     if (Object.keys(data).length == 0) {
       throw new EstacionNotFoundError();
     } else {
-      for (var param in req) {
+      for (var param in query) {
         if (param == "potencia") {
-          data = data.filter((d) => d.potencia <= req[param]);
+          data = data.filter((d) => d.potencia <= query[param]);
         } else if (param == "tipoConexion") {
-          data = data.filter((d) => d.tipoConexion == req[param]);
+          data = data.filter((d) => d.tipoConexion == query[param]);
         } else if (param == "tipoCorriente") {
-          data = data.filter((d) => d.tipoCorriente == req[param]);
+          data = data.filter((d) => d.tipoCorriente == query[param]);
         } else if (param == "tipoVehiculo") {
-          data = data.filter((d) => d.tipoVehiculo == req[param]);
+          data = data.filter((d) => d.tipoVehiculo == query[param]);
         } else if (param == "tipoVelocidad") {
-          data = data.filter((d) => d.tipoVelocidad == req[param]);
+          data = data.filter((d) => d.tipoVelocidad == query[param]);
+        } else if (param == "distancia") {
+          console.log(query[param]);
+          data = data.filter(
+            (d) =>
+              distance(d.latitud, d.longitud, body.latitud, body.longitud) <=
+              query[param]
+          );
         }
-        // } else if (param == "distancia") {
-        //   data = data.filter(
-        //     (d) =>
-        //       dist.distance(d.latitud, d.longitud, "USER POS") == req[param]
-        //   );
-        // }
       }
     }
     return data;
@@ -93,6 +93,29 @@ class estacionesService {
     if (!data.Attributes) {
       throw new EstacionNotFoundError();
     } else return data.Attributes;
+  }
+}
+
+function distance(lat1, lon1, lat2, lon2) {
+  if (lat1 == lat2 && lon1 == lon2) {
+    return 0;
+  } else {
+    var radlat1 = (Math.PI * lat1) / 180;
+    var radlat2 = (Math.PI * lat2) / 180;
+    var theta = lon1 - lon2;
+    var radtheta = (Math.PI * theta) / 180;
+    var dist =
+      Math.sin(radlat1) * Math.sin(radlat2) +
+      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    if (dist > 1) {
+      dist = 1;
+    }
+    dist = Math.acos(dist);
+    dist = (dist * 180) / Math.PI;
+    dist = dist * 60 * 1.1515;
+    dist = dist * 1.609344;
+    console.log(dist);
+    return dist;
   }
 }
 
