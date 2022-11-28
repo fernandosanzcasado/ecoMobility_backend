@@ -3,8 +3,12 @@ const userRepository = require("../../modules/user/repository/user.repository");
 
 const mockResponse = {
   Item: {
-    ID: "Hola",
-    ADREÇA: "C/Jordi Girona, 1-3",
+    email: "test@test.com",
+      name: "Test",
+      surnames: "Tests",
+      password: "test1234",
+      isSuperuser: false,
+      dateJoined: 1669127051506,
   },
 };
 
@@ -15,10 +19,10 @@ afterEach(() => {
   jest.spyOn(userRepository, "deleteUserByEmail").mockRestore();
 });
 
-describe("deletebyEmail Tests!", () => {
+describe("deleteUser Tests!", () => {
   test("Crida a la funció deleteUserByEmail de Rep ", () => {
-    userService.deleteByEmail();
+    userService.deleteUser();
     expect(userRepository.deleteUserByEmail()).toHaveBeenCalled();
   });
 });
-deleteUserByEmail - test.js;
+deleteUser - test.js;

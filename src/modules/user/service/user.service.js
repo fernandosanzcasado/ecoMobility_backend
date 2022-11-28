@@ -45,8 +45,25 @@ class userService {
     return deletedUser.Attributes;
   }
 
-  async loginUser(data) {
-    const user = await userRepository.findByEmail(data.email);
+
+    async updatePassword(email,oldPassword, checkOldPassword, newPassword){
+        if(await bcrypt.compare(checkOldPassword, oldPassword )){
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            return await userRepository.updatePassword(email, hashedPassword);
+        }else{
+            throw new IncorrectPassword();
+        }
+    }
+
+    async updateInfo(email, info){
+        return await userRepository.updateUserInfo(email,info);
+    }
+
+    async deleteUser(email){
+        return await userRepository.deleteUserByEmail(email);
+    }
+
+    async deleteByEmail(email){
 
     if (!user.Item) {
       throw new UserNotFoundError();
@@ -57,10 +74,18 @@ class userService {
     }
   }
 
-  async registerUser(data) {
-    const userInDB = await userRepository.findByEmail(data.email);
-    if (userInDB.Item) {
-      throw new UserAlreadyExists();
+
+
+    async  loginUser(data){
+        const user = await userRepository.findByEmail(data.email);
+        
+        if(!user.Item){
+           throw new UserNotFoundError();
+        }else if(user.Item.password !== data.password){
+            throw new IncorrectPassword();
+        }else{
+        return user;
+        } 
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);

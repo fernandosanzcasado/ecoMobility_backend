@@ -35,10 +35,47 @@ class userController{
         }
     }
 
+    async updatePassword(req,res,next){
+        try{
+            await userService.updatePassword(req.user.email, req.user.password, req.body.checkOldPassword, req.body.newPassword);
+            res.json({message: "Password updated successfully."});
+        }catch(err){
+            next(err);
+        }
+        
+
+    }
+
+    async updateInfo(req,res,next){
+        try{
+            await userService.updateInfo(req.user.email, req.body);
+            res.json({message: "User fields updated successfully."});
+        }catch(err){
+            next(err);
+        }
+    }
+
+    async deleteUser(req,res,next){
+        try{
+            await userService.deleteUser(req.user.email);
+            req.logOut(function(err) {
+                if (err) { return next(err); }
+              });
+            res.json({message: "User deleted successfully"});
+        }catch(err){
+            next(err);
+        }
+    }
+
+    async getInfo(req,res,next){
+            res.json({ email: req.user.email, name: req.user.name, surnames: req.user.surnames});
+    }
+    
+
     async deleteByEmail(req,res,next){
         try{
             const deletedUser = await userService.deleteByEmail(req.params.email);
-            res.json({message: 'User ' + deletedUser.Email +  ' deleted successfully'});
+            res.json({message: "User " + deletedUser.email +  " deleted successfully."});
         }catch(err){
             next(err);
         }    
@@ -65,10 +102,11 @@ class userController{
     logOut(req,res,next) {
         req.logOut(function(err) {
             if (err) { return next(err); }
-            res.json({message: "User logged out successfully"});
+            res.json({message: "User logged out successfully."});
           });    
     }
 }
+
 
 
 

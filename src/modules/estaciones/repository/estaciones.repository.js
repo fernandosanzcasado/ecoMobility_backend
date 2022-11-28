@@ -4,7 +4,7 @@ const db = require("../../../helpers/database");
 //borrar objectes o fer un get dels objectes).
 class estacionesRepository {
   constructor() {
-    this.tableName = "Estaciones_Vehiculos";
+    this.tableName = "EstacionesVehiculos";
   }
 
   async scanTable() {
@@ -17,9 +17,9 @@ class estacionesRepository {
   async getTableCoord() {
     const params = {
       ExpressionAttributeNames: {
-        "#LAT": "LATITUD",
-        "#LONG": "LONGITUD",
-        "#ID": "ID",
+        "#LAT": "latitud",
+        "#LONG": "longitud",
+        "#ID": "id",
       },
       ProjectionExpression: "#ID, #LAT, #LONG",
       TableName: this.tableName,
@@ -30,11 +30,23 @@ class estacionesRepository {
   async getTableDir() {
     const params = {
       ExpressionAttributeNames: {
-        "#DIR": "ADREÇA",
-        "#ID": "ID",
+        "#DIR": "direccion",
+        "#ID": "id",
       },
       ProjectionExpression: "#ID, #DIR",
       TableName: this.tableName,
+    };
+    return await db.scan(params).promise();
+  }
+
+  async filterByPotencia(p) {
+    const params = {
+      TableName: this.tableName,
+      FilterExpression: "#p <= :potencia",
+      ExpressionAttributeNames: { "#p": "potencia" },
+      ExpressionAttributeValues: {
+        ":potencia": p,
+      },
     };
     return await db.scan(params).promise();
   }
@@ -43,7 +55,7 @@ class estacionesRepository {
     const params = {
       TableName: this.tableName,
       Key: {
-        ID: estacionID,
+        id: estacionID,
       },
     };
     return await db.get(params).promise();
@@ -52,14 +64,14 @@ class estacionesRepository {
   async coordById(estacionID) {
     const params = {
       ExpressionAttributeNames: {
-        "#LAT": "LATITUD",
-        "#LONG": "LONGITUD",
-        "#ID": "ID",
+        "#LAT": "latitud",
+        "#LONG": "longitud",
+        "#ID": "id",
       },
       ProjectionExpression: "#ID, #LAT, #LONG",
       TableName: this.tableName,
       Key: {
-        ID: estacionID,
+        id: estacionID,
       },
     };
     return await db.get(params).promise();
@@ -68,13 +80,13 @@ class estacionesRepository {
   async dirById(estacionID) {
     const params = {
       ExpressionAttributeNames: {
-        "#DIR": "ADREÇA",
-        "#ID": "ID",
+        "#DIR": "direccion",
+        "#ID": "id",
       },
       ProjectionExpression: "#ID, #DIR",
       TableName: this.tableName,
       Key: {
-        ID: estacionID,
+        id: estacionID,
       },
     };
     return await db.get(params).promise();
@@ -93,7 +105,7 @@ class estacionesRepository {
     const params = {
       TableName: this.tableName,
       Key: {
-        ID: estacionID,
+        id: estacionID,
       },
       ReturnValues: "ALL_OLD",
     };

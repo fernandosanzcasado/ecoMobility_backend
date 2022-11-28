@@ -14,7 +14,7 @@ class userRepository{
         const params = {
             TableName: this.tableName,
             Key: {
-                Email:email,
+                email:email,
             },
         };
         return await db.get(params).promise();
@@ -25,12 +25,12 @@ class userRepository{
                 TableName: this.tableName,
                 ConditionExpression: "attribute_not_exists(Email)",
                 Item: {
-                    Email: data.email,
-                    Name: data.name,
-                    Surnames: data.surnames,
-                    Password: data.password,
-                    Date_joined: Date.now(),
-                    Is_superuser: false,
+                    email: data.email,
+                    name: data.name,
+                    surnames: data.surnames,
+                    password: data.password,
+                    dateJoined: Date.now(),
+                    isSuperuser: false,
                 },
                 
             };
@@ -43,15 +43,15 @@ class userRepository{
     async updateUserInfo(email,data){
         const params = {
             ExpressionAttributeNames: {
-                "#UN": "Name", 
-                "#US": "Surnames"
+                "#UN": "name", 
+                "#US": "surnames"
                }, 
                ExpressionAttributeValues: {
                 ':n' : data.name,
                 ':s' : data.surnames,
               }, 
                Key: {
-                Email: email
+                email: email
                }, 
                TableName: this.tableName, 
                UpdateExpression: "SET #UN = :n, #US = :s",
@@ -60,11 +60,29 @@ class userRepository{
         return await db.update(params).promise();
     }
 
+    async updatePassword(email, hashedPassword){
+        const params = {
+            ExpressionAttributeNames: {
+                "#P": "password", 
+               }, 
+               ExpressionAttributeValues: {
+                ':p' : hashedPassword,
+              }, 
+               Key: {
+                email: email
+               }, 
+               TableName: this.tableName, 
+               UpdateExpression: "SET #P = :p",
+        };
+        return await db.update(params).promise();
+
+    }
+
     async deleteUserByEmail(email){
         const params = {
             TableName: this.tableName,
             Key: {
-                Email : email
+                email : email
             },
             ReturnValues: "ALL_OLD",
         };

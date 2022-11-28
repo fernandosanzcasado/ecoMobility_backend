@@ -1,5 +1,5 @@
-const userService = require("../../modules/estaciones/service/user.service");
-const userRepository = require("../modules/user/repository/user.repository");
+const userService = require("../../modules/user/service/user.service");
+const userRepository = require("../../modules/user/repository/user.repository");
 
 const mockResponse = {
   Item: {
@@ -21,4 +21,19 @@ describe("findbyEmail", () => {
     expect(userRepository.findByEmail()).toHaveBeenCalled();
   });
 });
+
+describe("findbyEmailfunctionextended", () => {
+  test("Crida a  findBy Email", () => {
+    const input = 10;
+    const output = {
+      ID: "10",
+      ADREÇA: "P",
+    };
+    expect.assertions(1);
+    userService
+      .findByEmail(input)
+      .then((returnData) => expect(returnData).toEqual(output));
+  });
+});
+
 findByEmail - test.js;

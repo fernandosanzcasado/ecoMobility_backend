@@ -20,9 +20,72 @@ paths:
     get:
       tags:
         - Estaciones
-      summary: Obtener todas las estaciones
-      description: Obtener todas las estaciones de la DB con todos sus atributos.
+      summary: Obtener todas las estaciones con filtros.
+      description: Obtener todas las estaciones de la DB que cumplan con todos los requisitos (si están declarados) con todos sus atributos.
       operationId: getAllEstaciones
+      parameters:
+        - name: tipoCorriente
+          in: query
+          description: Tipo de corriente que han de tener las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: string
+            enum:
+              - AC
+              - DC
+              - AC-DC
+        - name: tipoVelocidad
+          in: query
+          description: Tipo de velocidad de carga que han de tener las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: string
+            enum:
+              - RAPID
+              - semiRAPID
+              - NORMAL
+              - RAPID
+              - RAPID i NORMAL
+              - RAPID i semiRAPID
+              - semiRAPID i NORMAL
+              - superRAPID
+        - name: tipoVehiculo
+          in: query
+          description: Tipo de vehicullo que ha de ser compatible con las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: string
+            enum:
+              - mercaderies
+              - cotxe
+              - moto
+              - moto i cotxe
+              - taxi
+        - name: tipoConexion
+          in: query
+          description: Tipo de conexión que han de tener las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: string
+        - name: potencia
+          in: query
+          description: Potencia mínima en kw que han de tener las estaciones de carga.
+          required: false
+          explode: false
+          schema:
+            type: integer
+        - name: distancia
+          in: query
+          description: Distancia en km máxima a la qu pueden estar las estaciones de carga del usuario.
+          required: false
+          explode: false
+          schema:
+            type: integer
+
       responses:
         200:
           description: Successful operation
@@ -39,6 +102,15 @@ paths:
               examples:
                 example:
                   $ref: "#/components/examples/204"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                example-1:
+                  $ref: "#/components/examples/400atributos"
+                example-2:
+                  $ref: "#/components/examples/400value"
     post:
       tags:
         - Estaciones
@@ -46,35 +118,35 @@ paths:
       description: Crear una nueva estación en la DB con los atributos especificados.
       operationId: postEstacion
       parameters:
-        - name: ADREÇA
+        - name: direccion
           in: query
           description: Dirección donde se encuentra la nueva estación de carga.
           required: true
           explode: false
           schema:
             type: string
-        - name: LATITUD
+        - name: latitud
           in: query
           description: Latitud donde se encuentra la nueva estación de carga.
           required: true
           explode: false
           schema:
             type: string
-        - name: LONGITUD
+        - name: longitud
           in: query
           description: Longitud donde se encuentra la nueva estación de carga.
           required: true
           explode: false
           schema:
             type: string
-        - name: MUNICIPI
+        - name: municipio
           in: query
           description: Municipio donde se encuentra la nueva estación de carga.
           required: true
           explode: false
           schema:
             type: string
-        - name: PROVINCIA
+        - name: provincia
           in: query
           description: Provincia donde se encuentra la nueva estación de carga.
           required: true
@@ -86,14 +158,14 @@ paths:
               - Tarragona
               - Lleida
               - Girona
-        - name: CODIPROV
+        - name: codiProv
           in: query
           description: Código identificador de la provincia donde se encuentra la nueva estación de carga.
           required: true
           explode: false
           schema:
             type: string
-        - name: TIPUS DE CORRENT
+        - name: tipoCorriente
           in: query
           description: Tipo de corriente de la que dispone la nueva estación de carga.
           required: false
@@ -104,7 +176,7 @@ paths:
               - AC
               - DC
               - AC-DC
-        - name: TIPUS VELOCITAT
+        - name: tipoVelocidad
           in: query
           description: Tipo de velocidad de carga de la que dispone la nueva estación de carga.
           required: false
@@ -120,7 +192,7 @@ paths:
               - RAPID i semiRAPID
               - semiRAPID i NORMAL
               - superRAPID
-        - name: TIPUS VEHICLE
+        - name: tipoVehiculo
           in: query
           description: Tipos de vehiculos que pueden cargarse en la nueva estación de carga.
           required: false
@@ -133,28 +205,28 @@ paths:
               - moto
               - moto i cotxe
               - taxi
-        - name: TIPUS CONNEXIÓ
+        - name: tipoConexion
           in: query
           description: Tipo de carga de la que dispone la nueva estación de carga.
           required: false
           explode: false
           schema:
             type: string
-        - name: PROMOTOR-GESTOR
+        - name: promotor
           in: query
           description: Entidad promotora o gestora de la nueva estación de carga.
           required: false
           explode: false
           schema:
             type: string
-        - name: POTENCIA
+        - name: potencia
           in: query
           description: Potencia en kW de la nueva estación de carga.
           required: false
           explode: false
           schema:
             type: string
-        - name: NPLACES ESTACIÓ
+        - name: nPlaces
           in: query
           description: Número de plazas de las que dispone la nueva estación de carga.
           required: false
@@ -176,15 +248,17 @@ paths:
           content:
             application/json:
               examples:
-                example:
-                  $ref: "#/components/examples/400"
+                example-1:
+                  $ref: "#/components/examples/400atributos"
+                example-2:
+                  $ref: "#/components/examples/400value"
 
   /estaciones/direccion:
     get:
       tags:
         - Estaciones
       summary: Obtener la dirección de todas las estaciones
-      description: Obtener los atributos DIRECCION y ID de todas las estaciones de la DB.
+      description: Obtener los atributos "direccion" y "id" de todas las estaciones de la DB.
       operationId: getDirAllEstaciones
       responses:
         200:
@@ -208,7 +282,7 @@ paths:
       tags:
         - Estaciones
       summary: Obtener las coordenadas de todas las estaciones
-      description: Obtener los atributos LONGITUD, LATITUD y ID de todas las estaciones de la DB.
+      description: Obtener los atributos "longitud", "latitud" y "id" de todas las estaciones de la DB.
       operationId: getCoordAllEstaciones
       responses:
         200:
@@ -227,7 +301,7 @@ paths:
                 example:
                   $ref: "#/components/examples/204"
 
-  /estaciones/{ID}:
+  /estaciones/{id}:
     get:
       tags:
         - Estaciones
@@ -235,7 +309,7 @@ paths:
       description: Obtener todos los atributos de la estacion especificada en el path.
       operationId: getEstacion
       parameters:
-        - name: ID
+        - name: id
           in: path
           description: Identificador de la estación que queremos consultar
           required: true
@@ -250,20 +324,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Estacion"
-        204:
-          description: "No content"
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/204"
         400:
           description: Bad request
           content:
             application/json:
               examples:
                 example:
-                  $ref: "#/components/examples/400"
+                  $ref: "#/components/examples/400value"
         404:
           description: Not found
           content:
@@ -278,41 +345,41 @@ paths:
       description: Actualiza la estacion definida en el path añadiendo los atributos especificados en el body.
       operationId: updateEstacion
       parameters:
-        - name: ID
+        - name: id
           in: path
           description: Identificador de la estación que queremos actualizar
           required: true
           schema:
             type: string
-        - name: ADREÇA
+        - name: direccion
           in: query
           description: Dirección donde se encontrará la estación de carga actualizada.
           required: false
           explode: false
           schema:
             type: string
-        - name: LATITUD
+        - name: latitud
           in: query
           description: Latitud donde se encontrará la estación de carga actualizada.
           required: false
           explode: false
           schema:
             type: string
-        - name: LONGITUD
+        - name: longitud
           in: query
           description: Longitud donde se encontrará la estación de carga actualizada.
           required: false
           explode: false
           schema:
             type: string
-        - name: MUNICIPI
+        - name: municipio
           in: query
           description: Municipio donde se encontrará la estación de carga actualizada.
           required: false
           explode: false
           schema:
             type: string
-        - name: PROVINCIA
+        - name: provincia
           in: query
           description: Provincia donde se encontrará la estación de carga actualizada.
           required: false
@@ -324,14 +391,14 @@ paths:
               - Tarragona
               - Lleida
               - Girona
-        - name: CODIPROV
+        - name: codiProv
           in: query
           description: Código identificador de la provincia donde se encontrará la estación de carga actualizada.
           required: false
           explode: false
           schema:
             type: string
-        - name: TIPUS DE CORRENT
+        - name: tipoCorriente
           in: query
           description: Tipo de corriente de la que dispondrá la estación de carga actualizada.
           required: false
@@ -342,7 +409,7 @@ paths:
               - AC
               - DC
               - AC-DC
-        - name: TIPUS VELOCITAT
+        - name: tipoVelocidad
           in: query
           description: Tipo de velocidad de carga de la que dispondrá la estación de carga actualizada.
           required: false
@@ -358,7 +425,7 @@ paths:
               - RAPID i semiRAPID
               - semiRAPID i NORMAL
               - superRAPID
-        - name: TIPUS VEHICLE
+        - name: tipoVehiculo
           in: query
           description: Tipos de vehiculos que podrán cargarse en la estación de carga actualizada.
           required: false
@@ -371,28 +438,28 @@ paths:
               - moto
               - moto i cotxe
               - taxi
-        - name: TIPUS CONNEXIÓ
+        - name: tipoConexion
           in: query
           description: Tipo de carga de la que dispondrá la estación de carga actualizada.
           required: false
           explode: false
           schema:
             type: string
-        - name: PROMOTOR-GESTOR
+        - name: promotor
           in: query
           description: Entidad promotora o gestora de la estación de carga actualizada.
           required: false
           explode: false
           schema:
             type: string
-        - name: POTENCIA
+        - name: potencia
           in: query
           description: Potencia en kW de la estación de carga actualizada.
           required: false
           explode: false
           schema:
             type: string
-        - name: NPLACES ESTACIÓ
+        - name: nPlazas
           in: query
           description: Número de plazas de las que contará la estación de carga actualizada.
           required: false
@@ -414,8 +481,10 @@ paths:
           content:
             application/json:
               examples:
-                example:
-                  $ref: "#/components/examples/400"
+                example-1:
+                  $ref: "#/components/examples/400atributos"
+                example-2:
+                  $ref: "#/components/examples/400value"
         404:
           description: Bad request
           content:
@@ -430,7 +499,7 @@ paths:
       description: Eliminar la estacion especificada en el path.
       operationId: deleteEstacion
       parameters:
-        - name: ID
+        - name: id
           in: path
           description: Identificador de la estación que queremos eliminar
           required: true
@@ -453,15 +522,15 @@ paths:
                 example:
                   $ref: "#/components/examples/404"
 
-  /estaciones/{ID}/direccion:
+  /estaciones/{id}/direccion:
     get:
       tags:
         - Estaciones
       summary: Obtener la direccion de una estacion concreta
-      description: Obtener los atributos DIRECCION y ID de la estacion especificada en el path.
+      description: Obtener los atributos "direccion" y "id" de la estacion especificada en el path.
       operationId: getDirEstacion
       parameters:
-        - name: ID
+        - name: id
           in: path
           description: Identificador de la estación que queremos consultar
           required: true
@@ -483,13 +552,6 @@ paths:
               examples:
                 example:
                   $ref: "#/components/examples/204"
-        400:
-          description: Bad request
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/400"
         404:
           description: Not found
           content:
@@ -498,15 +560,15 @@ paths:
                 example:
                   $ref: "#/components/examples/404"
 
-  /estaciones/{ID}/coordenadas:
+  /estaciones/{id}/coordenadas:
     get:
       tags:
         - Estaciones
       summary: Obtener las coordenadas de una estacion concreta
-      description: Obtener los atributos LONGITUD, LATITUD y ID de la estacion especificada en el path.
+      description: Obtener los atributos "longitud", "latitud" y "id" de la estacion especificada en el path.
       operationId: getCoordEstacion
       parameters:
-        - name: ID
+        - name: id
           in: path
           description: Identificador de la estación que queremos consultar
           required: true
@@ -528,13 +590,6 @@ paths:
               examples:
                 example:
                   $ref: "#/components/examples/204"
-        400:
-          description: Bad request
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/400"
         404:
           description: Not found
           content:
@@ -548,35 +603,36 @@ components:
     Estacion:
       type: object
       properties:
-        ID:
+        id:
           type: string
           example: "550e8400-e29b-41d4-a716-446655440000"
-        ADREÇA:
+        direccion:
           type: string
           example: "Avinguda Meridiana, 66"
-        CODIPROV:
+        codiProv:
           type: string
           example: "08"
-        LATITUD:
+        latitud:
           type: string
           example: "41.74441"
-        LONGITUD:
+        longitud:
           type: string
           example: "2.18729"
-        MUNICIPI:
+        municipio:
           type: string
           example: "Barcelona"
-        NPLACES ESTACIÓ:
+        nPlazas:
           type: integer
           format: int64
           example: 3
-        POTENCIA:
-          type: string
-          example: "22"
-        PROMOTOR-GESTOR:
+        potencia:
+          type: integer
+          format: int64
+          example: 22
+        promotor:
           type: string
           example: "Generalitat de Catalunya"
-        PROVINCIA:
+        provincia:
           type: string
           example: "Barcelona"
           enum:
@@ -584,17 +640,17 @@ components:
             - Girona
             - Barcelona
             - Lleida
-        TIPUS CONNEXIÓ:
+        tipoConexion:
           type: string
           example: "2xMENNEKES.F"
-        TIPUS DE CORRENT:
+        tipoCorriente:
           type: string
           example: "AC"
           enum:
             - AC
             - DC
             - AC-DC
-        TIPUS VEHICLE:
+        tipoVehiculo:
           type: string
           example: "cotxe i moto"
           enum:
@@ -603,7 +659,7 @@ components:
             - moto
             - moto i cotxe
             - taxi
-        TIPUS VELOCITAT:
+        tipoVelocidad:
           type: string
           example: "semiRAPID"
           enum:
@@ -619,23 +675,23 @@ components:
     CoordEstacion:
       type: object
       properties:
-        ID:
+        id:
           type: string
           example: "550e8400-e29b-41d4-a716-446655440000"
-        LATITUD:
+        latitud:
           type: string
           example: "41.74441"
-        LONGITUD:
+        longitud:
           type: string
           example: "2.18729"
 
     DirEstacion:
       type: object
       properties:
-        ID:
+        id:
           type: string
           example: "550e8400-e29b-41d4-a716-446655440000"
-        ADREÇA:
+        direccion:
           type: string
           example: "Avinguda Meridiana, 66"
 
@@ -655,11 +711,16 @@ components:
         status: 200
         error: "Successful operation"
         message: "Successful delete"
-    400:
+    400atributos:
       value:
         status: 400
         error: "Bad request"
         message: "Missing attributes"
+    400value:
+      value:
+        status: 400
+        error: "Bad request"
+        message: "Invalid value"
     404:
       value:
         status: 404
