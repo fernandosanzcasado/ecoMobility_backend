@@ -37,6 +37,23 @@ class userService {
     return updatedUser.Attributes;
   }
 
+  async updatePassword(email, oldPassword, checkOldPassword, newPassword) {
+    if (await bcrypt.compare(checkOldPassword, oldPassword)) {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      return await userRepository.updatePassword(email, hashedPassword);
+    } else {
+      throw new IncorrectPassword();
+    }
+  }
+
+  async updateInfo(email, info) {
+    return await userRepository.updateUserInfo(email, info);
+  }
+
+  async deleteUser(email) {
+    return await userRepository.deleteUserByEmail(email);
+  }
+
   async deleteByEmail(email) {
     const deletedUser = await userRepository.deleteUserByEmail(email);
     if (!deletedUser.Attributes) {
@@ -45,47 +62,22 @@ class userService {
     return deletedUser.Attributes;
   }
 
-
-    async updatePassword(email,oldPassword, checkOldPassword, newPassword){
-        if(await bcrypt.compare(checkOldPassword, oldPassword )){
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-            return await userRepository.updatePassword(email, hashedPassword);
-        }else{
-            throw new IncorrectPassword();
-        }
-    }
-
-    async updateInfo(email, info){
-        return await userRepository.updateUserInfo(email,info);
-    }
-
-    async deleteUser(email){
-        return await userRepository.deleteUserByEmail(email);
-    }
-
-    async deleteByEmail(email){
+  async loginUser(data) {
+    const user = await userRepository.findByEmail(data.email);
 
     if (!user.Item) {
       throw new UserNotFoundError();
-    } else if (user.Item.Password !== data.password) {
+    } else if (user.Item.password !== data.password) {
       throw new IncorrectPassword();
     } else {
       return user;
     }
   }
 
-
-
-    async  loginUser(data){
-        const user = await userRepository.findByEmail(data.email);
-        
-        if(!user.Item){
-           throw new UserNotFoundError();
-        }else if(user.Item.password !== data.password){
-            throw new IncorrectPassword();
-        }else{
-        return user;
-        } 
+  async registerUser(data) {
+    const userInDB = await userRepository.findByEmail(data.email);
+    if (userInDB.Item) {
+      throw new UserAlreadyExists();
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -98,23 +90,6 @@ class userService {
     });
     return newUser;
   }
-
-  // async canviatrbutsUser() {
-  //   const data = await userRepository.scanTable(); //CAL CREARLO Crec
-  //   data.forEach((item) => {
-  //     for (let key in item) {
-  //       if (key == "Is_superuser") newKey = isSuperuser;
-  //       if (key == "Date_joined") newKey = dateJoined;
-  //       if (key == "Password") newKey = password;
-  //       if (key == "Surnames") newKey = surnames;
-  //       if (key == "Email") newKey = email;
-  //       if (key == "Name") newKey = name;
-  //       // renameKey ( Object, key, newKey );
-  //       Object[newKey] = Object[oldKey];
-  //       delete Object[oldKey];
-  //     }
-  //   });
-  // }
 }
 
 module.exports = new userService();
