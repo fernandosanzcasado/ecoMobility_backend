@@ -1,75 +1,64 @@
 const { json } = require("body-parser");
 const userService = require("../service/user.service");
 const {check, validationResult} = require('express-validator');
-const passport = require("passport");
 
 //fitxer que s'encarrega de gestiona les request i responses dels usuaris
 class userController{
 
-    async findByEmail(req, res,next) {
-
+    async findByEmail(req, res) {
         try{
             const data = await userService.findByEmail(req.params.email);
-            res.json(data);
+            res.json(data)
         }catch(err){
-            next(err);
+            res.status(err.status ?? 500).json(err);
         }   
     }
 
-    async create(req,res,next){
+    async create(req,res){
         try{
             const data = await userService.create(req.body);
             res.json(data);
         }catch(err){
-            next(err);
+            console.log(err);
+            res.status(err.status ?? 500).json(err);
         }    
     }
 
-    async updateUserInfo(req,res,next){
-
+    async updateUserInfo(req,res){
         try{
             const data = await userService.updateUserInfo(req.params.email, req.body);
             res.json(data);
         }catch(err){
-            next(err);
+            res.status(err.status ?? 500).json(err);
         }
     }
 
-    async deleteByEmail(req,res,next){
+    async deleteByEmail(req,res){
         try{
             const deletedUser = await userService.deleteByEmail(req.params.email);
-            res.json({message: 'User ' + deletedUser.Email +  ' deleted successfully'});
+            res.json("User with the email: " + deletedUser.Email + " deleted successfully");
         }catch(err){
-            next(err);
+            res.status(err.status ?? 500).json(err);
         }    
     }
 
-    async loginUser(req,res,next){
+    async loginUser(req,res){
         try{
-            const data = await userService.findByEmail(req.body.email);
+            const data = await userService.loginUser(req.body);
             res.json(data);    
         }catch(err){
-            next(err);
+            res.status(err.status ?? 500).json(err);
         }
     }
 
-    async registerUser(req,res,next){
+    async registerUser(req,res){
        try{
         const newUser = await userService.registerUser(req.body);
-        res.json({message: "New user registered"});
+        res.json(newUser);
        }catch(err){
-        next(err);
+        res.status(err.status ?? 500).json(err);
        }
     }
-
-    logOut(req,res,next) {
-        req.logOut(function(err) {
-            if (err) { return next(err); }
-            res.json({message: "User logged out successfully"});
-          });    
-    }
 }
-
-
 
 module.exports = new userController();
