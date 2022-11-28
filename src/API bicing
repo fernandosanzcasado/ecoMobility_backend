@@ -1,0 +1,34 @@
+<script>
+  const ul = document.getElementById('authors');
+  const list = document.createDocumentFragment();
+  const url = 'https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/station_information';
+
+  fetch(url)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      let datafinal = data;
+
+      daaafinal.map(function(bicing) {
+        let li = document.createElement('li');
+        let name = document.createElement('h2');
+        let email = document.createElement('span');
+
+        name.innerHTML = `${author.name}`;
+        email.innerHTML = `${author.email}`;
+
+        li.appendChild(name);
+        li.appendChild(email);
+        list.appendChild(li);
+      });
+    }).
+    .catch(function(error) {
+      console.log(error);
+    });
+
+  ul.appendChild(list);
+</script>
+
+app.listen(3000,function()){ console.log("app corriendo en puerto local");
+llamadaAPIexterna(); }
