@@ -21,4 +21,19 @@ describe("findbyEmail", () => {
     expect(userRepository.findByEmail()).toHaveBeenCalled();
   });
 });
+
+describe("findbyEmailfunctionextended", () => {
+  test("Crida a  findBy Email", () => {
+    const input = 10;
+    const output = {
+      ID: "10",
+      ADREÇA: "P",
+    };
+    expect.assertions(1);
+    userService
+      .findByEmail(input)
+      .then((returnData) => expect(returnData).toEqual(output));
+  });
+});
+
 findByEmail - test.js;
