@@ -11,6 +11,7 @@ const registerSchema = require('../schemas/registerSchema');
 const loginSchema = require('../schemas/loginSchema');
 const updatePasswordSchema = require('../schemas/updatePasswordSchema');
 const updateUserInfoSchema = require('../schemas/updateUserInfoSchema');
+const emailInputSchema = require('../schemas/emailInputSchema');
 
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
@@ -40,14 +41,18 @@ router.get(`/:email`,userController.findByEmail);
 router.put(`/:email`, userController.updateUserInfo);
 router.delete(`/:email`,userLoginAuthentication.checkAuthenticated, userController.deleteByEmail);
 
+router.get(`/me/getInfo/`, userLoginAuthentication.checkAuthenticated, userController.getInfo);
 router.put(`/me/updatePassword/`,userLoginAuthentication.checkAuthenticated,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
 router.put(`/me/updateInfo/`, userLoginAuthentication.checkAuthenticated, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
 router.delete(`/me/deleteUser/`, userLoginAuthentication.checkAuthenticated, userController.deleteUser);
-router.get(`/me/getInfo/`, userLoginAuthentication.checkAuthenticated, userController.getInfo);
+
 
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
 router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/logout`,userLoginAuthentication.checkAuthenticated,userController.logOut);
+router.post('/resetForgottenPassword',emailInputSchema, validateRequsestSchema, userController.resetForgottenPassword);
+router.post('/resetForgottenPassword/checkToken', userController.checkToken);
+//router.post('/updatePassword')
 
 router.use(handleError);
 
