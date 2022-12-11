@@ -107,10 +107,20 @@ paths:
           content:
             application/json:
               examples:
-                example-1:
-                  $ref: "#/components/examples/400atributos"
-                example-2:
-                  $ref: "#/components/examples/400value"
+                InvalidAttributes:
+                  $ref: "#/components/examples/400atributos2"
+                tipoCorriente:
+                  $ref: "#/components/examples/tipoCorriente"
+                tipoVelocidad:
+                  $ref: "#/components/examples/tipoVelocidad"
+                tipoVehiculo:
+                  $ref: "#/components/examples/tipoVehiculo"
+                tipoConexion:
+                  $ref: "#/components/examples/tipoConexion"
+                potencia:
+                  $ref: "#/components/examples/potencia"
+                distancia:
+                  $ref: "#/components/examples/distancia"
     post:
       tags:
         - Estaciones
@@ -248,10 +258,34 @@ paths:
           content:
             application/json:
               examples:
-                example-1:
+                MinimumAttributes:
                   $ref: "#/components/examples/400atributos"
-                example-2:
-                  $ref: "#/components/examples/400value"
+                InvalidAttributes:
+                  $ref: "#/components/examples/400atributos2"
+                direccion:
+                  $ref: "#/components/examples/direccion"
+                latitud:
+                  $ref: "#/components/examples/latitud"
+                longitud:
+                  $ref: "#/components/examples/longitud"
+                municipio:
+                  $ref: "#/components/examples/municipio"
+                codiProv:
+                  $ref: "#/components/examples/codiProv"
+                tipoCorriente:
+                  $ref: "#/components/examples/tipoCorriente"
+                tipoVelocidad:
+                  $ref: "#/components/examples/tipoVelocidad"
+                tipoVehiculo:
+                  $ref: "#/components/examples/tipoVehiculo"
+                tipoConexion:
+                  $ref: "#/components/examples/tipoConexion"
+                promotor:
+                  $ref: "#/components/examples/promotor"
+                potencia:
+                  $ref: "#/components/examples/potencia"
+                nPlaces:
+                  $ref: "#/components/examples/nPlaces"
 
   /estaciones/direccion:
     get:
@@ -329,8 +363,8 @@ paths:
           content:
             application/json:
               examples:
-                example:
-                  $ref: "#/components/examples/400value"
+                InvalidAttributes:
+                  $ref: "#/components/examples/400atributos2"
         404:
           description: Not found
           content:
@@ -475,16 +509,40 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/examples/200Update"
+                  $ref: "#/components/schemas/Estacion"
         400:
           description: Bad request
           content:
             application/json:
               examples:
-                example-1:
+                MinimumAttributes:
                   $ref: "#/components/examples/400atributos"
-                example-2:
-                  $ref: "#/components/examples/400value"
+                InvalidAttributes:
+                  $ref: "#/components/examples/400atributos2"
+                direccion:
+                  $ref: "#/components/examples/direccion"
+                latitud:
+                  $ref: "#/components/examples/latitud"
+                longitud:
+                  $ref: "#/components/examples/longitud"
+                municipio:
+                  $ref: "#/components/examples/municipio"
+                codiProv:
+                  $ref: "#/components/examples/codiProv"
+                tipoCorriente:
+                  $ref: "#/components/examples/tipoCorriente"
+                tipoVelocidad:
+                  $ref: "#/components/examples/tipoVelocidad"
+                tipoVehiculo:
+                  $ref: "#/components/examples/tipoVehiculo"
+                tipoConexion:
+                  $ref: "#/components/examples/tipoConexion"
+                promotor:
+                  $ref: "#/components/examples/promotor"
+                potencia:
+                  $ref: "#/components/examples/potencia"
+                nPlaces:
+                  $ref: "#/components/examples/nPlaces"
         404:
           description: Bad request
           content:
@@ -545,13 +603,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/DirEstacion"
-        204:
-          description: "No content"
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/204"
         404:
           description: Not found
           content:
@@ -583,13 +634,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/CoordEstacion"
-        204:
-          description: "No content"
-          content:
-            application/json:
-              examples:
-                example:
-                  $ref: "#/components/examples/204"
         404:
           description: Not found
           content:
@@ -699,30 +743,101 @@ components:
     204:
       value:
         status: 204
-        error: "No content"
+        name: "No content"
         message: "No content"
     200Update:
       value:
         status: 200
-        error: "Successful operation"
-        message: "Successful update"
+        name: "Successful update"
+        message: "Successful operation"
     200Delete:
       value:
         status: 200
-        error: "Successful operation"
-        message: "Successful delete"
+        name: "Successful delete"
+        message: "Successful operation"
     400atributos:
       value:
         status: 400
-        error: "Bad request"
-        message: "Missing attributes"
-    400value:
+        name: "Missing required attributes"
+        message: "Bad request"
+    400atributos2:
       value:
         status: 400
-        error: "Bad request"
-        message: "Invalid value"
+        name: "Invalid attributes"
+        message: "Bad request"
+    direccion:
+      value:
+        status: 400
+        name: "Invalid value in direccion"
+        message: "Bad request"
+    latitud:
+      value:
+        status: 400
+        name: "Invalid value in latitud"
+        message: "Bad request"
+    longitud:
+      value:
+        status: 400
+        name: "Invalid value in longitud"
+        message: "Bad request"
+    municipio:
+      value:
+        status: 400
+        name: "Invalid value in municipio"
+        message: "Bad request"
+    provincia:
+      value:
+        status: 400
+        name: "Value in provincia must be Barcelona, Tarragona, Lleida or Girona"
+        message: "Bad request"
+    codiProv:
+      value:
+        status: 400
+        name: "Invalid value in codiProv"
+        message: "Bad request"
+    tipoCorriente:
+      value:
+        status: 400
+        name: "Value in tipoCorriente must be AC, DC or AC-DC"
+        message: "Bad request"
+    tipoVelocidad:
+      value:
+        status: 400
+        name: "Value in tipoVelocidad must be RAPID, semiRAPID, NORMAL, RAPID, RAPID i NORMAL, RAPID i semiRAPID, semiRAPID i NORMAL or superRAPID"
+        message: "Bad request"
+    tipoVehiculo:
+      value:
+        status: 400
+        name: "Value in tipoVehiculo must be mercaderies, cotxe, moto, moto i cotxe or taxi"
+        message: "Bad request"
+    tipoConexion:
+      value:
+        status: 400
+        error: "Invalid value in codiProv"
+        message: "Bad request"
+    promotor:
+      value:
+        status: 400
+        name: "Invalid value in codiProv"
+        message: "Bad request"
+    potencia:
+      value:
+        status: 400
+        name: "Invalid value in codiProv"
+        message: "Bad request"
+    nPlaces:
+      value:
+        status: 400
+        name: "Invalid value in codiProv"
+        message: "Bad request"
+    distancia:
+      value:
+        status: 400
+        name: "Invalid value in distancia"
+        message: "Bad request"
+
     404:
       value:
         status: 404
-        error: "Not found"
-        message: "ID does not exist"
+        name: "ID does not exist"
+        message: "Not Found"
