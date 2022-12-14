@@ -15,7 +15,7 @@ const oauth2Client = new OAuth2(
 oauth2Client.setCredentials({
     refresh_token: process.env.OAUTH_REFRESH_TOKEN
 });
-const accessToken = oauth2Client.getAccessToken()
+const accessToken = oauth2Client.getAccessToken();
 
 
 

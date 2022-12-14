@@ -16,7 +16,8 @@ const emailInputSchema = require('../schemas/emailInputSchema');
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
 const handleError = require("../middleware/errorHandler");
-const userLoginAuthentication = require("../middleware/userLoginAuthentication")
+const userLoginAuthentication = require("../middleware/userLoginAuthentication");
+const resetPasswordSchema = require("../schemas/resetPasswordSchema");
 
 const router = express.Router();
 
@@ -50,9 +51,8 @@ router.delete(`/me/deleteUser/`, userLoginAuthentication.checkAuthenticated, use
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
 router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/logout`,userLoginAuthentication.checkAuthenticated,userController.logOut);
-router.post('/resetForgottenPassword',emailInputSchema, validateRequsestSchema, userController.resetForgottenPassword);
-router.post('/resetForgottenPassword/checkToken', userController.checkToken);
-//router.post('/updatePassword')
+router.post('/resetForgottenPassword/sendMail',emailInputSchema, validateRequsestSchema, userController.resetForgottenPasswordEmail);
+router.post('/resetForgottenPassword/resetPassword',resetPasswordSchema, validateRequsestSchema,userController.resetPassword);
 
 router.use(handleError);
 

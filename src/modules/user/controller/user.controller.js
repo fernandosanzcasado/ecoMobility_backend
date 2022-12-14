@@ -106,20 +106,19 @@ class userController{
           });    
     }
 
-    async resetForgottenPassword(req, res, next){
+    async resetForgottenPasswordEmail(req, res, next){
         try{
-            const token = await userService.resetForgottenPassword(req.body.email);
-            res.json({ message: "The password reset mail has been sent to the indicated email.", token: token});
-
+            const token = await userService.resetForgottenPasswordEmail(req.body.email);
+            res.json({ message: "The password reset mail has been sent to the indicated email."});
         }catch(err){
             next(err);
         }   
     }
 
-    async checkToken(req,res,next){
+    async resetPassword(req,res,next){
         try{
-            await userService.checkToken(req.body.token);
-            res.json({ message: "Valid token."})
+            await userService.resetPassword(req.body.token, req.body.newPassword);
+            res.json({ message: "Password reset successful."})
         }catch(err) {
             next(err);
         }

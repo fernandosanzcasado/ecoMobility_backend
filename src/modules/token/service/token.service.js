@@ -41,6 +41,10 @@ class tokenService{
         return newToken;
     }
 
+    async updateExpirationDate(token){
+        return await tokenRepository.updateExpirationDate(token);
+    }
+
 }
 
 module.exports =  new tokenService();

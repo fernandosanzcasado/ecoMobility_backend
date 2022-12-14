@@ -94,7 +94,7 @@ class userService {
     return newUser;
   }
 
-  async resetForgottenPassword(email){
+  async resetForgottenPasswordEmail(email){
     const user = await userRepository.findByEmail(email);
 
     if(!user.Item){
@@ -118,9 +118,18 @@ class userService {
   return newToken;  
   }
 
-  async checkToken(token){
+  async resetPassword(token, newPassword){
     const validToken = await tokenService.findToken(token);
+
+    if(validToken){
+      await tokenService.updateExpirationDate(validToken.token);
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await userRepository.updatePassword(validToken.email, hashedPassword);
+    }
+
     return validToken;
+    
   }
 
 
