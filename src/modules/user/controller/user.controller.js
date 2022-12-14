@@ -105,9 +105,26 @@ class userController{
             res.json({message: "User logged out successfully."});
           });    
     }
+
+    async resetForgottenPasswordEmail(req, res, next){
+        try{
+            const token = await userService.resetForgottenPasswordEmail(req.body.email);
+            res.json({ message: "The password reset mail has been sent to the indicated email."});
+        }catch(err){
+            next(err);
+        }   
+    }
+
+    async resetPassword(req,res,next){
+        try{
+            await userService.resetPassword(req.body.token, req.body.newPassword);
+            res.json({ message: "Password reset successful."})
+        }catch(err) {
+            next(err);
+        }
+    }
+
+
 }
-
-
-
 
 module.exports = new userController();

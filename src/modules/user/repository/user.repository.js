@@ -31,8 +31,7 @@ class userRepository{
                     password: data.password,
                     dateJoined: Date.now(),
                     isSuperuser: false,
-                },
-                
+                },    
             };
 
            await db.put(params).promise();

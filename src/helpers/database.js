@@ -7,6 +7,7 @@ AWS.config.update({
     //endpoint: process.env.endpoint,
 });
 
+
 const db = new AWS.DynamoDB.DocumentClient({convertEmptyValues: true});
 
 module.exports = db;
