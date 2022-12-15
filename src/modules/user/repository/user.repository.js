@@ -31,6 +31,7 @@ class userRepository{
                     password: data.password,
                     dateJoined: Date.now(),
                     isSuperuser: false,
+                    isBlocked: false,
                 },    
             };
 
@@ -54,6 +55,30 @@ class userRepository{
                }, 
                TableName: this.tableName, 
                UpdateExpression: "SET #UN = :n, #US = :s",
+               ReturnValues: "ALL_NEW", 
+        };
+        return await db.update(params).promise();
+    }
+
+    async updateUser(email,data){
+        const params = {
+            ExpressionAttributeNames: {
+                "#UN": "name",
+                "#US": "surnames",
+                "#UIS": "isSuperuser",
+                "#UIB": "isBlocked",
+               }, 
+               ExpressionAttributeValues: {
+                ':n' : data.name,
+                ':sn' : data.surnames,
+                ':is' : data.isSuperuser,
+                ':ib': data.isBlocked,
+              }, 
+               Key: {
+                email: email
+               }, 
+               TableName: this.tableName, 
+               UpdateExpression: "SET #UN = :n, #US = :sn, #UIS = :is, #UIB = :ib",
                ReturnValues: "ALL_NEW", 
         };
         return await db.update(params).promise();
@@ -88,6 +113,21 @@ class userRepository{
         return await db.delete(params).promise();
     }
 
+    async getAllUsers(){
+        const params = {
+            TableName: this.tableName,
+            ExpressionAttributeNames: {
+                "#E": "email",
+                "#N": "name",
+                "#SN": "surnames",
+                "#IS": "isSuperuser",
+                "#DJ": "dateJoined",
+                "#IB": "isBlocked"
+              },
+              ProjectionExpression: "#E, #N, #SN, #DJ, #IS, #IB",
+        }
+        return db.scan(params).promise();
+    }
 
 }
 

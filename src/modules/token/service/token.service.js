@@ -31,7 +31,7 @@ class tokenService{
         const invalidateNonExpiredToken = await tokenRepository.findEmailNonValidToken(email);
         
         if(invalidateNonExpiredToken.Count > 0){
-            await tokenRepository.updateExpirationDate(invalidateNonExpiredToken.Items[0].token);
+            await this.updateExpirationDate(invalidateNonExpiredToken.Items[0].token);
         }
           
         const newToken = await tokenRepository.createToken({

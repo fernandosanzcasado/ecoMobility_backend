@@ -25,11 +25,11 @@ class userController{
         }    
     }
 
-    async updateUserInfo(req,res,next){
+    async updateUser(req,res,next){
 
         try{
-            const data = await userService.updateUserInfo(req.params.email, req.body);
-            res.json(data);
+            const data = await userService.updateUser(req.params.email, req.body);
+            res.json({message: "User fields updated successfully."});
         }catch(err){
             next(err);
         }
@@ -120,6 +120,15 @@ class userController{
             await userService.resetPassword(req.body.token, req.body.newPassword);
             res.json({ message: "Password reset successful."})
         }catch(err) {
+            next(err);
+        }
+    }
+
+    async getAllUsers(req,res,next){
+        try{
+            const data = await userService.getAllUsers();
+            res.json({users: data.users, usersCount: data.usersCount});
+        }catch(err){
             next(err);
         }
     }
