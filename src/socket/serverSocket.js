@@ -8,6 +8,7 @@ io.on("connection", (socket) => {
   console.log("Servidor conectadoooooooooooo" + socket.id);
   socket.on("chat message", (msg) => {
     console.log(msg);
+    socket.emit("Server response", msg);
   });
 });
 
