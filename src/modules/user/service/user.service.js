@@ -93,6 +93,8 @@ class userService {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
+    
+
     const newUser = await userRepository.createUser({
       email: data.email,
       name: data.name,
@@ -115,7 +117,7 @@ class userService {
       from: process.env.MAIL_USERNAME,
       to:  email,
       subject: 'Reset your EcoMobility password',
-      text: `Hi ${user.Item.name},\nYou recently requested to reset the password for your EcoMobility account. To reset your password please follow the next steps:\n -1. Copy this token: ${newToken}.\n -2.Go to reset password on the app and click on "Reset Password Code".\n -3.Introduce the code and this will redirect you to a screen where you will be able to reset your password.\n\nIf you did not request a password reset, please ignore this email or reply to let us know.\n Ecomobility Team`
+      text: `Hi ${user.Item.name},\nYou recently requested to reset the password for your EcoMobility account. To reset your password please follow the next steps:\n -1. Copy this token: ${newToken}.\n -2.Go to reset password on the app and click on "Reset Password Code".\n -3.Introduce the code and this will redirect you to a screen where you will be able to reset your password.\n\nIf you did not request a password reset, please ignore this email or reply to let us know.\nEcomobility Team`
     };
 
     transporter.sendMail(mailOptions, function(err) {
@@ -142,7 +144,12 @@ class userService {
 
   async getAllUsers(){
     const users = await userRepository.getAllUsers();
-    return { users: users.Items, usersCount: users.Count};
+    return users.Items;
+  }
+
+  async countAllUsers(){
+    const users = await userRepository.getAllUsers();
+    return users.Count;
   }
 
 

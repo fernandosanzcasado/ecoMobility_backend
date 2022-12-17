@@ -126,7 +126,16 @@ class userController{
     async getAllUsers(req,res,next){
         try{
             const data = await userService.getAllUsers();
-            res.json({users: data.users, usersCount: data.usersCount});
+            res.json(data);
+        }catch(err){
+            next(err);
+        }
+    }
+
+    async countAllUsers(req,res,next){
+        try{
+            const usersCount = await userService.countAllUsers();
+            res.json(usersCount);
         }catch(err){
             next(err);
         }

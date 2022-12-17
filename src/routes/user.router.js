@@ -37,6 +37,7 @@ router.use(passport.initialize());
 
 
 router.get(`/admin/getAllUsers/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userAuthentication.checkAdmin, userController.getAllUsers);
+router.get(`/admin/getAllUsers/count`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userAuthentication.checkAdmin, userController.countAllUsers), 
 router.get(`/admin/getUser/:email/`, userAuthentication.checkAuthenticated, userAuthentication.checkAdmin, userController.findByEmail);
 router.put(`/admin/updateUser/:email/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userAuthentication.checkAdmin, userController.updateUser);
 
