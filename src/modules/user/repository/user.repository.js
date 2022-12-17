@@ -32,6 +32,7 @@ class userRepository{
                     dateJoined: Date.now(),
                     isSuperuser: false,
                     isBlocked: false,
+                    achievements: data.achievements
                 },    
             };
 
