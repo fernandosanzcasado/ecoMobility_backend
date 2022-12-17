@@ -31,12 +31,18 @@ class userService {
     return newUser.Attributes;
   }
 
-  async updateUserInfo(email, data) {
+  async updateUser(email, data) {
     const user = await userRepository.findByEmail(email);
     if (!user.Item) {
       throw new UserNotFoundError();
     }
-    const updatedUser = await userRepository.updateUserInfo(email, data);
+
+    const updatedUser = await userRepository.updateUser(email, {
+      name: data.name,
+      surnames: data.surnames,
+      isSuperuser: data.isSuperuser,
+      isBlocked: data.isBlocked 
+    });
     return updatedUser.Attributes;
   }
 
@@ -48,6 +54,8 @@ class userService {
       throw new IncorrectPassword();
     }
   }
+
+
 
   async updateInfo(email, info) {
     return await userRepository.updateUserInfo(email, info);
@@ -130,6 +138,11 @@ class userService {
 
     return validToken;
     
+  }
+
+  async getAllUsers(){
+    const users = await userRepository.getAllUsers();
+    return { users: users.Items, usersCount: users.Count};
   }
 
 
