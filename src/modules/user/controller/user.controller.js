@@ -7,7 +7,6 @@ const passport = require("passport");
 class userController{
 
     async findByEmail(req, res,next) {
-
         try{
             const data = await userService.findByEmail(req.params.email);
             res.json(data);

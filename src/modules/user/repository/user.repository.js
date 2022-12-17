@@ -116,15 +116,6 @@ class userRepository{
     async getAllUsers(){
         const params = {
             TableName: this.tableName,
-            ExpressionAttributeNames: {
-                "#E": "email",
-                "#N": "name",
-                "#SN": "surnames",
-                "#IS": "isSuperuser",
-                "#DJ": "dateJoined",
-                "#IB": "isBlocked"
-              },
-              ProjectionExpression: "#E, #N, #SN, #DJ, #IS, #IB",
         }
         return db.scan(params).promise();
     }
