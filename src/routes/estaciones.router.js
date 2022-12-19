@@ -324,26 +324,582 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  */
 router.get(`/`, estacionesController.scanTable);
 
+/**
+ * @swagger
+ * /estaciones/coordenadas:
+ *   get:
+ *     tags:
+ *       - Estaciones
+ *     summary: Obtener las coordenadas de todas las estaciones
+ *     description: Obtener los atributos "longitud", "latitud" y "id" de todas las estaciones de la DB.
+ *     operationId: getCoordAllEstaciones
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/CoordEstacion"
+ *       204:
+ *         description: "No content"
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/204"
+ */
 router.get(`/coordenadas`, estacionesController.getTableCoord);
 
+/**
+ * @swagger
+ * /estaciones/direccion:
+ *   get:
+ *     tags:
+ *       - Estaciones
+ *     summary: Obtener la dirección de todas las estaciones
+ *     description: Obtener los atributos "direccion" y "id" de todas las estaciones de la DB.
+ *     operationId: getDirAllEstaciones
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/DirEstacion"
+ *       204:
+ *         description: "No content"
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/204"
+ */
 router.get(`/direccion`, estacionesController.getTableDir);
 
-router.get("/bicing_station_status", estacionesController.bicing);
-router.get("/bicing_station_info", estacionesController.bicing_segundo);
-router.get("/bicing3", estacionesController.bicing_tercero);
+/**
+ * @swagger
+ * /estaciones/count:
+ *   get:
+ *     tags:
+ *       - Estaciones
+ *     summary: Obtener la cantidad de estaciones en la base de datos.
+ *     description: Obtener en una variable el numero de instancias en la base de datos de estaciones de vehículos eléctricos.
+ *     operationId: countEstaciones
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           integer:
+ *             schema:
+ *               type: integer
+ *               example: 207
+ */
+router.get(`/count`, estacionesController.countEstaciones);
 
+/**
+ * @swagger
+ * /estaciones/{id}:
+ *   get:
+ *     tags:
+ *       - Estaciones
+ *     summary: Obtener una estacion concreta
+ *     description: Obtener todos los atributos de la estacion especificada en el path.
+ *     operationId: getEstacion
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Identificador de la estación que queremos consultar
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Estacion"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               InvalidAttributes:
+ *                 $ref: "#/components/examples/400atributos2"
+ *       404:
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
+ */
 router.get(`/:Id`, estacionesController.findById);
 
+/**
+ * @swagger
+ * /estaciones/{id}/coordenadas:
+ *   get:
+ *     tags:
+ *       - Estaciones
+ *     summary: Obtener las coordenadas de una estacion concreta
+ *     description: Obtener los atributos "longitud", "latitud" y "id" de la estacion especificada en el path.
+ *     operationId: getCoordEstacion
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Identificador de la estación que queremos consultar
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/CoordEstacion"
+ *       404:
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
+ */
 router.get(`/:Id/coordenadas`, estacionesController.getCoordById);
 
+/**
+ * @swagger
+ * /estaciones/{id}/direccion:
+ *   get:
+ *     tags:
+ *       - Estaciones
+ *     summary: Obtener la direccion de una estacion concreta
+ *     description: Obtener los atributos "direccion" y "id" de la estacion especificada en el path.
+ *     operationId: getDirEstacion
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Identificador de la estación que queremos consultar
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/DirEstacion"
+ *       404:
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
+ */
 router.get(`/:Id/direccion`, estacionesController.getDirById);
 
+/**
+ * @swagger
+ * /estaciones:
+ *  post:
+ *     tags:
+ *       - Estaciones
+ *     summary: Crear una nueva estación.
+ *     description: Crear una nueva estación en la DB con los atributos especificados.
+ *     operationId: postEstacion
+ *     parameters:
+ *       - name: direccion
+ *         in: query
+ *         description: Dirección donde se encuentra la nueva estación de carga.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: latitud
+ *         in: query
+ *         description: Latitud donde se encuentra la nueva estación de carga.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: longitud
+ *         in: query
+ *         description: Longitud donde se encuentra la nueva estación de carga.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: municipio
+ *         in: query
+ *         description: Municipio donde se encuentra la nueva estación de carga.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: provincia
+ *         in: query
+ *         description: Provincia donde se encuentra la nueva estación de carga.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - Barcelona
+ *             - Tarragona
+ *             - Lleida
+ *             - Girona
+ *       - name: codiProv
+ *         in: query
+ *         description: Código identificador de la provincia donde se encuentra la nueva estación de carga.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: tipoCorriente
+ *         in: query
+ *         description: Tipo de corriente de la que dispone la nueva estación de carga.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - AC
+ *             - DC
+ *             - AC-DC
+ *       - name: tipoVelocidad
+ *         in: query
+ *         description: Tipo de velocidad de carga de la que dispone la nueva estación de carga.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - RAPID
+ *             - semiRAPID
+ *             - NORMAL
+ *             - RAPID
+ *             - RAPID i NORMAL
+ *             - RAPID i semiRAPID
+ *             - semiRAPID i NORMAL
+ *             - superRAPID
+ *       - name: tipoVehiculo
+ *         in: query
+ *         description: Tipos de vehiculos que pueden cargarse en la nueva estación de carga.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - mercaderies
+ *             - cotxe
+ *             - moto
+ *             - moto i cotxe
+ *             - taxi
+ *       - name: tipoConexion
+ *         in: query
+ *         description: Tipo de carga de la que dispone la nueva estación de carga.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: promotor
+ *         in: query
+ *         description: Entidad promotora o gestora de la nueva estación de carga.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: potencia
+ *         in: query
+ *         description: Potencia en kW de la nueva estación de carga.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: nPlaces
+ *         in: query
+ *         description: Número de plazas de las que dispone la nueva estación de carga.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *
+ *     responses:
+ *       201:
+ *         description: Estación created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Estacion"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               MinimumAttributes:
+ *                 $ref: "#/components/examples/400atributos"
+ *               InvalidAttributes:
+ *                 $ref: "#/components/examples/400atributos2"
+ *               direccion:
+ *                 $ref: "#/components/examples/direccion"
+ *               latitud:
+ *                 $ref: "#/components/examples/latitud"
+ *               longitud:
+ *                 $ref: "#/components/examples/longitud"
+ *               municipio:
+ *                 $ref: "#/components/examples/municipio"
+ *               codiProv:
+ *                 $ref: "#/components/examples/codiProv"
+ *               tipoCorriente:
+ *                 $ref: "#/components/examples/tipoCorriente"
+ *               tipoVelocidad:
+ *                 $ref: "#/components/examples/tipoVelocidad"
+ *               tipoVehiculo:
+ *                 $ref: "#/components/examples/tipoVehiculo"
+ *               tipoConexion:
+ *                 $ref: "#/components/examples/tipoConexion"
+ *               promotor:
+ *                 $ref: "#/components/examples/promotor"
+ *               potencia:
+ *                 $ref: "#/components/examples/potencia"
+ *               nPlaces:
+ *                 $ref: "#/components/examples/nPlaces"
+ */
 router.post(`/`, estacionesController.create);
 
+/**
+ * @swagger
+ * /estaciones/{id}:
+ *  delete:
+ *     tags:
+ *       - Estaciones
+ *     summary: Eliminar una estacion concreta
+ *     description: Eliminar la estacion especificada en el path.
+ *     operationId: deleteEstacion
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Identificador de la estación que queremos eliminar
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/examples/200Delete"
+ *       404:
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
+ */
 router.delete(`/:Id`, estacionesController.deleteByID);
 
+/**
+ * @swagger
+ * /estaciones/{id}:
+ *  put:
+ *     tags:
+ *       - Estaciones
+ *     summary: Actualizar una nueva estación.
+ *     description: Actualiza la estacion definida en el path añadiendo los atributos especificados en el body.
+ *     operationId: updateEstacion
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Identificador de la estación que queremos actualizar
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: direccion
+ *         in: query
+ *         description: Dirección donde se encontrará la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: latitud
+ *         in: query
+ *         description: Latitud donde se encontrará la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: longitud
+ *         in: query
+ *         description: Longitud donde se encontrará la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: municipio
+ *         in: query
+ *         description: Municipio donde se encontrará la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: provincia
+ *         in: query
+ *         description: Provincia donde se encontrará la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - Barcelona
+ *             - Tarragona
+ *             - Lleida
+ *             - Girona
+ *       - name: codiProv
+ *         in: query
+ *         description: Código identificador de la provincia donde se encontrará la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: tipoCorriente
+ *         in: query
+ *         description: Tipo de corriente de la que dispondrá la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - AC
+ *             - DC
+ *             - AC-DC
+ *       - name: tipoVelocidad
+ *         in: query
+ *         description: Tipo de velocidad de carga de la que dispondrá la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - RAPID
+ *             - semiRAPID
+ *             - NORMAL
+ *             - RAPID
+ *             - RAPID i NORMAL
+ *             - RAPID i semiRAPID
+ *             - semiRAPID i NORMAL
+ *             - superRAPID
+ *       - name: tipoVehiculo
+ *         in: query
+ *         description: Tipos de vehiculos que podrán cargarse en la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - mercaderies
+ *             - cotxe
+ *             - moto
+ *             - moto i cotxe
+ *             - taxi
+ *       - name: tipoConexion
+ *         in: query
+ *         description: Tipo de carga de la que dispondrá la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: promotor
+ *         in: query
+ *         description: Entidad promotora o gestora de la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: potencia
+ *         in: query
+ *         description: Potencia en kW de la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: nPlazas
+ *         in: query
+ *         description: Número de plazas de las que contará la estación de carga actualizada.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: integer
+ *
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Estacion"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               MinimumAttributes:
+ *                 $ref: "#/components/examples/400atributos"
+ *               InvalidAttributes:
+ *                 $ref: "#/components/examples/400atributos2"
+ *               direccion:
+ *                 $ref: "#/components/examples/direccion"
+ *               latitud:
+ *                 $ref: "#/components/examples/latitud"
+ *               longitud:
+ *                 $ref: "#/components/examples/longitud"
+ *               municipio:
+ *                 $ref: "#/components/examples/municipio"
+ *               codiProv:
+ *                 $ref: "#/components/examples/codiProv"
+ *               tipoCorriente:
+ *                 $ref: "#/components/examples/tipoCorriente"
+ *               tipoVelocidad:
+ *                 $ref: "#/components/examples/tipoVelocidad"
+ *               tipoVehiculo:
+ *                 $ref: "#/components/examples/tipoVehiculo"
+ *               tipoConexion:
+ *                 $ref: "#/components/examples/tipoConexion"
+ *               promotor:
+ *                 $ref: "#/components/examples/promotor"
+ *               potencia:
+ *                 $ref: "#/components/examples/potencia"
+ *               nPlaces:
+ *                 $ref: "#/components/examples/nPlaces"
+ *       404:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
+ */
 router.put(`/:Id`, estacionesController.update);
-
-router.get(`/atributs`, estacionesController.contratributs);
 
 module.exports = router;
