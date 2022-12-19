@@ -1,8 +1,8 @@
 # Obtener la fecha y hora actuales en formato HH-MM-SS_DD-MM-YYYY
 fecha_hora=$(date +%H-%M-%S_%d-%m-%Y)
 
-# Ejecutar el comando 'screen'
-screen
+# Ejecutar el comando 'screen'. No es necesario
+# screen
 
 # Obtener la lista de procesos que están escuchando en el puerto 3000
 procesos=$(lsof -t -i :3000)
@@ -28,3 +28,11 @@ fi
 
 # Ejecutar el comando 'npm start' y redirigir el output a la carpeta 'logs' con el nombre de la fecha y hora actuales
 npm start >>logs/"server_$fecha_hora".log 2>>logs/"error_$fecha_hora".log &
+
+# Si el comando 'npm start' se ha ejecutado correctamente, imprimir "Deploy success"
+if [ $? -eq 0 ]; then
+  echo "Deploy success"
+else
+  # Si el comando 'npm start' ha devuelto un error, imprimir "Deploy error"
+  echo "Deploy error"
+fi
