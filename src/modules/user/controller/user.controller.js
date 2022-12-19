@@ -7,7 +7,6 @@ const passport = require("passport");
 class userController{
 
     async findByEmail(req, res,next) {
-
         try{
             const data = await userService.findByEmail(req.params.email);
             res.json(data);
@@ -25,11 +24,11 @@ class userController{
         }    
     }
 
-    async updateUserInfo(req,res,next){
+    async updateUser(req,res,next){
 
         try{
-            const data = await userService.updateUserInfo(req.params.email, req.body);
-            res.json(data);
+            const data = await userService.updateUser(req.params.email, req.body);
+            res.json({message: "User fields updated successfully."});
         }catch(err){
             next(err);
         }
@@ -105,9 +104,44 @@ class userController{
             res.json({message: "User logged out successfully."});
           });    
     }
+
+    async resetForgottenPasswordEmail(req, res, next){
+        try{
+            const token = await userService.resetForgottenPasswordEmail(req.body.email);
+            res.json({ message: "The password reset mail has been sent to the indicated email."});
+        }catch(err){
+            next(err);
+        }   
+    }
+
+    async resetPassword(req,res,next){
+        try{
+            await userService.resetPassword(req.body.token, req.body.newPassword);
+            res.json({ message: "Password reset successful."})
+        }catch(err) {
+            next(err);
+        }
+    }
+
+    async getAllUsers(req,res,next){
+        try{
+            const data = await userService.getAllUsers();
+            res.json(data);
+        }catch(err){
+            next(err);
+        }
+    }
+
+    async countAllUsers(req,res,next){
+        try{
+            const usersCount = await userService.countAllUsers();
+            res.json(usersCount);
+        }catch(err){
+            next(err);
+        }
+    }
+
+
 }
-
-
-
 
 module.exports = new userController();

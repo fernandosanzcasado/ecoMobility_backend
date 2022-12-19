@@ -11,11 +11,13 @@ const registerSchema = require('../schemas/registerSchema');
 const loginSchema = require('../schemas/loginSchema');
 const updatePasswordSchema = require('../schemas/updatePasswordSchema');
 const updateUserInfoSchema = require('../schemas/updateUserInfoSchema');
+const emailInputSchema = require('../schemas/emailInputSchema');
 
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
 const handleError = require("../middleware/errorHandler");
-const userLoginAuthentication = require("../middleware/userLoginAuthentication")
+const userAuthentication = require("../middleware/userAuthentication");
+const resetPasswordSchema = require("../schemas/resetPasswordSchema");
 
 const router = express.Router();
 
@@ -34,20 +36,23 @@ router.use(passport.session());
 router.use(passport.initialize());
 
 
-router.post(`/`, userController.create);
+router.get(`/admin/getAllUsers/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userAuthentication.checkAdmin, userController.getAllUsers);
+router.get(`/admin/getAllUsers/count`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userAuthentication.checkAdmin, userController.countAllUsers), 
+router.get(`/admin/getUser/:email/`, userAuthentication.checkAuthenticated, userAuthentication.checkAdmin, userController.findByEmail);
+router.put(`/admin/updateUser/:email/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userAuthentication.checkAdmin, userController.updateUser);
 
-router.get(`/:email`,userController.findByEmail);
-router.put(`/:email`, userController.updateUserInfo);
-router.delete(`/:email`,userLoginAuthentication.checkAuthenticated, userController.deleteByEmail);
 
-router.put(`/me/updatePassword/`,userLoginAuthentication.checkAuthenticated,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
-router.put(`/me/updateInfo/`, userLoginAuthentication.checkAuthenticated, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
-router.delete(`/me/deleteUser/`, userLoginAuthentication.checkAuthenticated, userController.deleteUser);
-router.get(`/me/getInfo/`, userLoginAuthentication.checkAuthenticated, userController.getInfo);
+router.get(`/me/getInfo/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.getInfo);
+router.put(`/me/updatePassword/`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
+router.put(`/me/updateInfo/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
+router.delete(`/me/deleteUser/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.deleteUser);
+
 
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
-router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
-router.post(`/logout`,userLoginAuthentication.checkAuthenticated,userController.logOut);
+router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'),userAuthentication.checkBlocked, userController.loginUser);
+router.post(`/logout`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked,userController.logOut);
+router.post('/resetForgottenPassword/sendMail',emailInputSchema, validateRequsestSchema, userController.resetForgottenPasswordEmail);
+router.post('/resetForgottenPassword/resetPassword',resetPasswordSchema, validateRequsestSchema,userController.resetPassword);
 
 router.use(handleError);
 
