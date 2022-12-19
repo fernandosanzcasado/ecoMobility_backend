@@ -1,9 +1,6 @@
-const bcrypt = require("bcrypt");
 const { json } = require("body-parser");
-
-const transporter = require("../../../helpers/nodemailer");
-const tokenService = require("../../token/service/token.service");
 const userRepository = require("../repository/user.repository");
+const bcrypt = require("bcrypt");
 
 const UserNotFoundError = require("../../../errors/user.errors/userNotFound");
 const IncorrectPassword = require("../../../errors/user.errors/incorrectPassword");
@@ -31,18 +28,12 @@ class userService {
     return newUser.Attributes;
   }
 
-  async updateUser(email, data) {
+  async updateUserInfo(email, data) {
     const user = await userRepository.findByEmail(email);
     if (!user.Item) {
       throw new UserNotFoundError();
     }
-
-    const updatedUser = await userRepository.updateUser(email, {
-      name: data.name,
-      surnames: data.surnames,
-      isSuperuser: data.isSuperuser,
-      isBlocked: data.isBlocked 
-    });
+    const updatedUser = await userRepository.updateUserInfo(email, data);
     return updatedUser.Attributes;
   }
 
@@ -54,8 +45,6 @@ class userService {
       throw new IncorrectPassword();
     }
   }
-
-
 
   async updateInfo(email, info) {
     return await userRepository.updateUserInfo(email, info);
@@ -93,8 +82,6 @@ class userService {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    
-
     const newUser = await userRepository.createUser({
       email: data.email,
       name: data.name,
@@ -103,57 +90,6 @@ class userService {
     });
     return newUser;
   }
-
-  async resetForgottenPasswordEmail(email){
-    const user = await userRepository.findByEmail(email);
-
-    if(!user.Item){
-      throw new UserNotFoundError();
-    }
-    
-    const newToken = await tokenService.createToken(email);
-  
-    const mailOptions  = {
-      from: process.env.MAIL_USERNAME,
-      to:  email,
-      subject: 'Reset your EcoMobility password',
-      text: `Hi ${user.Item.name},\nYou recently requested to reset the password for your EcoMobility account. To reset your password please follow the next steps:\n -1. Copy this token: ${newToken}.\n -2.Go to reset password on the app and click on "Reset Password Code".\n -3.Introduce the code and this will redirect you to a screen where you will be able to reset your password.\n\nIf you did not request a password reset, please ignore this email or reply to let us know.\nEcomobility Team`
-    };
-
-    transporter.sendMail(mailOptions, function(err) {
-      if (err) {
-        throw err;
-      }
-  });
-  return newToken;  
-  }
-
-  async resetPassword(token, newPassword){
-    const validToken = await tokenService.findToken(token);
-
-    if(validToken){
-      await tokenService.updateExpirationDate(validToken.token);
-
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      await userRepository.updatePassword(validToken.email, hashedPassword);
-    }
-
-    return validToken;
-    
-  }
-
-  async getAllUsers(){
-    const users = await userRepository.getAllUsers();
-    return users.Items;
-  }
-
-  async countAllUsers(){
-    const users = await userRepository.getAllUsers();
-    return users.Count;
-  }
-
-
-
 }
 
 module.exports = new userService();

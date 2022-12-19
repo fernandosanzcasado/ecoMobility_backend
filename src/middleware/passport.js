@@ -9,11 +9,15 @@ function initialize(passport, findUserByEmail){
     
         try{
             const user = await findUserByEmail(email);
- 
-            if(await bcrpyt.compare(password, user.password)){
-                return done(null, user)
-            }else{
-                return done(new IncorrectPassword(), false)
+
+            try{
+                if(await bcrpyt.compare(password, user.password)){
+                    return done(null, user)
+                }else{
+                    return done(new IncorrectPassword(), false)
+                }
+            }catch(err){
+                return done(err);
             }
         }catch(err){
             return done(err);
