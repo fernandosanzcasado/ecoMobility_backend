@@ -87,6 +87,40 @@ router.use(passport.initialize());
  *               message: "ID does not exist"
  */
 
+
+/**
+ * @swagger
+ * tags:
+ *  name: Users
+ *  description: Endpoints para Users
+ */
+
+
+    /users:
+    get:
+        tags:
+        - Usuarios
+        summary: Obtener todas los usuarios
+        description: Obtener todas las usuarios de la DB con todos sus atributos.
+        operationId: getAllUsuarios
+        responses:
+        200:
+            description: Successful operation
+            content:
+            application/json:
+                schema:
+                type: array
+                items:
+                    $ref: "#/components/schemas/Users"
+        204:
+            description: "No content"
+            content:
+            application/json:
+                examples:
+                example:
+                    $ref: "#/components/examples/204"
+
+
 router.get(
   `/admin/getAllUsers/`,
   userAuthentication.checkAuthenticated,
@@ -94,19 +128,78 @@ router.get(
   userAuthentication.checkAdmin,
   userController.getAllUsers
 );
+
+/**
+ * @swagger
+ * /users/count:
+ *   get:
+ *     tags:
+ *       - Estaciones
+ *     summary: Obtener la cantidad de users en la base de datos.
+ *     description: Obtener en una variable el numero de instancias en la base de datos de users.
+ *     operationId: countEstaciones
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           integer:
+ *             schema:
+ *               type: integer
+ *               example: 207
+ */
 router.get(
-  `/admin/getAllUsers/count`,
+`/admin/getAllUsers/count`,
   userAuthentication.checkAuthenticated,
   userAuthentication.checkBlocked,
   userAuthentication.checkAdmin,
   userController.countAllUsers
 ),
-  router.get(
+
+/users/Email:
+  get:
+    tags:
+      - Users
+    summary: Obtener el Email de todas las usuaris
+    description: Obtener los atributos email y ID de todos las usuarios de la DB.
+    operationId: getDirAllUsers
+    responses:
+      200:
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Users"
+      204:
+        description: "No content"
+        content:
+          application/json:
+            examples:
+              example:
+                $ref: "#/components/examples/204"
+      400:
+        description: Bad request
+        content:
+          application/json:
+            examples:
+              example:
+                $ref: "#/components/examples/400"
+      404:
+        description: Not found
+        content:
+          application/json:
+            examples:
+              example:
+                $ref: "#/components/examples/404"
+router.get(
     `/admin/getUser/:email/`,
     userAuthentication.checkAuthenticated,
     userAuthentication.checkAdmin,
     userController.findByEmail
   );
+
+
 router.put(
   `/admin/updateUser/:email/`,
   userAuthentication.checkAuthenticated,
@@ -128,7 +221,68 @@ router.put(
   updatePasswordSchema,
   validateRequsestSchema,
   userController.updatePassword
-);
+);put:
+tags:
+  - Users
+summary: Actualizar una nuevo usuario.
+description: Actualiza el usuario definido en el path añadiendo los atributos especificados en el body.
+operationId: updateUser
+parameters:
+  - name: name
+    in: query
+    description: nombre usuario.
+    required: true
+    explode: false
+    schema:
+      type: string
+      post:
+  - name: surnames
+    in: query
+    description: Apellidos usuario.
+    required: true
+    explode: false
+    schema:
+      type: string
+  - name: is_superUser
+    in: query
+    description: El Usuario es superusuario.
+    required: false
+    explode: false
+    schema:
+      type: boolean
+  - name: dateJoined
+    in: query
+    description: Longitud donde se encuentra la nueva estación de carga.
+    required: true
+    explode: false
+    schema:
+      type: string
+
+responses:
+  200:
+    description: Successful operation
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: "#/components/examples/200Update"
+  400:
+    description: Bad request
+    content:
+      application/json:
+        examples:
+          example:
+            $ref: "#/components/examples/400"
+  404:
+    description: Bad request
+    content:
+      application/json:
+        examples:
+          example:
+            $ref: "#/components/examples/404"
+
+
 router.put(
   `/me/updateInfo/`,
   userAuthentication.checkAuthenticated,
@@ -137,6 +291,37 @@ router.put(
   validateRequsestSchema,
   userController.updateInfo
 );
+
+delete:
+    tags:
+      - Users
+    summary: Eliminar un usuario concreta
+    description: Eliminar la usuario especificado en el path.
+    operationId: deleteUsuario
+    parameters:
+      - name: ID
+        in: path
+        description: Identificador de el usuario que queremos eliminar
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/examples/200Delete"
+      404:
+        description: Not found
+        content:
+          application/json:
+            examples:
+              example:
+                $ref: "#/components/examples/404"
+                
 router.delete(
   `/me/deleteUser/`,
   userAuthentication.checkAuthenticated,
@@ -150,6 +335,31 @@ router.post(
   validateRequsestSchema,
   userController.registerUser
 );
+
+/users/login:
+  post:
+    tags:
+      - Users
+    summary: Loguear un usuario existente.
+    description: Hace Login de un usuario ya existente con el Id como el email pasado como parametro y la contraseña pasada como parametro.
+    operationId: LogintUsuario
+    parameters:
+      - name: Email
+        in: query
+        description: nombre usuario.
+        required: true
+        explode: false
+        schema:
+          type: string
+          post:
+      - name: password
+        in: query
+        description: Apellidos usuario.
+        required: true
+        explode: false
+        schema:
+          type: string
+
 router.post(
   `/login`,
   loginSchema,
