@@ -154,7 +154,7 @@ router.get(
   userController.countAllUsers
 ),
   /**
- * @swagge
+ * @swagger
 users/Email:
 *  get:
 *    tags:
@@ -208,12 +208,53 @@ router.put(
   userController.updateUser
 );
 
+/**
+ * @swagger
+users/Email:
+*  get:
+*    tags:
+*      - Users
+*    summary: Obtener el Email de todas las usuaris
+*    description: Obtener informacion de todos las usuarios de la DB.
+*    operationId: getInfo
+*    responses:
+*      200:
+*        description: Successful operation
+*        content:
+*          application/json:
+*            schema:
+*              type: array
+*              items:
+*                $ref: "#/components/schemas/Users"
+*      204:
+*        description: "No content"
+*        content:
+*          application/json:
+*            examples:
+*              example:
+*                $ref: "#/components/examples/204"
+*      400:
+*        description: Bad request
+*        content:
+*          application/json:
+*            examples:
+*              example:
+*                $ref: "#/components/examples/400"
+*      404:
+*        description: Not found
+*        content:
+*          application/json:
+*            examples:
+*              example:
+*                $ref: "#/components/examples/404"
+*/
 router.get(
   `/me/getInfo/`,
   userAuthentication.checkAuthenticated,
   userAuthentication.checkBlocked,
   userController.getInfo
 );
+
 router.put(
   `/me/updatePassword/`,
   userAuthentication.checkAuthenticated,
@@ -433,6 +474,56 @@ router.post(
   userController.registerUser
 );
 
+/**
+ * @swagger
+users/login:
+*  post:
+*    tags:
+*      - Users
+*    summary: Iniciar sesión con un usuario existente.
+*    description: Iniciar sesión con un usuario existente en la DB con el correo electrónico y la contraseña especificados.
+*    operationId: postLogin
+*    parameters:
+*      - name: email
+*        in: query
+*        description: Correo electrónico del usuario.
+*        required: true
+*        explode: false
+*        schema:
+*          type: string
+*      - name: password
+*        in: query
+*        description: Contraseña del usuario.
+*        required: true
+*        explode: false
+*        schema:
+*          type: string
+*    responses:
+*      200:
+*        description: Operación exitosa.
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/schemas/Users'
+*      400:
+*        description: Solicitud incorrecta.
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/examples/400'
+*      401:
+*        description: La contraseña es incorrecta.
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/examples/401'
+*      404:
+*        description: El usuario no ha sido encontrado.
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/examples/404'
+*/
 router.post(
   `/login`,
   loginSchema,
@@ -441,18 +532,231 @@ router.post(
   userAuthentication.checkBlocked,
   userController.loginUser
 );
+
+/**
+ * @swagger
+users/logout:
+*  post:
+*    tags:
+*      - Users
+*    summary: Cerrar sesión con un usuario existente.
+*    description: Cerrar sesión con un usuario existente en la aplicación.
+*    operationId: postLogout
+*    parameters:
+*      - name: req
+*        in: query
+*        description: Objeto de solicitud.
+*        required: true
+*        explode: false
+*        schema:
+*          type: object
+*      - name: res
+*        in: query
+*        description: Objeto de respuesta.
+*        required: true
+*        explode: false
+*        schema:
+*          type: object
+*      - name: next
+*        in: query
+*        description: Función siguiente.
+*        required: true
+*        explode: false
+*        schema:
+*          type: function
+*    responses:
+*      200:
+*        description: Operación exitosa.
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                message:
+*                  type: string
+*                  example: "User logged out successfully."
+*      400:
+*        description: Solicitud incorrecta.
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/examples/400'
+*      401:
+*        description: No autorizado.
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/examples/401'
+*      404:
+*        description: El usuario no ha sido encontrado.
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/examples/404'
+*/
 router.post(
   `/logout`,
   userAuthentication.checkAuthenticated,
   userAuthentication.checkBlocked,
   userController.logOut
 );
+
+/**
+ * @swagger
+ * users/resetForgottenPassword/sendMail:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Enviar correo electrónico para restablecer contraseña olvidada.
+ *     description: Enviar correo electrónico para restablecer la contraseña olvidada de un usuario existente en la aplicación.
+ *     operationId: postResetForgottenPasswordEmail
+ *     parameters:
+ *       - name: req
+ *         in: query
+ *         description: Objeto de solicitud.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: object
+ *       - name: res
+ *         in: query
+ *         description: Objeto de respuesta.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: object
+ *       - name: next
+ *         in: query
+ *         description: Función siguiente.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: function
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: Correo electrónico del usuario para el que se desea restablecer la contraseña.
+ *                 example: "user@example.com"
+ *     responses:
+ *       200:
+ *         description: Operación exitosa.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "The password reset mail has been sent to the indicated email."
+ *       400:
+ *         description: Solicitud incorrecta.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/examples/400'
+ *       401:
+ *         description: No autorizado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/examples/401'
+ *       404:
+ *         description: El usuario no ha sido encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/examples/404'
+ */
 router.post(
   "/resetForgottenPassword/sendMail",
   emailInputSchema,
   validateRequsestSchema,
   userController.resetForgottenPasswordEmail
 );
+
+/**
+ * @swagger
+ * users/resetForgottenPassword/resetPassword:
+ *  post:
+ *    tags:
+ *      - Users
+ *    summary: Restablecer contraseña olvidada.
+ *    description: Restablecer la contraseña olvidada de un usuario existente en la aplicación utilizando un token de restablecimiento de contraseña.
+ *    operationId: postResetPassword
+ *    parameters:
+ *      - name: req
+ *        in: query
+ *        description: Objeto de solicitud.
+ *        required: true
+ *        explode: false
+ *        schema:
+ *          type: object
+ *      - name: res
+ *        in: query
+ *        description: Objeto de respuesta.
+ *        required: true
+ *        explode: false
+ *        schema:
+ *          type: object
+ *      - name: next
+ *        in: query
+ *        description: Función siguiente.
+ *        required: true
+ *        explode: false
+ *        schema:
+ *          type: function
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              token:
+ *                type: string
+ *                description: Token de restablecimiento de contraseña.
+ *                example: "1a2b3c4d5e"
+ *              newPassword:
+ *                type: string
+ *                description: Nueva contraseña del usuario.
+ *                example: "newPassword123"
+ *    responses:
+ *      200:
+ *        description: Operación exitosa.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "Password reset successful."
+ *      400:
+ *        description: Solicitud incorrecta.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/examples/400'
+ *      401:
+ *        description: No autorizado.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/examples/401'
+ *      404:
+ *        description: El usuario no ha sido encontrado.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/examples/404'
+ */
+
 router.post(
   "/resetForgottenPassword/resetPassword",
   resetPasswordSchema,
