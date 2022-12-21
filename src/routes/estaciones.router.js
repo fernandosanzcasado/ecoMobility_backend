@@ -9,10 +9,6 @@ router.get(`/coordenadas`, estacionesController.getTableCoord);
 
 router.get(`/direccion`, estacionesController.getTableDir);
 
-router.get("/bicing_station_status", estacionesController.bicing);
-router.get("/bicing_station_info", estacionesController.bicing_segundo);
-router.get("/bicing3", estacionesController.bicing_tercero);
-
 router.get(`/:Id`, estacionesController.findById);
 
 router.get(`/:Id/coordenadas`, estacionesController.getCoordById);

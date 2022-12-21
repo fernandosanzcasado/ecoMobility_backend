@@ -2,6 +2,7 @@ const express = require("express");
 
 const usersRouter = require("./user.router");
 const estacionesRouter = require("./estaciones.router");
+const bicingRouter = require("./bicing.router");
 
 function routerApi(app) {
   const router = express.Router();
@@ -12,6 +13,7 @@ function routerApi(app) {
   });
   router.use("/users", usersRouter);
   router.use("/estaciones", estacionesRouter);
+  router.use("/bicing", bicingRouter);
 }
 
 module.exports = routerApi;
