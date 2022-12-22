@@ -27,7 +27,7 @@ initializePassport(passport,
 )
 
 router.use(session({
-    secret: 'YUNG_BEEF',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
 }))
@@ -43,9 +43,11 @@ router.put(`/admin/updateUser/:email/`, userAuthentication.checkAuthenticated,us
 
 
 router.get(`/me/getInfo/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.getInfo);
+router.get(`/me/getAchievements/`, userAuthentication.checkAuthenticated, userAuthentication.checkBlocked, userController.getAchievements);
 router.put(`/me/updatePassword/`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
 router.put(`/me/updateInfo/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
 router.delete(`/me/deleteUser/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.deleteUser);
+
 
 
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
