@@ -141,6 +141,9 @@ class userController{
         }
     }
 
+    async getAchievements(req,res,next){
+        res.json({ achievements: req.user.achievements});
+    }
 
 }
 
