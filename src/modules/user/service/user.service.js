@@ -93,6 +93,12 @@ class userService {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
+    const achievements = [];
+
+    for(var i = 0; i < 7; ++i){
+      achievements.push({id: i, value: 0});
+    }
+
     
 
     const newUser = await userRepository.createUser({
@@ -100,6 +106,7 @@ class userService {
       name: data.name,
       surnames: data.surnames,
       password: hashedPassword,
+      achievements: achievements,
     });
     return newUser;
   }
