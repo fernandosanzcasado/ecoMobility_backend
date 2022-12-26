@@ -9,21 +9,46 @@ const SECOND_URL =
 
 class bicingRepository {
   async bicingInformation() {
-    console.log("repo");
-
     const data = await axios.get(FIRST_URL).catch((err) => {
       throw new BicingServerError(err.message);
     });
-    console.log(data.data.data);
     return data.data.data;
   }
 
   async bicingStatus() {
-    const data = await axios(FIRST_URL);
+    const data = await axios.get(SECOND_URL).catch((err) => {
+      throw new BicingServerError(err.message);
+    });
+    return data.data.data;
   }
 
-  async bicingInformationById() {
-    const data = await axios(FIRST_URL);
+  async bicingInformationById(id) {
+    const data = await axios.get(FIRST_URL).catch((err) => {
+      throw new BicingServerError(err.message);
+    });
+    const station = data.data.data.stations.find((s) => s.station_id === id);
+    if (!station) {
+      throw new EstacionNotFoundError(`Station with id ${id} not found`);
+    }
+    return station;
+  }
+
+  async bicingStatusById(id) {
+    const data = await axios.get(SECOND_URL).catch((err) => {
+      throw new BicingServerError(err.message);
+    });
+    const station = data.data.data.stations.find((s) => s.station_id === id);
+    if (!station) {
+      throw new EstacionNotFoundError(`Station with id ${id} not found`);
+    }
+    return station;
+  }
+
+  async bicingCount() {
+    const data = await axios.get(FIRST_URL).catch((err) => {
+      throw new BicingServerError(err.message);
+    });
+    return data.data.data.stations.length;
   }
 }
 
