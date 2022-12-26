@@ -46,12 +46,13 @@ router.get(`/me/getInfo/`, userAuthentication.checkAuthenticated,userAuthenticat
 router.get(`/me/getAchievements/`, userAuthentication.checkAuthenticated, userAuthentication.checkBlocked, userController.getAchievements);
 router.put(`/me/updatePassword/`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
 router.put(`/me/updateInfo/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
+router.put(`/me/uploadProfileImage/`, userAuthentication.checkAuthenticated, userAuthentication.checkBlocked, userController.uploadProfileImage);
 router.delete(`/me/deleteUser/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.deleteUser);
 
 
 
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
-router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'),userAuthentication.checkBlocked, userController.loginUser);
+router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/logout`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked,userController.logOut);
 router.post('/resetForgottenPassword/sendMail',emailInputSchema, validateRequsestSchema, userController.resetForgottenPasswordEmail);
 router.post('/resetForgottenPassword/resetPassword',resetPasswordSchema, validateRequsestSchema,userController.resetPassword);

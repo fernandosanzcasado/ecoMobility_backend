@@ -3,11 +3,13 @@ const app = express();
 const port = 3000;
 
 const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
 require(`dotenv`).config();
 
 const routerApi = require("./src/routes");
 
 app.use(bodyParser.json());
+app.use(fileUpload());
 
 routerApi(app);
 

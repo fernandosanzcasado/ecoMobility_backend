@@ -4,10 +4,14 @@ const { json } = require("body-parser");
 const transporter = require("../../../helpers/nodemailer");
 const tokenService = require("../../token/service/token.service");
 const userRepository = require("../repository/user.repository");
+const BLOBsRepository = require('../../BLOBs.repository');
 
 const UserNotFoundError = require("../../../errors/user.errors/userNotFound");
 const IncorrectPassword = require("../../../errors/user.errors/incorrectPassword");
 const UserAlreadyExists = require("../../../errors/user.errors/userAlreadyExists");
+const ProfilePictureWrongFormat = require("../../../errors/user.errors/profilePictureWrongFormat");
+const ProfilePictureWrongExtension = require("../../../errors/user.errors/profilePictureWrongExtension");
+const ProfilePictureTooBig = require("../../../errors/user.errors/profilePictureTooBig");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class userService {
@@ -61,6 +65,31 @@ class userService {
     return await userRepository.updateUserInfo(email, info);
   }
 
+  async uploadProfileImage(email, imageInfo){
+    const extension = imageInfo.name.split('.');
+
+    if(extension.length <= 1){
+      throw new ProfilePictureWrongFormat();
+    }
+
+
+    if(extension[extension.length - 1] !== 'png' && extension[extension.length - 1] !== 'jpeg' && extension[extension.length - 1] !== 'gif'){
+      throw new ProfilePictureWrongExtension();
+    }
+
+    if(imageInfo.size > 2000000){
+      throw new ProfilePictureTooBig();
+    }
+
+    const profileImagePath = 'ecomobility/users/' + email +'/' + imageInfo.md5 + '.' + extension[extension.length - 1];
+
+    await userRepository.uploadProfileImage(email, profileImagePath);
+    await BLOBsRepository.uploadImage(profileImagePath, imageInfo.data);
+    return;
+
+
+  }
+
   async deleteUser(email) {
     return await userRepository.deleteUserByEmail(email);
   }
@@ -98,8 +127,6 @@ class userService {
     for(var i = 0; i < 7; ++i){
       achievements.push({id: i, value: 0});
     }
-
-    
 
     const newUser = await userRepository.createUser({
       email: data.email,
