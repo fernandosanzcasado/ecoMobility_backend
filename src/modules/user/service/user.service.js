@@ -9,8 +9,6 @@ const BLOBsRepository = require('../../BLOBs.repository');
 const UserNotFoundError = require("../../../errors/user.errors/userNotFound");
 const IncorrectPassword = require("../../../errors/user.errors/incorrectPassword");
 const UserAlreadyExists = require("../../../errors/user.errors/userAlreadyExists");
-const ProfilePictureWrongFormat = require("../../../errors/user.errors/profilePictureWrongFormat");
-const ProfilePictureWrongExtension = require("../../../errors/user.errors/profilePictureWrongExtension");
 const ProfilePictureTooBig = require("../../../errors/user.errors/profilePictureTooBig");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
@@ -66,17 +64,8 @@ class userService {
   }
 
   async uploadProfileImage(email, imageInfo){
-    const extension = imageInfo.name.split('.');
-
-    if(extension.length <= 1){
-      throw new ProfilePictureWrongFormat();
-    }
-
-
-    if(extension[extension.length - 1] !== 'png' && extension[extension.length - 1] !== 'jpeg' && extension[extension.length - 1] !== 'gif'){
-      throw new ProfilePictureWrongExtension();
-    }
-
+    const extension = imageInfo.name.toLowerCase().split('.');
+  
     if(imageInfo.size > 2000000){
       throw new ProfilePictureTooBig();
     }
@@ -184,6 +173,11 @@ class userService {
   async countAllUsers(){
     const users = await userRepository.getAllUsers();
     return users.Count;
+  }
+
+  async getProfileImage(profileImagePath){
+    const image = await BLOBsRepository.getImage(profileImagePath);
+    return image;
   }
 
 

@@ -56,7 +56,7 @@ class userController{
 
     async uploadProfileImage(req,res,next){
         try{
-            await userService.uploadProfileImage(req.user.email, req.files.profileImage);
+            await userService.uploadProfileImage(req.user.email, req.files['profileImage']);
             res.json({message: "User profile image uploaded successfully."});
         }catch(err){
             next(err);
@@ -152,6 +152,15 @@ class userController{
 
     async getAchievements(req,res,next){
         res.json({ achievements: req.user.achievements});
+    }
+
+    async getProfileImage(req,res,next){
+        try{
+            const imageData = await userService.getProfileImage(req.user.profileImagePath);
+            res.json(imageData);
+        }catch(err){
+            next(err);
+        }
     }
 
 

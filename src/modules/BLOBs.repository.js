@@ -19,6 +19,14 @@ class BLOBsRepository{
 
     }
 
+    async getImage(path){
+        const params = {
+            Bucket: this.bucket, 
+            Key: path, 
+        };
+        return s3.getObject(params).promise();
+    }
+
 }
 
 module.exports = new BLOBsRepository();
