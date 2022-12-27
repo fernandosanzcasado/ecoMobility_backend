@@ -95,29 +95,30 @@ router.use(passport.initialize());
  */
 
 /**
- * * @swagger
- *    get:
- *        tags:
- *        - Usuarios
- *        summary: Obtener todas los usuarios
- *        description: Obtener todas las usuarios de la DB con todos sus atributos.
- *        operationId: getAllUsuarios
- *        responses:
- *        200:
- *            description: Successful operation
- *            content:
- *            application/json:
- *                schema:
- *                type: array
- *                items:
- *                    $ref: "#/components/schemas/Users"
- *        204:
- *            description: "No content"
- *            content:
- *            application/json:
- *                examples:
- *                example:
- *                    $ref: "#/components/examples/204"
+ * @swagger
+ * /users/admin/getAllUsers/:
+ *   get:
+ *     tags:
+ *       - Usuarios
+ *     summary: Obtener todas los usuarios
+ *     description: Obtener todas las usuarios de la DB con todos sus atributos.
+ *     operationId: getAllUsuarios
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Users"
+ *       204:
+ *         description: "No content"
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/204"
  */
 
 router.get(
@@ -130,7 +131,7 @@ router.get(
 
 /**
  * @swagger
- * /users/count:
+ * users/admin/getAllUsers/count:
  *   get:
  *     tags:
  *       - Estaciones
@@ -146,6 +147,7 @@ router.get(
  *               type: integer
  *               example: 207
  */
+
 router.get(
   `/admin/getAllUsers/count`,
   userAuthentication.checkAuthenticated,
@@ -154,51 +156,91 @@ router.get(
   userController.countAllUsers
 ),
   /**
- * @swagger
-users/Email:
-*  get:
-*    tags:
-*      - Users
-*    summary: Obtener el Email de todas las usuaris
-*    description: Obtener los atributos email y ID de todos las usuarios de la DB.
-*    operationId: getDirAllUsers
-*    responses:
-*      200:
-*        description: Successful operation
-*        content:
-*          application/json:
-*            schema:
-*              type: array
-*              items:
-*                $ref: "#/components/schemas/Users"
-*      204:
-*        description: "No content"
-*        content:
-*          application/json:
-*            examples:
-*              example:
-*                $ref: "#/components/examples/204"
-*      400:
-*        description: Bad request
-*        content:
-*          application/json:
-*            examples:
-*              example:
-*                $ref: "#/components/examples/400"
-*      404:
-*        description: Not found
-*        content:
-*          application/json:
-*            examples:
-*              example:
-*                $ref: "#/components/examples/404"
-*/
+   * @swagger
+   *  users/admin/getUser/:email:
+   *  get:
+   *    tags:
+   *      - Users
+   *    summary: Obtener el Email de todas las usuaris
+   *    description: Obtener los atributos email y ID de todos las usuarios de la DB.
+   *    operationId: getDirAllUsers
+   *    responses:
+   *      200:
+   *        description: Successful operation
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: array
+   *              items:
+   *                $ref: "#/components/schemas/Users"
+   *      204:
+   *        description: "No content"
+   *        content:
+   *          application/json:
+   *            examples:
+   *              example:
+   *                $ref: "#/components/examples/204"
+   *      400:
+   *        description: Bad request
+   *        content:
+   *          application/json:
+   *            examples:
+   *              example:
+   *                $ref: "#/components/examples/400"
+   *      404:
+   *        description: Not found
+   *        content:
+   *          application/json:
+   *            examples:
+   *              example:
+   *                $ref: "#/components/examples/404"
+   */
   router.get(
     `/admin/getUser/:email/`,
     userAuthentication.checkAuthenticated,
     userAuthentication.checkAdmin,
     userController.findByEmail
   );
+/**
+ * @swagger
+ *  users/admin/getUser/:email/
+ *  get:
+ *    tags:
+ *      - Users
+ *    summary: Actualizar el Email de todos las usuaris
+ *    description: Actualizar atributo email  de todos las usuarios de la DB.
+ *    operationId: getDirAllUsers
+ *    responses:
+ *      200:
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                $ref: "#/components/schemas/Users"
+ *      204:
+ *        description: "No content"
+ *        content:
+ *          application/json:
+ *            examples:
+ *              example:
+ *                $ref: "#/components/examples/204"
+ *      400:
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            examples:
+ *              example:
+ *                $ref: "#/components/examples/400"
+ *      404:
+ *        description: Not found
+ *        content:
+ *          application/json:
+ *            examples:
+ *              example:
+ *                $ref: "#/components/examples/404"
+ */
 
 router.put(
   `/admin/updateUser/:email/`,
@@ -210,44 +252,44 @@ router.put(
 
 /**
  * @swagger
-users/Email:
-*  get:
-*    tags:
-*      - Users
-*    summary: Obtener el Email de todas las usuaris
-*    description: Obtener informacion de todos las usuarios de la DB.
-*    operationId: getInfo
-*    responses:
-*      200:
-*        description: Successful operation
-*        content:
-*          application/json:
-*            schema:
-*              type: array
-*              items:
-*                $ref: "#/components/schemas/Users"
-*      204:
-*        description: "No content"
-*        content:
-*          application/json:
-*            examples:
-*              example:
-*                $ref: "#/components/examples/204"
-*      400:
-*        description: Bad request
-*        content:
-*          application/json:
-*            examples:
-*              example:
-*                $ref: "#/components/examples/400"
-*      404:
-*        description: Not found
-*        content:
-*          application/json:
-*            examples:
-*              example:
-*                $ref: "#/components/examples/404"
-*/
+ * users/Email:
+ *  get:
+ *    tags:
+ *      - Users
+ *    summary: Obtener el Email de todas las usuaris
+ *    description: Obtener informacion de todos las usuarios de la DB.
+ *    operationId: getInfo
+ *    responses:
+ *      200:
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                $ref: "#/components/schemas/Users"
+ *      204:
+ *        description: "No content"
+ *        content:
+ *          application/json:
+ *            examples:
+ *              example:
+ *                $ref: "#/components/examples/204"
+ *      400:
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            examples:
+ *              example:
+ *                $ref: "#/components/examples/400"
+ *      404:
+ *        description: Not found
+ *        content:
+ *          application/json:
+ *            examples:
+ *              example:
+ *                $ref: "#/components/examples/404"
+ */
 router.get(
   `/me/getInfo/`,
   userAuthentication.checkAuthenticated,
@@ -378,95 +420,78 @@ router.delete(
 
 /**
  * @swagger
-users/register:
-*  post:
-*  tags:
-*    - Users
-*  summary: Crear un nuevo usuario.
-*  description: Crear una nueva usuario en la DB con los atributos especificados.
-*  operationId: postUsuario
-*  parameters:
-*    - name: name
-*      in: query
-*      description: nombre usuario.
-*      required: true
-*      explode: false
-*      schema:
-*        type: string
-*        post:
-*    - name: surnames
-*      in: query
-*      description: Apellidos usuario.
-*      required: true
-*      explode: false
-*      schema:
-*        type: string
-*    - name: is_superUser
-*      in: query
-*      description: El Usuario es superusuario.
-*      required: false
-*      explode: false
-*      schema:
-*        type: boolean
-*    - name: dateJoined
-*      in: query
-*      description: Longitud donde se encuentra la nueva estación de carga.
-*      required: true
-*      explode: false
-*      schema:
-*        type: string
-*
-*components:
-*  schemas:
-*    Users:
-*      type: object
-*      properties:
-*        Email:
-*          type: string
-*          example: "gmarti@gmail.com"
-*        Contraseña:
-*          type: string
-*          example: "0sdddad8"
-*        Fecha_registro:
-*          type: string
-*          example: "21/08/2022"
-*        name:
-*          type: string
-*          example: "paco"
-*        apellidos:
-*          type: string
-*          example: "adda"
-*        is_superUser:
-*          type: boolean
-*          example: false
-*
-*  examples:
-*    204:
-*      value:
-*        status: 204
-*        error: "No content"
-*        message: "No content"
-*    200Update:
-*      value:
-*        status: 200
-*        error: "Successful operation"
-*        message: "Successful update"
-*    200Delete:
-*      value:
-*        status: 200
-*        error: "Successful operation"
-*        message: "Successful delete"
-*    400:
-*      value:
-*        status: 400
-*        error: "Bad request"
-*        message: "Missing attributes"
-*    404:
-*      value:
-*        status: 404
-*        error: "Not found"
-*        message: "ID does not exist"
-*/
+ * /users/register:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Crear usuario
+ *     description: Crear un usuario y guardarlo en la base de datos.
+ *     operationId: createUsuario
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/Users"
+ *    parameters:
+      - name: name
+        in: query
+        description: nombre usuario.
+        required: true
+        explode: false
+        schema:
+          type: string
+          post:
+      - name: surnames
+        in: query
+        description: Apellidos usuario.
+        required: true
+        explode: false
+        schema:
+          type: string
+      - name: is_superUser
+        in: query
+        description: El Usuario es superusuario.
+        required: false
+        explode: false
+        schema:
+          type: boolean
+      - name: dateJoined
+        in: query
+        description: Longitud donde se encuentra la nueva estación de carga.
+        required: true
+        explode: false
+        schema:
+        type: string
+ *     responses:
+ *       201:
+ *         description: "Created"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario creado con éxito"
+ *                 usuario:
+ *                   $ref: "#/components/schemas/Users"
+ *       400:
+ *         description: "Bad request"
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/400"
+ *       409:
+ *         description: "Conflict"
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/409"
+ */
+
 router.post(
   `/register`,
   registerSchema,
@@ -476,7 +501,7 @@ router.post(
 
 /**
  * @swagger
-users/login:
+   users/login:
 *  post:
 *    tags:
 *      - Users
