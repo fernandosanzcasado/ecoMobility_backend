@@ -1,6 +1,15 @@
 const bicingService = require("../service/bicing.service");
 
 class bicingController {
+  async bicingAll(req, res) {
+    try {
+      const id = req.params.id;
+      const data = await bicingService.bicingAll(id);
+      res.json(data);
+    } catch (err) {
+      res.json(err);
+    }
+  }
   async bicingAllById(req, res) {
     try {
       const id = req.params.id;
