@@ -9,11 +9,12 @@ class BLOBsRepository{
         this.bucket = 'ecomobilityblobs'
     }
 
-    async uploadImage(path, data){
+    async uploadImage(path, data, mimeType){
         const params = {
             Bucket: this.bucket, 
             Key: path, 
-            Body: data
+            Body: data,
+            ContentType: mimeType
         };
         return s3.upload(params).promise();
 

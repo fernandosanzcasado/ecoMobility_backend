@@ -156,14 +156,11 @@ class userController{
 
     async getProfileImage(req,res,next){
         try{
-            const imageData = await userService.getProfileImage(req.user.profileImagePath);
-            res.json(imageData);
+            res.json(req.user.profileImagePath);
         }catch(err){
             next(err);
         }
     }
-
-
 }
 
 module.exports = new userController();

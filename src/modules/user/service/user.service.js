@@ -66,14 +66,15 @@ class userService {
   async uploadProfileImage(email, imageInfo){
     const extension = imageInfo.name.toLowerCase().split('.');
   
-    if(imageInfo.size > 2000000){
+    if(imageInfo.size > 1000000){
       throw new ProfilePictureTooBig();
     }
 
     const profileImagePath = 'ecomobility/users/' + email +'/' + imageInfo.md5 + '.' + extension[extension.length - 1];
 
-    await userRepository.uploadProfileImage(email, profileImagePath);
-    await BLOBsRepository.uploadImage(profileImagePath, imageInfo.data);
+    const uploadedImage = await BLOBsRepository.uploadImage(profileImagePath, imageInfo.data, imageInfo.mimetype);
+    await userRepository.uploadProfileImage(email, uploadedImage.Location);
+    
     return;
 
 
@@ -174,13 +175,6 @@ class userService {
     const users = await userRepository.getAllUsers();
     return users.Count;
   }
-
-  async getProfileImage(profileImagePath){
-    const image = await BLOBsRepository.getImage(profileImagePath);
-    return image;
-  }
-
-
 
 }
 
