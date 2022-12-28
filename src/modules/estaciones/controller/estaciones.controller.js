@@ -7,6 +7,11 @@ class estacionesController {
     res.json(data);
   }
 
+  async countEstaciones(req, res) {
+    const data = await estacionesService.countEstaciones();
+    res.json(data);
+  }
+
   async getTableCoord(req, res) {
     const data = await estacionesService.getTableCoord();
     res.json(data);

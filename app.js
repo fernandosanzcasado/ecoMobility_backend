@@ -1,6 +1,38 @@
 const express = require("express");
+
+const dotenv = require("dotenv");
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "ecoMobility - Grovyle API",
+      description: "API documentation for ecoMobility release v2.0 Grovyle.",
+      version: "2.0.0",
+      contact: {
+        name: "Mail",
+        email: "ecomobilityupc@gmail.com",
+      },
+    },
+    servers: [
+      {
+        url: "http://localhost:3000/api/v2/",
+      },
+    ],
+  },
+  apis: ["./src/routes/*.js"],
+};
+
+const specs = swaggerJsDoc(swaggerOptions);
+
 const app = express();
-const port = 3000;
+
+app.use("/apiDocs", swaggerUI.serve, swaggerUI.setup(specs));
+
+dotenv.config();
+const port = process.env.PORT || 3000;
 
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
