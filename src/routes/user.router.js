@@ -18,6 +18,7 @@ const initializePassport = require('../middleware/passport');
 const handleError = require("../middleware/errorHandler");
 const userAuthentication = require("../middleware/userAuthentication");
 const resetPasswordSchema = require("../schemas/resetPasswordSchema");
+const uploadFileSchema = require("../schemas/uploadFileSchema");
 
 const router = express.Router();
 
@@ -44,14 +45,16 @@ router.put(`/admin/updateUser/:email/`, userAuthentication.checkAuthenticated,us
 
 router.get(`/me/getInfo/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.getInfo);
 router.get(`/me/getAchievements/`, userAuthentication.checkAuthenticated, userAuthentication.checkBlocked, userController.getAchievements);
+router.get(`/me/getProfileImage/`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.getProfileImage);
 router.put(`/me/updatePassword/`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
 router.put(`/me/updateInfo/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
+router.put(`/me/uploadProfileImage/`, userAuthentication.checkAuthenticated, userAuthentication.checkBlocked, uploadFileSchema, validateRequsestSchema, userController.uploadProfileImage);
 router.delete(`/me/deleteUser/`, userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.deleteUser);
 
 
 
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
-router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'),userAuthentication.checkBlocked, userController.loginUser);
+router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
 router.post(`/logout`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked,userController.logOut);
 router.post('/resetForgottenPassword/sendMail',emailInputSchema, validateRequsestSchema, userController.resetForgottenPasswordEmail);
 router.post('/resetForgottenPassword/resetPassword',resetPasswordSchema, validateRequsestSchema,userController.resetPassword);
