@@ -17,7 +17,8 @@ class bicingService {
   async bicingCoords() {
     const data = await bicingRepository.bicingInformation();
     console.log("hola");
-    console.log(data.information);
+    console.log(data.information.stations);
+    console.log("llegas");
     const coords = data.information.stations.map((s) => ({
       lat: s.lat,
       lon: s.lon,
@@ -32,8 +33,6 @@ class bicingService {
 
   async bicingInfo() {
     const information = await bicingRepository.bicingInformation();
-    console.log("AQUIIII");
-    console.log(information.data);
     const status = await bicingRepository.bicingStatus();
     return { information, status };
   }
@@ -45,6 +44,7 @@ class bicingService {
   }
 
   async bicingCount() {
+    console.log("he llegado");
     const count = await bicingRepository.bicingCount();
     return { count };
   }

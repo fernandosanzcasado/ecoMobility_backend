@@ -48,6 +48,8 @@ class bicingRepository {
     const data = await axios.get(FIRST_URL).catch((err) => {
       throw new BicingServerError(err.message);
     });
+    console.log("AQUI");
+    console.log(data.data.data.stations.length);
     return data.data.data.stations.length;
   }
 }

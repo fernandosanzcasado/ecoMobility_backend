@@ -16,6 +16,7 @@ class bicingController {
         const status = data.status.stations.find((s) => s.id === station.id);
         return {
           id: status.id,
+          coordinates: `(${station.lat}, ${station.lon})`, // include latitude and longitude
           num_bikes_available: status.num_bikes_available,
           num_bikes_available_types: status.num_bikes_available_types,
           num_docks_available: status.num_docks_available,
@@ -46,13 +47,14 @@ class bicingController {
       const status = data.status;
 
       const responseData = {
+        coordinates: `(${station.lat}, ${station.lon})`, // include latitude and longitude
         num_bikes_available: status.num_bikes_available,
         num_bikes_available_types: status.num_bikes_available_types,
         num_docks_available: status.num_docks_available,
         Street: station.address,
         nseaters: station.slots,
         go: station.nearby_distance,
-        "Number of shits to leave the bikes": station._ride_code_support,
+        "Number of docks availabe": station._ride_code_support,
         coordinates: `(${station.lat}, ${station.lon})`,
         "Postal Code": station.post_code,
         "Total capacity": station.capacity,
@@ -66,8 +68,9 @@ class bicingController {
   }
   async bicingCoords(req, res) {
     try {
-      const data = await bicingService.bicingCoords();
+      const data = await bicingService.bicingInfo();
       const stations = data.information.stations;
+      console.log("Stations:", stations);
 
       // create a new array of objects with the desired information
       const cleanedData = stations.map((station) => ({
@@ -100,7 +103,18 @@ class bicingController {
   async bicingInfo(req, res) {
     try {
       const data = await bicingService.bicingInfo();
-      res.json(data);
+
+      // create a new array of objects with the desired information
+      const cleanedData = data.information.stations.map((station) => {
+        return {
+          id: station.id,
+          coordinates: `(${station.lat}, ${station.lon})`, // include latitude and longitude
+          Street: station.address, // basic information
+          "Postal Code": station.post_code,
+        };
+      });
+
+      res.json(cleanedData);
     } catch (err) {
       res.json(err);
     }
@@ -118,6 +132,7 @@ class bicingController {
 
   async bicingCount(req, res) {
     try {
+      console.log("controller count");
       const data = await bicingService.bicingCount();
       res.json(data);
     } catch (err) {
