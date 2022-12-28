@@ -35,10 +35,13 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 
 const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
+require(`dotenv`).config();
 
 const routerApi = require("./src/routes");
 
 app.use(bodyParser.json());
+app.use(fileUpload());
 
 routerApi(app);
 

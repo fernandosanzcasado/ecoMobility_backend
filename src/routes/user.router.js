@@ -17,14 +17,15 @@ const initializePassport = require("../middleware/passport");
 const handleError = require("../middleware/errorHandler");
 const userAuthentication = require("../middleware/userAuthentication");
 const resetPasswordSchema = require("../schemas/resetPasswordSchema");
+const uploadFileSchema = require("../schemas/uploadFileSchema");
 
 const router = express.Router();
 
 initializePassport(passport, (email) => userService.findByEmail(email));
 
-router.use(
-  session({
-    secret: "YUNG_BEEF",
+
+router.use(session({
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
   })
@@ -694,6 +695,10 @@ router.post(
   validateRequsestSchema,
   userController.resetForgottenPasswordEmail
 );
+
+router.get(`/me/getAchievements/`, userAuthentication.checkAuthenticated, userAuthentication.checkBlocked, userController.getAchievements);
+router.get(`/me/getProfileImage/`,userAuthentication.checkAuthenticated,userAuthentication.checkBlocked, userController.getProfileImage);
+router.put(`/me/uploadProfileImage/`, userAuthentication.checkAuthenticated, userAuthentication.checkBlocked, uploadFileSchema, validateRequsestSchema, userController.uploadProfileImage);
 
 /**
  * @swagger
