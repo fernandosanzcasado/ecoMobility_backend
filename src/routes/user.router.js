@@ -99,7 +99,7 @@ router.use(passport.initialize());
  * /users/admin/getAllUsers/:
  *   get:
  *     tags:
- *       - Usuarios
+ *       - Users
  *     summary: Obtener todas los usuarios
  *     description: Obtener todas las usuarios de la DB con todos sus atributos.
  *     operationId: getAllUsuarios
@@ -131,21 +131,22 @@ router.get(
 
 /**
  * @swagger
- * users/admin/getAllUsers/count:
- *   get:
- *     tags:
- *       - Estaciones
- *     summary: Obtener la cantidad de users en la base de datos.
- *     description: Obtener en una variable el numero de instancias en la base de datos de users.
- *     operationId: countEstaciones
- *     responses:
- *       200:
- *         description: Successful operation
- *         content:
- *           integer:
- *             schema:
- *               type: integer
- *               example: 207
+ * paths:
+ *  /users/admin/getAllUsers/count:
+ *      get:
+ *          tags:
+ *            - Users
+ *          summary: Obtener la cantidad de users en la base de datos.
+ *          description: Obtener en una variable el numero de instancias en la base de datos de users.
+ *          operationId: countAllUsers
+ *          responses:
+ *            200:
+ *              description: Successful operation
+ *              content:
+ *                integer:
+ *                  schema:
+ *                    type: integer
+ *                    example: 207
  */
 
 router.get(
@@ -201,101 +202,90 @@ router.get(
     userAuthentication.checkAdmin,
     userController.findByEmail
   );
-/**
- * @swagger
- *  users/admin/getUser/:email/
- *  get:
- *    tags:
- *      - Users
- *    summary: Actualizar el Email de todos las usuaris
- *    description: Actualizar atributo email  de todos las usuarios de la DB.
- *    operationId: getDirAllUsers
- *    responses:
- *      200:
- *        description: Successful operation
- *        content:
- *          application/json:
- *            schema:
- *              type: array
- *              items:
- *                $ref: "#/components/schemas/Users"
- *      204:
- *        description: "No content"
- *        content:
- *          application/json:
- *            examples:
- *              example:
- *                $ref: "#/components/examples/204"
- *      400:
- *        description: Bad request
- *        content:
- *          application/json:
- *            examples:
- *              example:
- *                $ref: "#/components/examples/400"
- *      404:
- *        description: Not found
- *        content:
- *          application/json:
- *            examples:
- *              example:
- *                $ref: "#/components/examples/404"
- */
-
-router.put(
-  `/admin/updateUser/:email/`,
-  userAuthentication.checkAuthenticated,
-  userAuthentication.checkBlocked,
-  userAuthentication.checkAdmin,
-  userController.updateUser
-);
 
 /**
- * @swagger
- * users/Email:
- *  get:
- *    tags:
- *      - Users
- *    summary: Obtener el Email de todas las usuaris
- *    description: Obtener informacion de todos las usuarios de la DB.
- *    operationId: getInfo
- *    responses:
- *      200:
- *        description: Successful operation
- *        content:
- *          application/json:
- *            schema:
- *              type: array
- *              items:
- *                $ref: "#/components/schemas/Users"
- *      204:
- *        description: "No content"
- *        content:
- *          application/json:
- *            examples:
- *              example:
- *                $ref: "#/components/examples/204"
- *      400:
- *        description: Bad request
- *        content:
- *          application/json:
- *            examples:
- *              example:
- *                $ref: "#/components/examples/400"
- *      404:
- *        description: Not found
- *        content:
- *          application/json:
- *            examples:
- *              example:
- *                $ref: "#/components/examples/404"
+ *  @swagger
+ *  users/me/getInfo:
+ *    get:
+ *      tags:
+ *        - Users
+ *      summary: Get user info
+ *      description: Get user info for the authenticated and non-blocked user.
+ *      operationId: getUserInfo
+ *      responses:
+ *        200:
+ *          description: Successful operation
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: "#/components/schemas/UserInfo"
+ *        401:
+ *          description: Unauthorized
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/401"
+ *        403:
+ *          description: Forbidden
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/403"
  */
+
 router.get(
   `/me/getInfo/`,
   userAuthentication.checkAuthenticated,
   userAuthentication.checkBlocked,
   userController.getInfo
 );
+
+/**
+ *  @swagger
+ *  me/updatePassword:
+ *    put:
+ *      tags:
+ *        - Users
+ *      summary: Update user password
+ *      description: Update the password for the authenticated and non-blocked user.
+ *      operationId: updateUserPassword
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/UpdatePassword"
+ *      responses:
+ *        200:
+ *          description: Successful operation
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: "#/components/schemas/User"
+ *        400:
+ *          description: Bad request
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/400"
+ *        401:
+ *          description: Unauthorized
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/401"
+ *        403:
+ *          description: Forbidden
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/403"
+ */
 
 router.put(
   `/me/updatePassword/`,
@@ -307,66 +297,65 @@ router.put(
 );
 /**
  * @swagger
-put:
-*tags:
-*  - Users
-*summary: Actualizar una nuevo usuario.
-*description: Actualiza el usuario definido en el path añadiendo los atributos especificados en el body.
-*operationId: updateUser
-*parameters:
-*  - name: name
-*    in: query
-*    description: nombre usuario.
-*    required: true
-*    explode: false
-*    schema:
-*      type: string
-*      post:
-*  - name: surnames
-*    in: query
-*    description: Apellidos usuario.
-*    required: true
-*    explode: false
-*    schema:
-*      type: string
-*  - name: is_superUser
-*    in: query
-*    description: El Usuario es superusuario.
-*    required: false
-*    explode: false
-*    schema:
-*      type: boolean
-*  - name: dateJoined
-*    in: query
-*    description: Longitud donde se encuentra la nueva estación de carga.
-*    required: true
-*    explode: false
-*    schema:
-*      type: string
-*
-*responses:
-*  200:
-*    description: Successful operation
-*    content:
-*      application/json:
-*        schema:
-*          type: array
-*          items:
-*            $ref: "#/components/examples/200Update"
-*  400:
-*    description: Bad request
-*    content:
-*      application/json:
-*        examples:
-*          example:
-*            $ref: "#/components/examples/400"
-*  404:
-*    description: Bad request
-*    content:
-*      application/json:
-*        examples:
-*          example:
-*            $ref: "#/components/examples/404"
+ * /users/me/updateInfo:
+ *   put:
+ *     tags:
+ *       - Users
+ *     summary: Update a user.
+ *     description: Update the user defined in the path by adding the attributes specified in the body.
+ *     operationId: updateUser
+ *     parameters:
+ *       - name: name
+ *         in: query
+ *         description: User's name.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: surnames
+ *         in: query
+ *         description: User's surnames.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: is_superUser
+ *         in: query
+ *         description: Is the user a superuser.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: boolean
+ *       - name: dateJoined
+ *         in: query
+ *         description: Date when the user joined.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/examples/200Update"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/400"
+ *       404:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *
  */
 
 router.put(
@@ -380,35 +369,37 @@ router.put(
 
 /**
  * @swagger
- *delete:
- *    tags:
- *      - Users
- *    summary: Eliminar un usuario concreta
- *    description: Eliminar la usuario especificado en el path.
- *    operationId: deleteUsuario
- *    parameters:
- *      - name: ID
- *        in: path
- *        description: Identificador de el usuario que queremos eliminar
- *        required: true
- *        schema:
- *          type: string
- *    responses:
- *      200:
- *        description: Successful operation
- *        content:
- *          application/json:
- *            schema:
- *              type: array
- *              items:
- *                $ref: "#/components/examples/200Delete"
- *      404:
- *        description: Not found
- *        content:
- *          application/json:
- *            examples:
- *              example:
- *                $ref: "#/components/examples/404"
+ * paths:
+ *  /users/me/deleteUser/:
+ *    delete:
+ *      tags:
+ *        - Users
+ *      summary: Eliminar un usuario concreta
+ *      description: Eliminar la usuario especificado en el path.
+ *      operationId: deleteUsuario
+ *      parameters:
+ *        - name: ID
+ *          in: path
+ *          description: Identificador de el usuario que queremos eliminar
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        200:
+ *          description: Successful operation
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                  $ref: "#/components/examples/200Delete"
+ *        404:
+ *          description: Not found
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/404"
  */
 
 router.delete(
@@ -433,36 +424,35 @@ router.delete(
  *         application/json:
  *           schema:
  *             $ref: "#/components/schemas/Users"
- *    parameters:
-      - name: name
-        in: query
-        description: nombre usuario.
-        required: true
-        explode: false
-        schema:
-          type: string
-          post:
-      - name: surnames
-        in: query
-        description: Apellidos usuario.
-        required: true
-        explode: false
-        schema:
-          type: string
-      - name: is_superUser
-        in: query
-        description: El Usuario es superusuario.
-        required: false
-        explode: false
-        schema:
-          type: boolean
-      - name: dateJoined
-        in: query
-        description: Longitud donde se encuentra la nueva estación de carga.
-        required: true
-        explode: false
-        schema:
-        type: string
+ *     parameters:
+ *       - name: name
+ *         in: query
+ *         description: nombre usuario.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: surnames
+ *         in: query
+ *         description: Apellidos usuario.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
+ *       - name: is_superUser
+ *         in: query
+ *         description: El Usuario es superusuario.
+ *         required: false
+ *         explode: false
+ *         schema:
+ *           type: boolean
+ *       - name: dateJoined
+ *         in: query
+ *         description: Longitud donde se encuentra la nueva estación de carga.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: string
  *     responses:
  *       201:
  *         description: "Created"
@@ -501,54 +491,54 @@ router.post(
 
 /**
  * @swagger
-   users/login:
-*  post:
-*    tags:
-*      - Users
-*    summary: Iniciar sesión con un usuario existente.
-*    description: Iniciar sesión con un usuario existente en la DB con el correo electrónico y la contraseña especificados.
-*    operationId: postLogin
-*    parameters:
-*      - name: email
-*        in: query
-*        description: Correo electrónico del usuario.
-*        required: true
-*        explode: false
-*        schema:
-*          type: string
-*      - name: password
-*        in: query
-*        description: Contraseña del usuario.
-*        required: true
-*        explode: false
-*        schema:
-*          type: string
-*    responses:
-*      200:
-*        description: Operación exitosa.
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/schemas/Users'
-*      400:
-*        description: Solicitud incorrecta.
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/examples/400'
-*      401:
-*        description: La contraseña es incorrecta.
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/examples/401'
-*      404:
-*        description: El usuario no ha sido encontrado.
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/examples/404'
-*/
+ *  users/login:
+ *   post:
+ *    tags:
+ *      - Users
+ *    summary: Iniciar sesión con un usuario existente.
+ *    description: Iniciar sesión con un usuario existente en la DB con el correo electrónico y la contraseña especificados.
+ *    operationId: postLogin
+ *    parameters:
+ *      - name: email
+ *        in: query
+ *        description: Correo electrónico del usuario.
+ *        required: true
+ *        explode: false
+ *        schema:
+ *          type: string
+ *      - name: password
+ *        in: query
+ *        description: Contraseña del usuario.
+ *        required: true
+ *        explode: false
+ *        schema:
+ *          type: string
+ *    responses:
+ *      200:
+ *        description: Operación exitosa.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Users'
+ *      400:
+ *        description: Solicitud incorrecta.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/examples/400'
+ *      401:
+ *        description: La contraseña es incorrecta.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/examples/401'
+ *      404:
+ *        description: El usuario no ha sido encontrado.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/examples/404'
+ */
 router.post(
   `/login`,
   loginSchema,
@@ -560,65 +550,65 @@ router.post(
 
 /**
  * @swagger
-users/logout:
-*  post:
-*    tags:
-*      - Users
-*    summary: Cerrar sesión con un usuario existente.
-*    description: Cerrar sesión con un usuario existente en la aplicación.
-*    operationId: postLogout
-*    parameters:
-*      - name: req
-*        in: query
-*        description: Objeto de solicitud.
-*        required: true
-*        explode: false
-*        schema:
-*          type: object
-*      - name: res
-*        in: query
-*        description: Objeto de respuesta.
-*        required: true
-*        explode: false
-*        schema:
-*          type: object
-*      - name: next
-*        in: query
-*        description: Función siguiente.
-*        required: true
-*        explode: false
-*        schema:
-*          type: function
-*    responses:
-*      200:
-*        description: Operación exitosa.
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                message:
-*                  type: string
-*                  example: "User logged out successfully."
-*      400:
-*        description: Solicitud incorrecta.
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/examples/400'
-*      401:
-*        description: No autorizado.
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/examples/401'
-*      404:
-*        description: El usuario no ha sido encontrado.
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/examples/404'
-*/
+ *  users/logout:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Cerrar sesión con un usuario existente.
+ *     description: Cerrar sesión con un usuario existente en la aplicación.
+ *     operationId: postLogout
+ *     parameters:
+ *       - name: req
+ *         in: query
+ *         description: Objeto de solicitud.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: object
+ *       - name: res
+ *         in: query
+ *         description: Objeto de respuesta.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: object
+ *       - name: next
+ *         in: query
+ *         description: Función siguiente.
+ *         required: true
+ *         explode: false
+ *         schema:
+ *           type: function
+ *     responses:
+ *       200:
+ *         description: Operación exitosa.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User logged out successfully."
+ *       400:
+ *         description: Solicitud incorrecta.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/examples/400'
+ *       401:
+ *         description: No autorizado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/examples/401'
+ *       404:
+ *         description: El usuario no ha sido encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/examples/404'
+ */
 router.post(
   `/logout`,
   userAuthentication.checkAuthenticated,
