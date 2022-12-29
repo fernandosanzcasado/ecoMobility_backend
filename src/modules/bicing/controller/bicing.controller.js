@@ -6,27 +6,28 @@ class bicingController {
       console.log("Fetching data from Bicing API...");
       const data = await bicingService.bicingInfo();
 
-      console.log("Received data from Bicing API:", data);
+      //console.log("Received data from Bicing API:", data);
 
       const stations = data.information.stations;
-      console.log("Stations:", stations);
+      //console.log("Stations:", stations);
+      console.log("PRUEBAAAAAAAA:");
 
       // create a new array of objects with the desired information
       const cleanedData = stations.map((station) => {
+        console.log(station.id);
         const status = data.status.stations.find((s) => s.id === station.id);
         return {
-          id: status.id,
+          id: station.id, // use id from station object
           coordinates: `(${station.lat}, ${station.lon})`, // include latitude and longitude
-          num_bikes_available: status.num_bikes_available,
-          num_bikes_available_types: status.num_bikes_available_types,
-          num_docks_available: status.num_docks_available,
-          Street: station.address,
-          nseaters: station.slots,
-          "Number of docks availabe": station.num_docks_available,
-          coordinates: `(${station.lat}, ${station.lon})`,
-          "Postal Code": station.post_code,
-          "Total capacity": station.capacity,
-          is_charging_station: status.is_charging_station,
+          num_bikes_available: status.num_bikes_available, // use num_bikes_available from status object
+          num_bikes_available_types: status.num_bikes_available_types, // use num_bikes_available_types from status object
+          num_docks_available: status.num_docks_available, // use num_docks_available from status object
+          Street: station.address, // use address from station object
+          nseaters: station.slots, // use slots from station object
+          "Number of docks availabe": status.num_docks_available, // use num_docks_available from station object
+          "Postal Code": station.post_code, // use post_code from station object
+          "Total capacity": station.capacity, // use capacity from station object
+          is_charging_station: status.is_charging_station, // use is_charging_station from status object
         };
       });
 
