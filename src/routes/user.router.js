@@ -80,6 +80,11 @@ router.use(passport.initialize());
  *               status: 400
  *               error: "Bad request"
  *               message: "Missing attributes"
+ *       401:
+ *           value:
+ *               status: 401
+ *               error: "Unauthorized"
+ *               message: "Unauthorized"
  *       404:
  *           value:
  *               status: 404
@@ -116,8 +121,7 @@ router.use(passport.initialize());
  *         description: "No content"
  *         content:
  *           application/json:
- *             examples:
- *               example:
+ *             scheme:
  *                 $ref: "#/components/examples/204"
  */
 
@@ -518,26 +522,29 @@ router.post(
  *        description: Operación exitosa.
  *        content:
  *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Users'
+ *            examples:
+ *                $ref: '#/components/schemas/Users'
  *      400:
  *        description: Solicitud incorrecta.
  *        content:
  *          application/json:
- *            schema:
- *              $ref: '#/components/examples/400'
+ *            examples:
+ *              example:
+ *                $ref: '#/components/examples/400'
  *      401:
  *        description: La contraseña es incorrecta.
  *        content:
  *          application/json:
- *            schema:
- *              $ref: '#/components/examples/401'
+ *            examples:
+ *              example:
+ *                $ref: '#/components/examples/401'
  *      404:
  *        description: El usuario no ha sido encontrado.
  *        content:
  *          application/json:
- *            schema:
- *              $ref: '#/components/examples/404'
+ *            examples:
+ *              example:
+ *                $ref: '#/components/examples/404'
  */
 router.post(
   `/login`,
@@ -557,28 +564,6 @@ router.post(
  *     summary: Cerrar sesión con un usuario existente.
  *     description: Cerrar sesión con un usuario existente en la aplicación.
  *     operationId: postLogout
- *     parameters:
- *       - name: req
- *         in: query
- *         description: Objeto de solicitud.
- *         required: true
- *         explode: false
- *         schema:
- *           type: object
- *       - name: res
- *         in: query
- *         description: Objeto de respuesta.
- *         required: true
- *         explode: false
- *         schema:
- *           type: object
- *       - name: next
- *         in: query
- *         description: Función siguiente.
- *         required: true
- *         explode: false
- *         schema:
- *           type: function
  *     responses:
  *       200:
  *         description: Operación exitosa.
@@ -594,19 +579,22 @@ router.post(
  *         description: Solicitud incorrecta.
  *         content:
  *           application/json:
- *             schema:
+ *             examples:
+ *              example:
  *               $ref: '#/components/examples/400'
  *       401:
  *         description: No autorizado.
  *         content:
  *           application/json:
- *             schema:
+ *             examples:
+ *              example:
  *               $ref: '#/components/examples/401'
  *       404:
  *         description: El usuario no ha sido encontrado.
  *         content:
  *           application/json:
- *             schema:
+ *             examples:
+ *              example:
  *               $ref: '#/components/examples/404'
  */
 router.post(
@@ -673,19 +661,22 @@ router.post(
  *         description: Solicitud incorrecta.
  *         content:
  *           application/json:
- *             schema:
+ *             examples:
+ *              example:
  *               $ref: '#/components/examples/400'
  *       401:
  *         description: No autorizado.
  *         content:
  *           application/json:
- *             schema:
+ *             examples:
+ *              example:
  *               $ref: '#/components/examples/401'
  *       404:
  *         description: El usuario no ha sido encontrado.
  *         content:
  *           application/json:
- *             schema:
+ *             examples:
+ *              example:
  *               $ref: '#/components/examples/404'
  */
 router.post(
@@ -756,19 +747,22 @@ router.post(
  *        description: Solicitud incorrecta.
  *        content:
  *          application/json:
- *            schema:
+ *            examples:
+ *              example:
  *              $ref: '#/components/examples/400'
  *      401:
  *        description: No autorizado.
  *        content:
  *          application/json:
- *            schema:
+ *            examples:
+ *              example:
  *              $ref: '#/components/examples/401'
  *      404:
  *        description: El usuario no ha sido encontrado.
  *        content:
  *          application/json:
- *            schema:
+ *            examples:
+ *              example:
  *              $ref: '#/components/examples/404'
  */
 
