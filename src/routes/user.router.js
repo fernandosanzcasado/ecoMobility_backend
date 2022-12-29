@@ -34,70 +34,72 @@ router.use(passport.session());
 router.use(passport.initialize());
 
 /**
- * @swagger
- * components:
- *   schemas:
- *       Users:
- *           type: object
- *           properties:
- *               Email:
- *                   type: string
- *                   example: "gmarti@gmail.com"
- *               Contraseña:
- *                   type: string
- *                   example: "0sdddad8"
- *               Fecha_registro:
- *                   type: string
- *                   example: "21/08/2022"
- *               name:
- *                   type: string
- *                   example: "paco"
- *               apellidos:
- *                   type: string
- *                   example: "adda"
- *               is_superUser:
- *                   type: boolean
- *                   example: false
- *
- *   examples:
- *       204:
- *           value:
- *               status: 204
- *               error: "No content"
- *               message: "No content"
- *       200Update:
- *           value:
- *               status: 200
- *               error: "Successful operation"
- *               message: "Successful update"
- *       200Delete:
- *           value:
- *               status: 200
- *               error: "Successful operation"
- *               message: "Successful delete"
- *       400:
- *           value:
- *               status: 400
- *               error: "Bad request"
- *               message: "Missing attributes"
- *       401:
- *           value:
- *               status: 401
- *               error: "Unauthorized"
- *               message: "Unauthorized"
- *       404:
- *           value:
- *               status: 404
- *               error: "Not found"
- *               message: "ID does not exist"
- */
-
-/**
- * @swagger
- * tags:
- *  name: Users
- *  description: Endpoints para Users
- */
+* @swagger
+* components:
+*  schemas:
+*    User:
+*        type: object
+*        properties:
+*            Email:
+*                type: string
+*                example: "gmarti@gmail.com"
+*            Contraseña:
+*                type: string
+*                example: "0sdddad8"
+*            Fecha_registro:
+*                type: string
+*                example: "21/08/2022"
+*            name:
+*                type: string
+*                example: "paco"
+*            apellidos:
+*                type: string
+*                example: "adda"
+*            is_superUser:
+*                type: boolean
+*                example: false
+*  examples:
+*    204:
+*        value:
+*            status: 204
+*            error: "No content"
+*            message: "No content"
+*    200Update:
+*        value:
+*            status: 200
+*            error: "Successful operation"
+*            message: "Successful update"
+*    200Delete:
+*        value:
+*            status: 200
+*            error: "Successful operation"
+*            message: "Successful delete"
+*    400:
+*        value:
+*            status: 400
+*            error: "Bad request"
+*            message: "Missing attributes"
+*    401:
+*        value:
+*            status: 401
+*            error: "Unauthorized"
+*            message: "Unauthorized"
+*    404:
+*        value:
+*            status: 404
+*            error: "Not found"
+*            message: "ID does not exist"
+*    400UserAlreadyExists:
+*        value:
+*            status: 400
+*            error: "Bad request"
+*            message: "User already exists"
+*    400InvalidFields:
+*        value:
+*            status: 400
+*            error: "Bad request"
+*            message: "Invalid fields"
+/*
 
 /**
  * @swagger
@@ -117,11 +119,17 @@ router.use(passport.initialize());
  *               type: array
  *               items:
  *                 $ref: "#/components/schemas/Users"
+ *       400:
+ *         description: "Invalid fields"
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: "#/components/examples/400InvalidFields"
  *       204:
  *         description: "No content"
  *         content:
  *           application/json:
- *             scheme:
+ *             examples:
  *                 $ref: "#/components/examples/204"
  */
 
@@ -135,7 +143,6 @@ router.get(
 
 /**
  * @swagger
- * paths:
  *  /users/admin/getAllUsers/count:
  *      get:
  *          tags:
@@ -209,7 +216,7 @@ router.get(
 
 /**
  *  @swagger
- *  users/me/getInfo:
+ *  me/getInfo:
  *    get:
  *      tags:
  *        - Users
@@ -289,6 +296,13 @@ router.get(
  *              examples:
  *                example:
  *                  $ref: "#/components/examples/403"
+ *        404:
+ *          description: Not found
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/404"
  */
 
 router.put(
@@ -299,53 +313,29 @@ router.put(
   validateRequsestSchema,
   userController.updatePassword
 );
+
 /**
  * @swagger
- * /users/me/updateInfo:
+ *  /users/me/updateInfo:
  *   put:
  *     tags:
  *       - Users
  *     summary: Update a user.
- *     description: Update the user defined in the path by adding the attributes specified in the body.
+ *     description: Update the authenticated and non-blocked user with the attributes specified in the body.
  *     operationId: updateUser
- *     parameters:
- *       - name: name
- *         in: query
- *         description: User's name.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
- *       - name: surnames
- *         in: query
- *         description: User's surnames.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
- *       - name: is_superUser
- *         in: query
- *         description: Is the user a superuser.
- *         required: false
- *         explode: false
- *         schema:
- *           type: boolean
- *       - name: dateJoined
- *         in: query
- *         description: Date when the user joined.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/UpdateUser"
  *     responses:
  *       200:
  *         description: Successful operation
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: "#/components/examples/200Update"
+ *               $ref: "#/components/examples/200Update"
  *       400:
  *         description: Bad request
  *         content:
@@ -353,13 +343,27 @@ router.put(
  *             examples:
  *               example:
  *                 $ref: "#/components/examples/400"
- *       404:
- *         description: Bad request
+ *       401:
+ *         description: Unauthorized
  *         content:
  *           application/json:
  *             examples:
  *               example:
- *
+ *                 $ref: "#/components/examples/401"
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/403"
+ *       404:
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
  */
 
 router.put(
@@ -742,6 +746,7 @@ router.post(
  *              properties:
  *                message:
  *                  type: string
+ *
  *                  example: "Password reset successful."
  *      400:
  *        description: Solicitud incorrecta.
