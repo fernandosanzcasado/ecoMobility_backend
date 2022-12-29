@@ -24,7 +24,6 @@ class estacionesService {
         } else if (param == "tipoVelocidad") {
           data = data.filter((d) => d.tipoVelocidad == query[param]);
         } else if (param == "distancia") {
-          console.log(query[param]);
           data = data.filter(
             (d) =>
               distance(d.latitud, d.longitud, body.latitud, body.longitud) <=

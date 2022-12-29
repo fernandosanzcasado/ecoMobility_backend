@@ -1,7 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const { check, validationResult } = require("express-validator");
+
+const estacionesFilterSchema = require("../schemas/estacionesFilterSchema");
+
+const handleError = require("../middleware/errorHandler");
+const validateRequsestSchema = require("../middleware/validateRequestSchema");
+const userAuthentication = require("../middleware/userAuthentication");
 
 const estacionesController = require("../modules/estaciones/controller/estaciones.controller");
+
 /**
  * @swagger
  *
@@ -322,7 +330,7 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *                  $ref: "#/components/examples/distancia"
  *
  */
-router.get(`/`, estacionesController.scanTable);
+router.get(`/`, estacionesFilterSchema, estacionesController.scanTable);
 
 /**
  * @swagger
@@ -681,7 +689,7 @@ router.get(`/:Id/direccion`, estacionesController.getDirById);
  *               nPlaces:
  *                 $ref: "#/components/examples/nPlaces"
  */
-router.post(`/`, estacionesController.create);
+router.post(`/`, userAuthentication.checkAdmin, estacionesController.create);
 
 /**
  * @swagger
@@ -716,7 +724,11 @@ router.post(`/`, estacionesController.create);
  *               example:
  *                 $ref: "#/components/examples/404"
  */
-router.delete(`/:Id`, estacionesController.deleteByID);
+router.delete(
+  `/:Id`,
+  userAuthentication.checkAdmin,
+  estacionesController.deleteByID
+);
 
 /**
  * @swagger
@@ -900,6 +912,6 @@ router.delete(`/:Id`, estacionesController.deleteByID);
  *               example:
  *                 $ref: "#/components/examples/404"
  */
-router.put(`/:Id`, estacionesController.update);
+router.put(`/:Id`, userAuthentication.checkAdmin, estacionesController.update);
 
 module.exports = router;
