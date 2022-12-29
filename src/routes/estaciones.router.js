@@ -3,6 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator");
 
 const estacionesFilterSchema = require("../schemas/estacionesFilterSchema");
+const estacionesCheckIdSchema = require("../schemas/estacionesCheckIdSchema");
 
 const handleError = require("../middleware/errorHandler");
 const validateRequsestSchema = require("../middleware/validateRequestSchema");
@@ -111,11 +112,11 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *          example: "Avinguda Meridiana, 66"
  *
  *  examples:
- *       204:
+ *       204NoContent:
  *           value:
  *               status: 204
- *               name: "No content"
- *               message: "No content"
+ *               name: "EstacionNoContentError"
+ *               message: "No hay contenido para esta llamada"
  *       200Update:
  *           value:
  *               status: 200
@@ -129,23 +130,45 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *       400atributos:
  *           value:
  *               status: 400
- *               name: "Missing required attributes"
- *               message: "Bad request"
+ *               name: "Bad request"
+ *               message: "Missing required attributes"
  *       400atributos2:
  *           value:
  *               status: 400
- *               name: "Invalid attributes"
- *               message: "Bad request"
+ *               name: "EstacionWrongAttrError"
+ *               message: "El atributo X es invalido"
+ *       id:
+ *           value:
+ *               errors:
+ *                - name: Invalid id
+ *                  message: El id debe contener sólo dígitos hexadecimales y guiones
+ *                  status: 400
+ *       id2:
+ *           value:
+ *               errors:
+ *                - name: Invalid id
+ *                  message: El id debe contener 36 carácteres y estar agrupados en 8-4-4-4-12
+ *                  status: 400
  *       direccion:
  *           value:
  *               status: 400
  *               name: "Invalid value in direccion"
  *               message: "Bad request"
+ *       requiredLatitud:
+ *           value:
+ *               status: 400
+ *               name: "EstacionFaltaLatCoordsError"
+ *               message: "Se ha declarado el parametro 'distancia' pero no se han declarado coordenadas de latitud del usuario"
  *       latitud:
  *           value:
  *               status: 400
  *               name: "Invalid value in latitud"
  *               message: "Bad request"
+ *       requiredLongitud:
+ *           value:
+ *               status: 400
+ *               name: "EstacionFaltaLongCoordsError"
+ *               message: "Se ha declarado el parametro 'distancia' pero no se han declarado coordenadas de latitud del usuario"
  *       longitud:
  *           value:
  *               status: 400
@@ -168,24 +191,28 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *               message: "Bad request"
  *       tipoCorriente:
  *           value:
- *               status: 400
- *               name: "Value in tipoCorriente must be AC, DC or AC-DC"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid tipoCorriente
+ *                  message: El tipo de corriente debe ser AC, DC o AC-DC
+ *                  status: 400
  *       tipoVelocidad:
  *           value:
- *               status: 400
- *               name: "Value in tipoVelocidad must be RAPID, semiRAPID, NORMAL, RAPID, RAPID i NORMAL, RAPID i semiRAPID, semiRAPID i NORMAL or superRAPID"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid tipoVelocidad
+ *                  message: El tipo de velocidad debe ser RAPID, semiRAPID, NORMAL, RAPID, RAPID i NORMAL, RAPID i semiRAPID, semiRAPID i NORMAL o superRAPID
+ *                  status: 400
  *       tipoVehiculo:
  *           value:
- *               status: 400
- *               name: "Value in tipoVehiculo must be mercaderies, cotxe, moto, moto i cotxe or taxi"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid tipoVehiculo
+ *                  message: El tipo de vehículo debe ser mercaderies, cotxe, moto, moto i cotxe o taxi
+ *                  status: 400
  *       tipoConexion:
  *           value:
- *               status: 400
- *               error: "Invalid value in codiProv"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid tipoConexion
+ *                  message: El tipo de conexión solo puede contener numeros, letras y algunos caràcteres especiales
+ *                  status: 400
  *       promotor:
  *           value:
  *               status: 400
@@ -193,9 +220,10 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *               message: "Bad request"
  *       potencia:
  *           value:
- *               status: 400
- *               name: "Invalid value in codiProv"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid potencia
+ *                  message: La potencia ha de ser un integer
+ *                  status: 400
  *       nPlaces:
  *           value:
  *               status: 400
@@ -203,9 +231,10 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *               message: "Bad request"
  *       distancia:
  *           value:
- *               status: 400
- *               name: "Invalid value in distancia"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid potencia
+ *                  message: La distancia ha de ser un integer
+ *                  status: 400
  *       404:
  *           value:
  *               status: 404
@@ -287,11 +316,25 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *            type: integer
  *        - name: distancia
  *          in: query
- *          description: Distancia en km máxima a la qu pueden estar las estaciones de carga del usuario.
+ *          description: Distancia en km máxima a la que pueden estar las estaciones de carga del usuario.
  *          required: false
  *          explode: false
  *          schema:
  *            type: integer
+ *        - name: latitud
+ *          in: query
+ *          description: Latitud a la que está el usuario a partir del cual calcular la distancia.
+ *          required: false
+ *          explode: false
+ *          schema:
+ *            type: string
+ *        - name: longitud
+ *          in: query
+ *          description: Longitud a la que está el usuario a partir del cual calcular la distancia.
+ *          required: false
+ *          explode: false
+ *          schema:
+ *            type: string
  *
  *      responses:
  *        200:
@@ -308,14 +351,18 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *            application/json:
  *              examples:
  *                example:
- *                  $ref: "#/components/examples/204"
+ *                  $ref: "#/components/examples/204NoContent"
  *        400:
  *          description: Bad request
  *          content:
  *            application/json:
  *              examples:
- *                InvalidAttributes:
+ *                invalidAttributes:
  *                  $ref: "#/components/examples/400atributos2"
+ *                requiredLongitud:
+ *                  $ref: "#/components/examples/requiredLongitud"
+ *                requiredLatitud:
+ *                  $ref: "#/components/examples/requiredLatitud"
  *                tipoCorriente:
  *                  $ref: "#/components/examples/tipoCorriente"
  *                tipoVelocidad:
@@ -330,7 +377,12 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *                  $ref: "#/components/examples/distancia"
  *
  */
-router.get(`/`, estacionesFilterSchema, estacionesController.scanTable);
+router.get(
+  `/`,
+  estacionesFilterSchema,
+  validateRequsestSchema,
+  estacionesController.scanTable
+);
 
 /**
  * @swagger
@@ -356,7 +408,7 @@ router.get(`/`, estacionesFilterSchema, estacionesController.scanTable);
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/204"
+ *                 $ref: "#/components/examples/204NoContent"
  */
 router.get(`/coordenadas`, estacionesController.getTableCoord);
 
@@ -384,7 +436,7 @@ router.get(`/coordenadas`, estacionesController.getTableCoord);
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/204"
+ *                 $ref: "#/components/examples/204NoContent"
  */
 router.get(`/direccion`, estacionesController.getTableDir);
 
@@ -410,7 +462,7 @@ router.get(`/count`, estacionesController.countEstaciones);
 
 /**
  * @swagger
- * /estaciones/{id}:
+ * /estaciones/info/{id}:
  *   get:
  *     tags:
  *       - Estaciones
@@ -438,8 +490,10 @@ router.get(`/count`, estacionesController.countEstaciones);
  *         content:
  *           application/json:
  *             examples:
- *               InvalidAttributes:
- *                 $ref: "#/components/examples/400atributos2"
+ *               InvalidCharacters:
+ *                 $ref: "#/components/examples/id"
+ *               idTooShort:
+ *                 $ref: "#/components/examples/id2"
  *       404:
  *         description: Not found
  *         content:
@@ -448,11 +502,11 @@ router.get(`/count`, estacionesController.countEstaciones);
  *               example:
  *                 $ref: "#/components/examples/404"
  */
-router.get(`/:Id`, estacionesController.findById);
+router.get(`/info/:id`, estacionesController.findById);
 
 /**
  * @swagger
- * /estaciones/{id}/coordenadas:
+ * /estaciones/{Id}/coordenadas:
  *   get:
  *     tags:
  *       - Estaciones
