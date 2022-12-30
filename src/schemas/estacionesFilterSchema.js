@@ -32,9 +32,9 @@ const estacionesFilterSchema = [
   check("tipoConexion")
     .optional()
     .trim()
-    .matches("^[A-Za-z0-9_@./#&+-]*$")
+    .matches("^[a-zA-Z0-9_@./#&+-]+( [a-zA-Z0-9_@./#&+-]+)*$")
     .withMessage(
-      "El tipo de conexión solo puede contener numeros, letras y algunos caràcteres especiales"
+      "El tipo de conexión solo puede contener numeros, letras, algunos caràcteres especiales y espacios en blanco entre palabras"
     )
     .trim(),
   check("potencia")

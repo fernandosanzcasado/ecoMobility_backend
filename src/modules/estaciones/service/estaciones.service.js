@@ -85,7 +85,7 @@ class estacionesService {
 
   async postEstacion(data) {
     const estacion = data;
-    estacion.ID = uuidv4();
+    estacion.id = uuidv4();
     const newEstacion = estacionesRepository.postOrUpdateEstacion(estacion);
     return newEstacion;
   }
@@ -109,11 +109,7 @@ class estacionesService {
     const data = await estacionesRepository.deleteByID(estacionID);
     if (!data.Attributes) {
       throw new EstacionNotFoundError();
-    } else return data.Attributes;
-  }
-  async scanTablealter() {
-    const data = await estacionesRepository.scanTable();
-    return data.Items;
+    } 
   }
 }
 
