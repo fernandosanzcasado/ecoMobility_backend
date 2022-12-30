@@ -3,39 +3,53 @@ const axios = require("axios");
 
 const estacionesRepository = require("../repository/estaciones.repository");
 const EstacionNotFoundError = require("../../../errors/estaciones.errors/estacionNotFound");
+const EstacionNoContentError = require("../../../errors/estaciones.errors/estacionNoContent");
+const EstacionWrongAttrError = require("../../../errors/estaciones.errors/estacionWrongAttr");
+const EstacionFaltaLatCoordsError = require("../../../errors/estaciones.errors/estacionFaltaLatCoords");
+const EstacionFaltaLongCoordsError = require("../../../errors/estaciones.errors/estacionFaltaLongCoords");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class estacionesService {
-
-  async scanTable(query, body) {
+  async scanTable(query) {
     var data = await estacionesRepository.scanTable();
     data = data.Items;
-    if (Object.keys(data).length == 0) {
-      throw new EstacionNotFoundError();
-    } else {
-      for (var param in query) {
-        if (param == "potencia") {
-          data = data.filter((d) => d.potencia <= query[param]);
-        } else if (param == "tipoConexion") {
-          data = data.filter((d) => d.tipoConexion == query[param]);
-        } else if (param == "tipoCorriente") {
-          data = data.filter((d) => d.tipoCorriente == query[param]);
-        } else if (param == "tipoVehiculo") {
-          data = data.filter((d) => d.tipoVehiculo == query[param]);
-        } else if (param == "tipoVelocidad") {
-          data = data.filter((d) => d.tipoVelocidad == query[param]);
-        } else if (param == "distancia") {
-          console.log(query[param]);
-          data = data.filter(
-            (d) =>
-              distance(d.latitud, d.longitud, body.latitud, body.longitud) <=
-              query[param]
-          );
+    for (var param in query) {
+      if (param == "potencia") {
+        data = data.filter((d) => d.potencia <= query[param]);
+      } else if (param == "tipoConexion") {
+        data = data.filter((d) => d.tipoConexion == query[param]);
+      } else if (param == "tipoCorriente") {
+        data = data.filter((d) => d.tipoCorriente == query[param]);
+      } else if (param == "tipoVehiculo") {
+        data = data.filter((d) => d.tipoVehiculo == query[param]);
+      } else if (param == "tipoVelocidad") {
+        data = data.filter((d) => d.tipoVelocidad == query[param]);
+      } else if (param == "distancia") {
+        if (typeof query.latitud === "undefined") {
+          throw new EstacionFaltaLatCoordsError();
         }
+        if (typeof query.longitud === "undefined") {
+          throw new EstacionFaltaLongCoordsError();
+        }
+        data = data.filter(
+          (d) =>
+            distance(d.latitud, d.longitud, param.latitud, param.longitud) <=
+            query[param]
+        );
       }
+    }
+    if (Object.keys(data).length == 0) {
+      throw new EstacionNoContentError();
     }
 
     return data;
+  }
+
+  async countEstaciones() {
+    var data = await estacionesRepository.scanTable();
+    data = data.Items;
+    const count = Object.keys(data).length;
+    return count;
   }
 
   async getTableCoord() {
@@ -71,7 +85,7 @@ class estacionesService {
 
   async postEstacion(data) {
     const estacion = data;
-    estacion.ID = uuidv4();
+    estacion.id = uuidv4();
     const newEstacion = estacionesRepository.postOrUpdateEstacion(estacion);
     return newEstacion;
   }
@@ -95,61 +109,7 @@ class estacionesService {
     const data = await estacionesRepository.deleteByID(estacionID);
     if (!data.Attributes) {
       throw new EstacionNotFoundError();
-    } else return data.Attributes;
-  }
-  async scanTablealter() {
-    const data = await estacionesRepository.scanTable();
-    return data.Items;
-  }
-
-  //  function renameKey (Object, oldKey, newKey  ) {
-  //    Object[newKey] = Object[oldKey];
-  //    delete Object[oldKey];
-  // }
-
-  async canviatributs() {
-    const data = await estacionesRepository.scanTable();
-    data.forEach((item) => {
-      for (let key in item) {
-        if (key == "person") newKey = "nuevonombre";
-        if (key == "TIPUS DE CORRENT") newKey = "tipusCorrent";
-        if (key == "CODIMUN") newKey = "codiMunicipi";
-        if (key == "ACCES") newKey = " acces";
-        if (key == "TIPUS VEHICLE") newKey = "tipusVehicle";
-        if (key == "ADREÇA") newKey = "adreca";
-        if (key == "POTENCIA") newKey = "potencia";
-        if (key == "CODIPROV") newKey = "codiProv";
-        if (key == "Columna amb georeferència") newKey = "georef";
-        if (key == "PROMOTOR-GESTOR") newKey = "promotor";
-        if (key == "MUNICIPI") newKey = "municipi";
-        if (key == "PROVINCIA") newKey = "provincia";
-        if (key == "NPLACES ESTACIÓ") newKey = "nPlaces";
-        if (key == "INDENTIFICADOR") newKey = "identificador";
-        if (key == "LONGITUD") newKey = "longitud";
-        if (key == "DESIGNACIÓ-DESCRIPTIVA") newKey = "desigDescriptiva";
-        if (key == "id") newKey = "id";
-        if (key == "TIPUS VELOCITAT") newKey = "tipusVelocitat";
-        if (key == "TIPUS CONNEXIÓ") newKey = "tipusConnexio";
-        if (key == "LATITUD") newKey = "latitud";
-        renameKey(Object, key, newKey);
-        Object[newKey] = Object[oldKey];
-        // delete Object[oldKey];
-      }
-    });
-  }
-
-  async bicing(url) {
-    let data = await axios(url);
-    return data.data.data.stations;
-  }
-
-  async bicing_segundo(url_segundo) {
-    let data_segundo = await axios(url_segundo);
-    return data_segundo.data.data.stations;
-  }
-  async bicing_tercero(url_tercero) {
-    let data_tercero = await axios(url_tercero);
-    return data_tercero.data.data.stations;
+    } 
   }
 }
 

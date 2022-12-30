@@ -10,5 +10,4 @@ const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com'
 });
 
-
 module.exports = transporter;
