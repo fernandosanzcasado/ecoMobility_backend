@@ -138,7 +138,7 @@ class userRepository{
         const params = {
             TableName: this.tableName,
         }
-        return db.scan(params).promise();
+        return await db.scan(params).promise();
     }
 
 }

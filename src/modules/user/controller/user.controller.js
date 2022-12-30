@@ -41,8 +41,6 @@ class userController{
         }catch(err){
             next(err);
         }
-        
-
     }
 
     async updateInfo(req,res,next){

@@ -7,19 +7,20 @@ const { check, validationResult } = require("express-validator");
 
 const userController = require("../modules/user/controller/user.controller");
 const userService = require("../modules/user/service/user.service")
+
 const registerSchema = require('../schemas/registerSchema');
 const loginSchema = require('../schemas/loginSchema');
 const updatePasswordSchema = require('../schemas/updatePasswordSchema');
 const updateUserInfoSchema = require('../schemas/updateUserInfoSchema');
 const emailInputSchema = require('../schemas/emailInputSchema');
+const resetPasswordSchema = require("../schemas/resetPasswordSchema");
+const uploadFileSchema = require("../schemas/uploadFileSchema");
 
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
 const handleError = require("../middleware/errorHandler");
 const userAuthentication = require("../middleware/userAuthentication");
-const resetPasswordSchema = require("../schemas/resetPasswordSchema");
-const uploadFileSchema = require("../schemas/uploadFileSchema");
-const { Route53Resolver } = require("aws-sdk");
+
 
 const router = express.Router();
 
@@ -28,16 +29,7 @@ initializePassport(passport,
     userService.findByEmail(email)
 )
 
-router.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-}))
-
-router.use(passport.session());
 router.use(passport.initialize());
-
-
 
 
 router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
