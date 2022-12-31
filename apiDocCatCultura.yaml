@@ -1,0 +1,176 @@
+openapi: 3.0.1
+info:
+  title: "ecoMobility - Grovyle API"
+  description: "API documentation for ecoMobility release v2.0 Grovyle."
+  version: "2.0.0"
+  contact:
+    name: "Mail"
+    email: "ecomobilityupc@gmail.com"
+servers:
+  - url: "http://localhost:3000/api/v2/"
+tags:
+  - name: Estaciones
+    description: Endpoints para estaciones
+
+paths:
+  /estaciones:
+    get:
+      tags:
+        - Estaciones
+      summary: Obtener todas las estaciones con filtros.
+      description: Obtener todas las estaciones de la DB que cumplan con todos los requisitos con todos sus atributos.
+      operationId: getAllEstaciones
+      parameters:
+        - name: distancia
+          in: query
+          description: Distancia en km máxima a la que pueden estar las estaciones de carga del usuario.
+          required: false
+          explode: false
+          schema:
+            type: integer
+        - name: latitud
+          in: query
+          description: Latitud a la que está el usuario a partir del cual calcular la distancia.
+          required: false
+          explode: false
+          schema:
+            type: string
+        - name: longitud
+          in: query
+          description: Longitud a la que está el usuario a partir del cual calcular la distancia.
+          required: false
+          explode: false
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estacion"
+        204:
+          description: "No content"
+          content:
+            application/json:
+              examples:
+                example:
+                  $ref: "#/components/examples/204NoContent"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                invalidAttributes:
+                  $ref: "#/components/examples/400atributos2"
+                requiredLongitud:
+                  $ref: "#/components/examples/requiredLongitud"
+                requiredLatitud:
+                  $ref: "#/components/examples/requiredLatitud"
+                distancia:
+                  $ref: "#/components/examples/distancia"
+
+components:
+  schemas:
+    Estacion:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        direccion:
+          type: string
+          example: "Avinguda Meridiana, 66"
+        codiProv:
+          type: string
+          example: "08"
+        latitud:
+          type: string
+          example: "41.74441"
+        longitud:
+          type: string
+          example: "2.18729"
+        municipio:
+          type: string
+          example: "Barcelona"
+        nPlaces:
+          type: integer
+          format: int64
+          example: 3
+        potencia:
+          type: integer
+          format: int64
+          example: 22
+        promotor:
+          type: string
+          example: "Generalitat de Catalunya"
+        provincia:
+          type: string
+          example: "Barcelona"
+          enum:
+            - Tarragona
+            - Girona
+            - Barcelona
+            - Lleida
+        tipoConexion:
+          type: string
+          example: "2xMENNEKES.F"
+        tipoCorriente:
+          type: string
+          example: "AC"
+          enum:
+            - AC
+            - DC
+            - AC-DC
+        tipoVehiculo:
+          type: string
+          example: "cotxe i moto"
+          enum:
+            - mercaderies
+            - cotxe
+            - moto
+            - moto i cotxe
+            - taxi
+        tipoVelocidad:
+          type: string
+          example: "semiRAPID"
+          enum:
+            - RAPID
+            - semiRAPID
+            - NORMAL
+            - RAPID
+            - RAPID i NORMAL
+            - RAPID i semiRAPID
+            - semiRAPID i NORMAL
+            - superRAPID
+
+  examples:
+    204NoContent:
+      value:
+        status: 204
+        name: "EstacionNoContentError"
+        message: "No hay contenido para esta llamada"
+    400atributos2:
+      value:
+        status: 400
+        name: "EstacionWrongAttrError"
+        message: "El atributo X es invalido"
+    requiredLatitud:
+      value:
+        status: 400
+        name: "EstacionFaltaLatCoordsError"
+        message: "Se ha declarado el parametro 'distancia' pero no se han declarado coordenadas de latitud del usuario"
+    requiredLongitud:
+      value:
+        status: 400
+        name: "EstacionFaltaLongCoordsError"
+        message: "Se ha declarado el parametro 'distancia' pero no se han declarado coordenadas de latitud del usuario"
+    distancia:
+      value:
+        errors:
+          - name: Invalid potencia
+            message: La distancia ha de ser un integer
+            status: 400
