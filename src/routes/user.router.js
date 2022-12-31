@@ -58,6 +58,33 @@ router.use(passport.initialize());
  *               is_superUser:
  *                   type: boolean
  *                   example: false
+ *       Email:
+ *           type: object
+ *           properties:
+ *               Email:
+ *                   type: string
+ *                   example: "gmarti@gmail.com"
+ *       Userme:
+ *           type: object
+ *           properties:
+ *               Email:
+ *                   type: string
+ *                   example: "yo@gmail.com"
+ *               Contraseña:
+ *                   type: string
+ *                   example: "0sdddad8"
+ *               Fecha_registro:
+ *                   type: string
+ *                   example: "21/08/2015"
+ *               name:
+ *                   type: string
+ *                   example: "Joe"
+ *               apellidos:
+ *                   type: string
+ *                   example: "Harris"
+ *               is_superUser:
+ *                   type: boolean
+ *                   example: false
  *
  *   examples:
  *       204:
@@ -99,7 +126,7 @@ router.use(passport.initialize());
  * /users/admin/getAllUsers/:
  *   get:
  *     tags:
- *       - Usuarios
+ *       - Users
  *     summary: Obtener todas los usuarios
  *     description: Obtener todas las usuarios de la DB con todos sus atributos.
  *     operationId: getAllUsuarios
@@ -177,7 +204,7 @@ router.get(
    *            schema:
    *              type: array
    *              items:
-   *                $ref: "#/components/schemas/Ejem"
+   *                $ref: "#/components/schemas/Email"
    *      204:
    *        description: "No content"
    *        content:
@@ -215,7 +242,7 @@ router.get(
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/UserInfo"
+ *                $ref: "#/components/schemas/Userme"
  *        204:
  *         description: "No content"
  *         content:
