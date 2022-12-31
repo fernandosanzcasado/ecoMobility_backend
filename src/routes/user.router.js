@@ -34,79 +34,72 @@ router.use(passport.session());
 router.use(passport.initialize());
 
 /**
-* @swagger
-* components:
-*  schemas:
-*    User:
-*        type: object
-*        properties:
-*            Email:
-*                type: string
-*                example: "gmarti@gmail.com"
-*            Contraseña:
-*                type: string
-*                example: "0sdddad8"
-*            Fecha_registro:
-*                type: string
-*                example: "21/08/2022"
-*            name:
-*                type: string
-*                example: "paco"
-*            apellidos:
-*                type: string
-*                example: "adda"
-*            is_superUser:
-*                type: boolean
-*                example: false
-*  examples:
-*    204:
-*        value:
-*            status: 204
-*            error: "No content"
-*            message: "No content"
-*    200Update:
-*        value:
-*            status: 200
-*            error: "Successful operation"
-*            message: "Successful update"
-*    200Delete:
-*        value:
-*            status: 200
-*            error: "Successful operation"
-*            message: "Successful delete"
-*    400:
-*        value:
-*            status: 400
-*            error: "Bad request"
-*            message: "Missing attributes"
-*    401:
-*        value:
-*            status: 401
-*            error: "Unauthorized"
-*            message: "Unauthorized"
-*    404:
-*        value:
-*            status: 404
-*            error: "Not found"
-*            message: "ID does not exist"
-*    400UserAlreadyExists:
-*        value:
-*            status: 400
-*            error: "Bad request"
-*            message: "User already exists"
-*    400InvalidFields:
-*        value:
-*            status: 400
-*            error: "Bad request"
-*            message: "Invalid fields"
-/*
+ * @swagger
+ * components:
+ *   schemas:
+ *       Users:
+ *           type: object
+ *           properties:
+ *               Email:
+ *                   type: string
+ *                   example: "gmarti@gmail.com"
+ *               Contraseña:
+ *                   type: string
+ *                   example: "0sdddad8"
+ *               Fecha_registro:
+ *                   type: string
+ *                   example: "21/08/2022"
+ *               name:
+ *                   type: string
+ *                   example: "paco"
+ *               apellidos:
+ *                   type: string
+ *                   example: "adda"
+ *               is_superUser:
+ *                   type: boolean
+ *                   example: false
+ *
+ *   examples:
+ *       204:
+ *           value:
+ *               status: 204
+ *               error: "No content"
+ *               message: "No content"
+ *       200Update:
+ *           value:
+ *               status: 200
+ *               error: "Successful operation"
+ *               message: "Successful update"
+ *       200Delete:
+ *           value:
+ *               status: 200
+ *               error: "Successful operation"
+ *               message: "Successful delete"
+ *       400:
+ *           value:
+ *               status: 400
+ *               error: "Bad request"
+ *               message: "Missing attributes"
+ *       404:
+ *           value:
+ *               status: 404
+ *               error: "Not found"
+ *               message: "ID does not exist"
+ */
+
+/**
+ * @swagger
+ * tags:
+ *  name: Users
+ *  description: Endpoints para Users
+ */
 
 /**
  * @swagger
  * /users/admin/getAllUsers/:
  *   get:
  *     tags:
- *       - Users
+ *       - Usuarios
  *     summary: Obtener todas los usuarios
  *     description: Obtener todas las usuarios de la DB con todos sus atributos.
  *     operationId: getAllUsuarios
@@ -119,17 +112,12 @@ router.use(passport.initialize());
  *               type: array
  *               items:
  *                 $ref: "#/components/schemas/Users"
- *       400:
- *         description: "Invalid fields"
- *         content:
- *           application/json:
- *             schema:
- *                 $ref: "#/components/examples/400InvalidFields"
  *       204:
  *         description: "No content"
  *         content:
  *           application/json:
  *             examples:
+ *               example:
  *                 $ref: "#/components/examples/204"
  */
 
@@ -139,37 +127,42 @@ router.get(
   userAuthentication.checkBlocked,
   userAuthentication.checkAdmin,
   userController.getAllUsers
-);
-
-/**
- * @swagger
- *  /users/admin/getAllUsers/count:
- *      get:
- *          tags:
- *            - Users
- *          summary: Obtener la cantidad de users en la base de datos.
- *          description: Obtener en una variable el numero de instancias en la base de datos de users.
- *          operationId: countAllUsers
- *          responses:
- *            200:
- *              description: Successful operation
- *              content:
- *                integer:
- *                  schema:
- *                    type: integer
- *                    example: 207
- */
-
-router.get(
-  `/admin/getAllUsers/count`,
-  userAuthentication.checkAuthenticated,
-  userAuthentication.checkBlocked,
-  userAuthentication.checkAdmin,
-  userController.countAllUsers
 ),
   /**
    * @swagger
-   *  users/admin/getUser/:email:
+   *  /users/admin/getAllUsers/count:
+   *      get:
+   *          tags:
+   *            - Users
+   *          summary: Obtener la cantidad de users en la base de datos.
+   *          description: Obtener en una variable el numero de instancias en la base de datos de users.
+   *          operationId: countAllUsers
+   *          responses:
+   *            200:
+   *              description: Successful operation
+   *              content:
+   *                integer:
+   *                  schema:
+   *                    type: integer
+   *                    example: 207
+   *            404:
+   *              description: Not found
+   *              content:
+   *                application/json:
+   *                  examples:
+   *                   example:
+   *                      $ref: "#/components/examples/404"
+   */
+  router.get(
+    `/admin/getAllUsers/count`,
+    userAuthentication.checkAuthenticated,
+    userAuthentication.checkBlocked,
+    userAuthentication.checkAdmin,
+    userController.countAllUsers
+  ),
+  /**
+   * @swagger
+   * /users/admin/getUser/:email:
    *  get:
    *    tags:
    *      - Users
@@ -184,7 +177,7 @@ router.get(
    *            schema:
    *              type: array
    *              items:
-   *                $ref: "#/components/schemas/Users"
+   *                $ref: "#/components/schemas/Ejem"
    *      204:
    *        description: "No content"
    *        content:
@@ -192,13 +185,6 @@ router.get(
    *            examples:
    *              example:
    *                $ref: "#/components/examples/204"
-   *      400:
-   *        description: Bad request
-   *        content:
-   *          application/json:
-   *            examples:
-   *              example:
-   *                $ref: "#/components/examples/400"
    *      404:
    *        description: Not found
    *        content:
@@ -216,7 +202,7 @@ router.get(
 
 /**
  *  @swagger
- *  me/getInfo:
+ *  users/me/getInfo:
  *    get:
  *      tags:
  *        - Users
@@ -230,20 +216,13 @@ router.get(
  *            application/json:
  *              schema:
  *                $ref: "#/components/schemas/UserInfo"
- *        401:
- *          description: Unauthorized
- *          content:
- *            application/json:
- *              examples:
- *                example:
- *                  $ref: "#/components/examples/401"
- *        403:
- *          description: Forbidden
- *          content:
- *            application/json:
- *              examples:
- *                example:
- *                  $ref: "#/components/examples/403"
+ *        204:
+ *         description: "No content"
+ *         content:
+ *           application/json:
+ *             examples:
+ *              example:
+ *                 $ref: "#/components/examples/204"
  */
 
 router.get(
@@ -255,7 +234,7 @@ router.get(
 
 /**
  *  @swagger
- *  me/updatePassword:
+ *  /users/me/updatePassword:
  *    put:
  *      tags:
  *        - Users
@@ -274,28 +253,7 @@ router.get(
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/User"
- *        400:
- *          description: Bad request
- *          content:
- *            application/json:
- *              examples:
- *                example:
- *                  $ref: "#/components/examples/400"
- *        401:
- *          description: Unauthorized
- *          content:
- *            application/json:
- *              examples:
- *                example:
- *                  $ref: "#/components/examples/401"
- *        403:
- *          description: Forbidden
- *          content:
- *            application/json:
- *              examples:
- *                example:
- *                  $ref: "#/components/examples/403"
+ *                $ref: "#/components/schemas/Users"
  *        404:
  *          description: Not found
  *          content:
@@ -316,7 +274,7 @@ router.put(
 
 /**
  * @swagger
- *  /users/me/updateInfo:
+ * /users/me/updateInfo:
  *   put:
  *     tags:
  *       - Users
@@ -343,20 +301,6 @@ router.put(
  *             examples:
  *               example:
  *                 $ref: "#/components/examples/400"
- *       401:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             examples:
- *               example:
- *                 $ref: "#/components/examples/401"
- *       403:
- *         description: Forbidden
- *         content:
- *           application/json:
- *             examples:
- *               example:
- *                 $ref: "#/components/examples/403"
  *       404:
  *         description: Not found
  *         content:
@@ -377,8 +321,7 @@ router.put(
 
 /**
  * @swagger
- * paths:
- *  /users/me/deleteUser/:
+ * /users/me/deleteUser/:
  *    delete:
  *      tags:
  *        - Users
@@ -499,7 +442,7 @@ router.post(
 
 /**
  * @swagger
- *  users/login:
+ * /users/login:
  *   post:
  *    tags:
  *      - Users
@@ -541,7 +484,7 @@ router.post(
  *          application/json:
  *            examples:
  *              example:
- *                $ref: '#/components/examples/401'
+ *                $ref: '#/components/examples/404'
  *      404:
  *        description: El usuario no ha sido encontrado.
  *        content:
@@ -561,7 +504,7 @@ router.post(
 
 /**
  * @swagger
- *  users/logout:
+ * /users/logout:
  *   post:
  *     tags:
  *       - Users
@@ -610,7 +553,7 @@ router.post(
 
 /**
  * @swagger
- * users/resetForgottenPassword/sendMail:
+ * /users/resetForgottenPassword/sendMail:
  *   post:
  *     tags:
  *       - Users
@@ -668,13 +611,6 @@ router.post(
  *             examples:
  *              example:
  *               $ref: '#/components/examples/400'
- *       401:
- *         description: No autorizado.
- *         content:
- *           application/json:
- *             examples:
- *              example:
- *               $ref: '#/components/examples/401'
  *       404:
  *         description: El usuario no ha sido encontrado.
  *         content:
@@ -692,7 +628,7 @@ router.post(
 
 /**
  * @swagger
- * users/resetForgottenPassword/resetPassword:
+ * /users/resetForgottenPassword/resetPassword:
  *  post:
  *    tags:
  *      - Users
