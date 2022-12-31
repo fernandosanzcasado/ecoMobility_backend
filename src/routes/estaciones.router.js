@@ -748,6 +748,7 @@ router.post(
   `/`,
   estacionesPostAttrSchema,
   validateRequsestSchema,
+  userAuthentication.checkAdmin,
   estacionesController.create
 );
 
@@ -799,6 +800,7 @@ router.delete(
   `/info/:id`,
   estacionesCheckIdSchema,
   validateRequsestSchema,
+  userAuthentication.checkAdmin,
   estacionesController.deleteByID
 );
 
@@ -910,6 +912,7 @@ router.put(
   estacionesCheckIdSchema,
   estacionesPutAttrSchema,
   validateRequsestSchema,
+  userAuthentication.checkAdmin,
   estacionesController.update
 );
 
