@@ -1,7 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const { check, validationResult } = require("express-validator");
+
+const estacionesFilterSchema = require("../schemas/estacionesFilterSchema");
+const estacionesCheckIdSchema = require("../schemas/estacionesCheckIdSchema");
+const estacionesPostAttrSchema = require("../schemas/estacionesPostAttrSchema");
+const estacionesPutAttrSchema = require("../schemas/estacionesPutAttrSchema");
+
+const handleError = require("../middleware/errorHandler");
+const validateRequsestSchema = require("../middleware/validateRequestSchema");
+const userAuthentication = require("../middleware/userAuthentication");
 
 const estacionesController = require("../modules/estaciones/controller/estaciones.controller");
+
 /**
  * @swagger
  *
@@ -28,7 +39,7 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *        municipio:
  *          type: string
  *          example: "Barcelona"
- *        nPlazas:
+ *        nPlaces:
  *          type: integer
  *          format: int64
  *          example: 3
@@ -103,106 +114,163 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *          example: "Avinguda Meridiana, 66"
  *
  *  examples:
- *       204:
+ *       204NoContent:
  *           value:
  *               status: 204
- *               name: "No content"
- *               message: "No content"
- *       200Update:
- *           value:
- *               status: 200
- *               name: "Successful update"
- *               message: "Successful operation"
- *       200Delete:
- *           value:
- *               status: 200
- *               name: "Successful delete"
- *               message: "Successful operation"
- *       400atributos:
- *           value:
- *               status: 400
- *               name: "Missing required attributes"
- *               message: "Bad request"
+ *               name: "EstacionNoContentError"
+ *               message: "No hay contenido para esta llamada"
  *       400atributos2:
  *           value:
  *               status: 400
- *               name: "Invalid attributes"
- *               message: "Bad request"
+ *               name: "EstacionWrongAttrError"
+ *               message: "El atributo X es invalido"
+ *       id:
+ *           value:
+ *               errors:
+ *                - name: Invalid id
+ *                  message: El id debe contener sólo dígitos hexadecimales y guiones
+ *                  status: 400
+ *       id2:
+ *           value:
+ *               errors:
+ *                - name: Invalid id
+ *                  message: El id debe contener 36 carácteres y estar agrupados en 8-4-4-4-12
+ *                  status: 400
+ *       id3:
+ *           value:
+ *               errors:
+ *                - name: Invalid id
+ *                  message: El id es un campo obligatorio
+ *                  status: 400
  *       direccion:
  *           value:
+ *               errors:
+ *                - name: Invalid direccion
+ *                  message: La dirección solo puede contener numeros, letras, algunos caràcteres especiales y espacios en blanco entre palabras
+ *                  status: 400
+ *       direccion2:
+ *           value:
+ *               errors:
+ *                - name: Invalid direccion
+ *                  message: La dirección es un campo obligatorio
+ *                  status: 400
+ *       requiredLatitud:
+ *           value:
  *               status: 400
- *               name: "Invalid value in direccion"
- *               message: "Bad request"
+ *               name: "EstacionFaltaLatCoordsError"
+ *               message: "Se ha declarado el parametro 'distancia' pero no se han declarado coordenadas de latitud del usuario"
  *       latitud:
  *           value:
+ *               errors:
+ *                - name: Invalid latitud
+ *                  message: La latitud solo puede contener numeros y puntos
+ *                  status: 400
+ *       latitud2:
+ *           value:
+ *               errors:
+ *                - name: Invalid latitud
+ *                  message: La latitud es un campo obligatorio
+ *                  status: 400
+ *       requiredLongitud:
+ *           value:
  *               status: 400
- *               name: "Invalid value in latitud"
- *               message: "Bad request"
+ *               name: "EstacionFaltaLongCoordsError"
+ *               message: "Se ha declarado el parametro 'distancia' pero no se han declarado coordenadas de latitud del usuario"
  *       longitud:
  *           value:
- *               status: 400
- *               name: "Invalid value in longitud"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid longitud
+ *                  message: La longitud solo puede contener numeros y puntos
+ *                  status: 400
+ *       longitud2:
+ *           value:
+ *               errors:
+ *                - name: Invalid longitud
+ *                  message: La longitud es un campo obligatorio
+ *                  status: 400
  *       municipio:
  *           value:
- *               status: 400
- *               name: "Invalid value in municipio"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid municipio
+ *                  message: El municipio solo puede contener numeros, letras, algunos caràcteres especiales y espacios en blanco entre palabras
+ *                  status: 400
+ *       municipio2:
+ *           value:
+ *               errors:
+ *                - name: Invalid municipio
+ *                  message: El municipio es un campo obligatorio
+ *                  status: 400
  *       provincia:
  *           value:
- *               status: 400
- *               name: "Value in provincia must be Barcelona, Tarragona, Lleida or Girona"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid provincia
+ *                  message: La provincia solo puede contener numeros, letras, algunos caràcteres especiales y espacios en blanco entre palabras
+ *                  status: 400
  *       codiProv:
  *           value:
- *               status: 400
- *               name: "Invalid value in codiProv"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid codiProv
+ *                  message: El código de provincia solo puede contener numeros
+ *                  status: 400
+ *       codiProv2:
+ *           value:
+ *               errors:
+ *                - name: Invalid codiProv
+ *                  message: El código de provincia es un campo obligatorio
+ *                  status: 400
  *       tipoCorriente:
  *           value:
- *               status: 400
- *               name: "Value in tipoCorriente must be AC, DC or AC-DC"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid tipoCorriente
+ *                  message: El tipo de corriente debe ser AC, DC o AC-DC
+ *                  status: 400
  *       tipoVelocidad:
  *           value:
- *               status: 400
- *               name: "Value in tipoVelocidad must be RAPID, semiRAPID, NORMAL, RAPID, RAPID i NORMAL, RAPID i semiRAPID, semiRAPID i NORMAL or superRAPID"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid tipoVelocidad
+ *                  message: El tipo de velocidad debe ser RAPID, semiRAPID, NORMAL, RAPID, RAPID i NORMAL, RAPID i semiRAPID, semiRAPID i NORMAL o superRAPID
+ *                  status: 400
  *       tipoVehiculo:
  *           value:
- *               status: 400
- *               name: "Value in tipoVehiculo must be mercaderies, cotxe, moto, moto i cotxe or taxi"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid tipoVehiculo
+ *                  message: El tipo de vehículo debe ser mercaderies, cotxe, moto, moto i cotxe o taxi
+ *                  status: 400
  *       tipoConexion:
  *           value:
- *               status: 400
- *               error: "Invalid value in codiProv"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid tipoConexion
+ *                  message: El tipo de conexión solo puede contener numeros, letras, algunos caràcteres especiales y espacios en blanco entre palabras
+ *                  status: 400
  *       promotor:
  *           value:
- *               status: 400
- *               name: "Invalid value in codiProv"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid promotor
+ *                  message: El promotor solo puede contener numeros, letras, algunos caràcteres especiales y espacios en blanco entre palabras
+ *                  status: 400
  *       potencia:
  *           value:
- *               status: 400
- *               name: "Invalid value in codiProv"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid potencia
+ *                  message: La potencia ha de ser un integer
+ *                  status: 400
  *       nPlaces:
  *           value:
- *               status: 400
- *               name: "Invalid value in codiProv"
- *               message: "Bad request"
+ *               errors:
+ *                - name: Invalid nPlaces
+ *                  message: El numero de plazas ha de ser un integer
+ *                  status: 400
  *       distancia:
  *           value:
- *               status: 400
- *               name: "Invalid value in distancia"
- *               message: "Bad request"
- *       404:
+ *               errors:
+ *                - name: Invalid potencia
+ *                  message: La distancia ha de ser un integer
+ *                  status: 400
+ *       404Id:
  *           value:
  *               status: 404
- *               name: "ID does not exist"
- *               message: "Not Found"
+ *               name: "EstacionNotFoundError"
+ *               message: "Estacion no encontrada"
  *
  */
 
@@ -279,11 +347,25 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *            type: integer
  *        - name: distancia
  *          in: query
- *          description: Distancia en km máxima a la qu pueden estar las estaciones de carga del usuario.
+ *          description: Distancia en km máxima a la que pueden estar las estaciones de carga del usuario.
  *          required: false
  *          explode: false
  *          schema:
  *            type: integer
+ *        - name: latitud
+ *          in: query
+ *          description: Latitud a la que está el usuario a partir del cual calcular la distancia.
+ *          required: false
+ *          explode: false
+ *          schema:
+ *            type: string
+ *        - name: longitud
+ *          in: query
+ *          description: Longitud a la que está el usuario a partir del cual calcular la distancia.
+ *          required: false
+ *          explode: false
+ *          schema:
+ *            type: string
  *
  *      responses:
  *        200:
@@ -300,14 +382,18 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *            application/json:
  *              examples:
  *                example:
- *                  $ref: "#/components/examples/204"
+ *                  $ref: "#/components/examples/204NoContent"
  *        400:
  *          description: Bad request
  *          content:
  *            application/json:
  *              examples:
- *                InvalidAttributes:
+ *                invalidAttributes:
  *                  $ref: "#/components/examples/400atributos2"
+ *                requiredLongitud:
+ *                  $ref: "#/components/examples/requiredLongitud"
+ *                requiredLatitud:
+ *                  $ref: "#/components/examples/requiredLatitud"
  *                tipoCorriente:
  *                  $ref: "#/components/examples/tipoCorriente"
  *                tipoVelocidad:
@@ -322,7 +408,12 @@ const estacionesController = require("../modules/estaciones/controller/estacione
  *                  $ref: "#/components/examples/distancia"
  *
  */
-router.get(`/`, estacionesController.scanTable);
+router.get(
+  `/`,
+  estacionesFilterSchema,
+  validateRequsestSchema,
+  estacionesController.scanTable
+);
 
 /**
  * @swagger
@@ -348,7 +439,7 @@ router.get(`/`, estacionesController.scanTable);
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/204"
+ *                 $ref: "#/components/examples/204NoContent"
  */
 router.get(`/coordenadas`, estacionesController.getTableCoord);
 
@@ -376,7 +467,7 @@ router.get(`/coordenadas`, estacionesController.getTableCoord);
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/204"
+ *                 $ref: "#/components/examples/204NoContent"
  */
 router.get(`/direccion`, estacionesController.getTableDir);
 
@@ -402,7 +493,7 @@ router.get(`/count`, estacionesController.countEstaciones);
 
 /**
  * @swagger
- * /estaciones/{id}:
+ * /estaciones/info/{id}:
  *   get:
  *     tags:
  *       - Estaciones
@@ -430,21 +521,30 @@ router.get(`/count`, estacionesController.countEstaciones);
  *         content:
  *           application/json:
  *             examples:
- *               InvalidAttributes:
- *                 $ref: "#/components/examples/400atributos2"
+ *               idRequired:
+ *                 $ref: "#/components/examples/id3"
+ *               InvalidCharacters:
+ *                 $ref: "#/components/examples/id"
+ *               idTooShort:
+ *                 $ref: "#/components/examples/id2"
  *       404:
  *         description: Not found
  *         content:
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/404"
+ *                 $ref: "#/components/examples/404Id"
  */
-router.get(`/:Id`, estacionesController.findById);
+router.get(
+  `/info/:id`,
+  estacionesCheckIdSchema,
+  validateRequsestSchema,
+  estacionesController.findById
+);
 
 /**
  * @swagger
- * /estaciones/{id}/coordenadas:
+ * /estaciones/info/{id}/coordenadas:
  *   get:
  *     tags:
  *       - Estaciones
@@ -467,19 +567,35 @@ router.get(`/:Id`, estacionesController.findById);
  *               type: array
  *               items:
  *                 $ref: "#/components/schemas/CoordEstacion"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               idRequired:
+ *                 $ref: "#/components/examples/id3"
+ *               InvalidCharacters:
+ *                 $ref: "#/components/examples/id"
+ *               idTooShort:
+ *                 $ref: "#/components/examples/id2"
  *       404:
  *         description: Not found
  *         content:
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/404"
+ *                 $ref: "#/components/examples/404Id"
  */
-router.get(`/:Id/coordenadas`, estacionesController.getCoordById);
+router.get(
+  `/info/:id/coordenadas`,
+  estacionesCheckIdSchema,
+  validateRequsestSchema,
+  estacionesController.getCoordById
+);
 
 /**
  * @swagger
- * /estaciones/{id}/direccion:
+ * /estaciones/info/{id}/direccion:
  *   get:
  *     tags:
  *       - Estaciones
@@ -502,15 +618,31 @@ router.get(`/:Id/coordenadas`, estacionesController.getCoordById);
  *               type: array
  *               items:
  *                 $ref: "#/components/schemas/DirEstacion"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               idRequired:
+ *                 $ref: "#/components/examples/id3"
+ *               InvalidCharacters:
+ *                 $ref: "#/components/examples/id"
+ *               idTooShort:
+ *                 $ref: "#/components/examples/id2"
  *       404:
  *         description: Not found
  *         content:
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/404"
+ *                 $ref: "#/components/examples/404Id"
  */
-router.get(`/:Id/direccion`, estacionesController.getDirById);
+router.get(
+  `/info/:id/direccion`,
+  estacionesCheckIdSchema,
+  validateRequsestSchema,
+  estacionesController.getDirById
+);
 
 /**
  * @swagger
@@ -519,128 +651,51 @@ router.get(`/:Id/direccion`, estacionesController.getDirById);
  *     tags:
  *       - Estaciones
  *     summary: Crear una nueva estación.
- *     description: Crear una nueva estación en la DB con los atributos especificados.
+ *     description: Crea la estacion definida por los atributos especificados en el body.
  *     operationId: postEstacion
- *     parameters:
- *       - name: direccion
- *         in: query
- *         description: Dirección donde se encuentra la nueva estación de carga.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
- *       - name: latitud
- *         in: query
- *         description: Latitud donde se encuentra la nueva estación de carga.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
- *       - name: longitud
- *         in: query
- *         description: Longitud donde se encuentra la nueva estación de carga.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
- *       - name: municipio
- *         in: query
- *         description: Municipio donde se encuentra la nueva estación de carga.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
- *       - name: provincia
- *         in: query
- *         description: Provincia donde se encuentra la nueva estación de carga.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
- *           enum:
- *             - Barcelona
- *             - Tarragona
- *             - Lleida
- *             - Girona
- *       - name: codiProv
- *         in: query
- *         description: Código identificador de la provincia donde se encuentra la nueva estación de carga.
- *         required: true
- *         explode: false
- *         schema:
- *           type: string
- *       - name: tipoCorriente
- *         in: query
- *         description: Tipo de corriente de la que dispone la nueva estación de carga.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *           enum:
- *             - AC
- *             - DC
- *             - AC-DC
- *       - name: tipoVelocidad
- *         in: query
- *         description: Tipo de velocidad de carga de la que dispone la nueva estación de carga.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *           enum:
- *             - RAPID
- *             - semiRAPID
- *             - NORMAL
- *             - RAPID
- *             - RAPID i NORMAL
- *             - RAPID i semiRAPID
- *             - semiRAPID i NORMAL
- *             - superRAPID
- *       - name: tipoVehiculo
- *         in: query
- *         description: Tipos de vehiculos que pueden cargarse en la nueva estación de carga.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *           enum:
- *             - mercaderies
- *             - cotxe
- *             - moto
- *             - moto i cotxe
- *             - taxi
- *       - name: tipoConexion
- *         in: query
- *         description: Tipo de carga de la que dispone la nueva estación de carga.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: promotor
- *         in: query
- *         description: Entidad promotora o gestora de la nueva estación de carga.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: potencia
- *         in: query
- *         description: Potencia en kW de la nueva estación de carga.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: nPlaces
- *         in: query
- *         description: Número de plazas de las que dispone la nueva estación de carga.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - direccion
+ *               - latitud
+ *               - longitud
+ *               - municipio
+ *               - provincia
+ *               - codiProv
+ *             properties:
+ *               direccion:
+ *                 type: string
+ *               latitud:
+ *                 type: string
+ *               longitud:
+ *                 type: string
+ *               municipio:
+ *                 type: string
+ *               provincia:
+ *                 type: string
+ *               codiProv:
+ *                 type: string
+ *               tipoCorriente:
+ *                 type: string
+ *               tipoVelocidad:
+ *                 type: string
+ *               tipoVehiculo:
+ *                 type: string
+ *               tipoConexion:
+ *                 type: string
+ *               promotor:
+ *                 type: string
+ *               potencia:
+ *                 type: integer
+ *               nPlaces:
+ *                 type: integer
  *     responses:
- *       201:
- *         description: Estación created
+ *       200:
+ *         description: Successful operation
  *         content:
  *           application/json:
  *             schema:
@@ -652,8 +707,6 @@ router.get(`/:Id/direccion`, estacionesController.getDirById);
  *         content:
  *           application/json:
  *             examples:
- *               MinimumAttributes:
- *                 $ref: "#/components/examples/400atributos"
  *               InvalidAttributes:
  *                 $ref: "#/components/examples/400atributos2"
  *               direccion:
@@ -666,6 +719,16 @@ router.get(`/:Id/direccion`, estacionesController.getDirById);
  *                 $ref: "#/components/examples/municipio"
  *               codiProv:
  *                 $ref: "#/components/examples/codiProv"
+ *               direccion2:
+ *                 $ref: "#/components/examples/direccion2"
+ *               latitud2:
+ *                 $ref: "#/components/examples/latitud2"
+ *               longitud2:
+ *                 $ref: "#/components/examples/longitud2"
+ *               municipio2:
+ *                 $ref: "#/components/examples/municipio2"
+ *               codiProv2:
+ *                 $ref: "#/components/examples/codiProv2"
  *               tipoCorriente:
  *                 $ref: "#/components/examples/tipoCorriente"
  *               tipoVelocidad:
@@ -681,11 +744,17 @@ router.get(`/:Id/direccion`, estacionesController.getDirById);
  *               nPlaces:
  *                 $ref: "#/components/examples/nPlaces"
  */
-router.post(`/`, estacionesController.create);
+router.post(
+  `/`,
+  estacionesPostAttrSchema,
+  validateRequsestSchema,
+  userAuthentication.checkAdmin,
+  estacionesController.create
+);
 
 /**
  * @swagger
- * /estaciones/{id}:
+ * /estaciones/info/{id}:
  *  delete:
  *     tags:
  *       - Estaciones
@@ -707,149 +776,83 @@ router.post(`/`, estacionesController.create);
  *             schema:
  *               type: array
  *               items:
- *                 $ref: "#/components/examples/200Delete"
+ *                 $ref: "#/components/schemas/Estacion"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               idRequired:
+ *                 $ref: "#/components/examples/id3"
+ *               InvalidCharacters:
+ *                 $ref: "#/components/examples/id"
+ *               idTooShort:
+ *                 $ref: "#/components/examples/id2"
  *       404:
  *         description: Not found
  *         content:
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/404"
+ *                 $ref: "#/components/examples/404Id"
  */
-router.delete(`/:Id`, estacionesController.deleteByID);
+router.delete(
+  `/info/:id`,
+  estacionesCheckIdSchema,
+  validateRequsestSchema,
+  userAuthentication.checkAdmin,
+  estacionesController.deleteByID
+);
 
 /**
  * @swagger
- * /estaciones/{id}:
+ * /estaciones/info/{id}:
  *  put:
  *     tags:
  *       - Estaciones
  *     summary: Actualizar una nueva estación.
  *     description: Actualiza la estacion definida en el path añadiendo los atributos especificados en el body.
  *     operationId: updateEstacion
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               direccion:
+ *                 type: string
+ *               latitud:
+ *                 type: string
+ *               longitud:
+ *                 type: string
+ *               municipio:
+ *                 type: string
+ *               provincia:
+ *                 type: string
+ *               codiProv:
+ *                 type: string
+ *               tipoCorriente:
+ *                 type: string
+ *               tipoVelocidad:
+ *                 type: string
+ *               tipoVehiculo:
+ *                 type: string
+ *               tipoConexion:
+ *                 type: string
+ *               promotor:
+ *                 type: string
+ *               potencia:
+ *                 type: integer
+ *               nPlaces:
+ *                 type: integer
  *     parameters:
  *       - name: id
  *         in: path
- *         description: Identificador de la estación que queremos actualizar
+ *         description: Identificador de la estación que queremos eliminar
  *         required: true
  *         schema:
  *           type: string
- *       - name: direccion
- *         in: query
- *         description: Dirección donde se encontrará la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: latitud
- *         in: query
- *         description: Latitud donde se encontrará la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: longitud
- *         in: query
- *         description: Longitud donde se encontrará la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: municipio
- *         in: query
- *         description: Municipio donde se encontrará la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: provincia
- *         in: query
- *         description: Provincia donde se encontrará la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *           enum:
- *             - Barcelona
- *             - Tarragona
- *             - Lleida
- *             - Girona
- *       - name: codiProv
- *         in: query
- *         description: Código identificador de la provincia donde se encontrará la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: tipoCorriente
- *         in: query
- *         description: Tipo de corriente de la que dispondrá la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *           enum:
- *             - AC
- *             - DC
- *             - AC-DC
- *       - name: tipoVelocidad
- *         in: query
- *         description: Tipo de velocidad de carga de la que dispondrá la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *           enum:
- *             - RAPID
- *             - semiRAPID
- *             - NORMAL
- *             - RAPID
- *             - RAPID i NORMAL
- *             - RAPID i semiRAPID
- *             - semiRAPID i NORMAL
- *             - superRAPID
- *       - name: tipoVehiculo
- *         in: query
- *         description: Tipos de vehiculos que podrán cargarse en la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *           enum:
- *             - mercaderies
- *             - cotxe
- *             - moto
- *             - moto i cotxe
- *             - taxi
- *       - name: tipoConexion
- *         in: query
- *         description: Tipo de carga de la que dispondrá la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: promotor
- *         in: query
- *         description: Entidad promotora o gestora de la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: potencia
- *         in: query
- *         description: Potencia en kW de la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: string
- *       - name: nPlazas
- *         in: query
- *         description: Número de plazas de las que contará la estación de carga actualizada.
- *         required: false
- *         explode: false
- *         schema:
- *           type: integer
- *
  *     responses:
  *       200:
  *         description: Successful operation
@@ -864,10 +867,14 @@ router.delete(`/:Id`, estacionesController.deleteByID);
  *         content:
  *           application/json:
  *             examples:
- *               MinimumAttributes:
- *                 $ref: "#/components/examples/400atributos"
  *               InvalidAttributes:
  *                 $ref: "#/components/examples/400atributos2"
+ *               id:
+ *                 $ref: "#/components/examples/id"
+ *               id2:
+ *                 $ref: "#/components/examples/id2"
+ *               id3:
+ *                 $ref: "#/components/examples/id3"
  *               direccion:
  *                 $ref: "#/components/examples/direccion"
  *               latitud:
@@ -898,8 +905,15 @@ router.delete(`/:Id`, estacionesController.deleteByID);
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/404"
+ *                 $ref: "#/components/examples/404Id"
  */
-router.put(`/:Id`, estacionesController.update);
+router.put(
+  `/info/:id`,
+  estacionesCheckIdSchema,
+  estacionesPutAttrSchema,
+  validateRequsestSchema,
+  userAuthentication.checkAdmin,
+  estacionesController.update
+);
 
 module.exports = router;

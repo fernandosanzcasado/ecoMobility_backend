@@ -4,33 +4,31 @@ const passport = require("passport");
 const session = require("express-session");
 const { check, validationResult } = require("express-validator");
 
-const userController = require("../modules/user/controller/user.controller");
-const userService = require("../modules/user/service/user.service");
-const registerSchema = require("../schemas/registerSchema");
-const loginSchema = require("../schemas/loginSchema");
-const updatePasswordSchema = require("../schemas/updatePasswordSchema");
-const updateUserInfoSchema = require("../schemas/updateUserInfoSchema");
-const emailInputSchema = require("../schemas/emailInputSchema");
 
-const validateRequsestSchema = require("../middleware/validateRequestSchema");
-const initializePassport = require("../middleware/passport");
+const userController = require("../modules/user/controller/user.controller");
+const userService = require("../modules/user/service/user.service")
+
+const registerSchema = require('../schemas/registerSchema');
+const loginSchema = require('../schemas/loginSchema');
+const updatePasswordSchema = require('../schemas/updatePasswordSchema');
+const updateUserInfoSchema = require('../schemas/updateUserInfoSchema');
+const emailInputSchema = require('../schemas/emailInputSchema');
+const resetPasswordSchema = require("../schemas/resetPasswordSchema");
+const uploadFileSchema = require("../schemas/uploadFileSchema");
+
+const validateRequsestSchema = require('../middleware/validateRequestSchema');
+const initializePassport = require('../middleware/passport');
 const handleError = require("../middleware/errorHandler");
 const userAuthentication = require("../middleware/userAuthentication");
-const resetPasswordSchema = require("../schemas/resetPasswordSchema");
+
 
 const router = express.Router();
 
-initializePassport(passport, (email) => userService.findByEmail(email));
+initializePassport(passport, 
+    email =>
+    userService.findByEmail(email)
+)
 
-router.use(
-  session({
-    secret: "YUNG_BEEF",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-router.use(passport.session());
 router.use(passport.initialize());
 
 /**
@@ -120,273 +118,7 @@ router.use(passport.initialize());
  *  name: Users
  *  description: Endpoints para Users
  */
-
-/**
- * @swagger
- * /users/admin/getAllUsers/:
- *   get:
- *     tags:
- *       - Users
- *     summary: Obtener todas los usuarios
- *     description: Obtener todas las usuarios de la DB con todos sus atributos.
- *     operationId: getAllUsuarios
- *     responses:
- *       200:
- *         description: Successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: "#/components/schemas/Users"
- *       204:
- *         description: "No content"
- *         content:
- *           application/json:
- *             examples:
- *               example:
- *                 $ref: "#/components/examples/204"
- */
-
-router.get(
-  `/admin/getAllUsers/`,
-  userAuthentication.checkAuthenticated,
-  userAuthentication.checkBlocked,
-  userAuthentication.checkAdmin,
-  userController.getAllUsers
-),
-  /**
-   * @swagger
-   *  /users/admin/getAllUsers/count:
-   *      get:
-   *          tags:
-   *            - Users
-   *          summary: Obtener la cantidad de users en la base de datos.
-   *          description: Obtener en una variable el numero de instancias en la base de datos de users.
-   *          operationId: countAllUsers
-   *          responses:
-   *            200:
-   *              description: Successful operation
-   *              content:
-   *                integer:
-   *                  schema:
-   *                    type: integer
-   *                    example: 207
-   *            404:
-   *              description: Not found
-   *              content:
-   *                application/json:
-   *                  examples:
-   *                   example:
-   *                      $ref: "#/components/examples/404"
-   */
-  router.get(
-    `/admin/getAllUsers/count`,
-    userAuthentication.checkAuthenticated,
-    userAuthentication.checkBlocked,
-    userAuthentication.checkAdmin,
-    userController.countAllUsers
-  ),
-  /**
-   * @swagger
-   * /users/admin/getUser/:email:
-   *  get:
-   *    tags:
-   *      - Users
-   *    summary: Obtener el Email de todas las usuaris
-   *    description: Obtener los atributos email y ID de todos las usuarios de la DB.
-   *    operationId: getDirAllUsers
-   *    responses:
-   *      200:
-   *        description: Successful operation
-   *        content:
-   *          application/json:
-   *            schema:
-   *              type: array
-   *              items:
-   *                $ref: "#/components/schemas/Email"
-   *      204:
-   *        description: "No content"
-   *        content:
-   *          application/json:
-   *            examples:
-   *              example:
-   *                $ref: "#/components/examples/204"
-   *      404:
-   *        description: Not found
-   *        content:
-   *          application/json:
-   *            examples:
-   *              example:
-   *                $ref: "#/components/examples/404"
-   */
-  router.get(
-    `/admin/getUser/:email/`,
-    userAuthentication.checkAuthenticated,
-    userAuthentication.checkAdmin,
-    userController.findByEmail
-  );
-
-/**
- *  @swagger
- *  users/me/getInfo:
- *    get:
- *      tags:
- *        - Users
- *      summary: Get user info
- *      description: Get user info for the authenticated and non-blocked user.
- *      operationId: getUserInfo
- *      responses:
- *        200:
- *          description: Successful operation
- *          content:
- *            application/json:
- *              schema:
- *                $ref: "#/components/schemas/Userme"
- *        204:
- *         description: "No content"
- *         content:
- *           application/json:
- *             examples:
- *              example:
- *                 $ref: "#/components/examples/204"
- */
-
-router.get(
-  `/me/getInfo/`,
-  userAuthentication.checkAuthenticated,
-  userAuthentication.checkBlocked,
-  userController.getInfo
-);
-
-/**
- *  @swagger
- *  /users/me/updatePassword:
- *    put:
- *      tags:
- *        - Users
- *      summary: Update user password
- *      description: Update the password for the authenticated and non-blocked user.
- *      operationId: updateUserPassword
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: "#/components/schemas/UpdatePassword"
- *      responses:
- *        200:
- *          description: Successful operation
- *          content:
- *            application/json:
- *              schema:
- *                $ref: "#/components/schemas/Users"
- *        404:
- *          description: Not found
- *          content:
- *            application/json:
- *              examples:
- *                example:
- *                  $ref: "#/components/examples/404"
- */
-
-router.put(
-  `/me/updatePassword/`,
-  userAuthentication.checkAuthenticated,
-  userAuthentication.checkBlocked,
-  updatePasswordSchema,
-  validateRequsestSchema,
-  userController.updatePassword
-);
-
-/**
- * @swagger
- * /users/me/updateInfo:
- *   put:
- *     tags:
- *       - Users
- *     summary: Update a user.
- *     description: Update the authenticated and non-blocked user with the attributes specified in the body.
- *     operationId: updateUser
- *     requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: "#/components/schemas/UpdateUser"
- *     responses:
- *       200:
- *         description: Successful operation
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/examples/200Update"
- *       400:
- *         description: Bad request
- *         content:
- *           application/json:
- *             examples:
- *               example:
- *                 $ref: "#/components/examples/400"
- *       404:
- *         description: Not found
- *         content:
- *           application/json:
- *             examples:
- *               example:
- *                 $ref: "#/components/examples/404"
- */
-
-router.put(
-  `/me/updateInfo/`,
-  userAuthentication.checkAuthenticated,
-  userAuthentication.checkBlocked,
-  updateUserInfoSchema,
-  validateRequsestSchema,
-  userController.updateInfo
-);
-
-/**
- * @swagger
- * /users/me/deleteUser/:
- *    delete:
- *      tags:
- *        - Users
- *      summary: Eliminar un usuario concreta
- *      description: Eliminar la usuario especificado en el path.
- *      operationId: deleteUsuario
- *      parameters:
- *        - name: ID
- *          in: path
- *          description: Identificador de el usuario que queremos eliminar
- *          required: true
- *          schema:
- *            type: string
- *      responses:
- *        200:
- *          description: Successful operation
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                  $ref: "#/components/examples/200Delete"
- *        404:
- *          description: Not found
- *          content:
- *            application/json:
- *              examples:
- *                example:
- *                  $ref: "#/components/examples/404"
- */
-
-router.delete(
-  `/me/deleteUser/`,
-  userAuthentication.checkAuthenticated,
-  userAuthentication.checkBlocked,
-  userController.deleteUser
-);
-
+ 
 /**
  * @swagger
  * /users/register:
@@ -460,12 +192,8 @@ router.delete(
  *                 $ref: "#/components/examples/409"
  */
 
-router.post(
-  `/register`,
-  registerSchema,
-  validateRequsestSchema,
-  userController.registerUser
-);
+router.post(`/register`,registerSchema,validateRequsestSchema,userController.registerUser);
+
 
 /**
  * @swagger
@@ -520,63 +248,9 @@ router.post(
  *              example:
  *                $ref: '#/components/examples/404'
  */
-router.post(
-  `/login`,
-  loginSchema,
-  validateRequsestSchema,
-  passport.authenticate("local"),
-  userAuthentication.checkBlocked,
-  userController.loginUser
-);
 
-/**
- * @swagger
- * /users/logout:
- *   post:
- *     tags:
- *       - Users
- *     summary: Cerrar sesión con un usuario existente.
- *     description: Cerrar sesión con un usuario existente en la aplicación.
- *     operationId: postLogout
- *     responses:
- *       200:
- *         description: Operación exitosa.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "User logged out successfully."
- *       400:
- *         description: Solicitud incorrecta.
- *         content:
- *           application/json:
- *             examples:
- *              example:
- *               $ref: '#/components/examples/400'
- *       401:
- *         description: No autorizado.
- *         content:
- *           application/json:
- *             examples:
- *              example:
- *               $ref: '#/components/examples/401'
- *       404:
- *         description: El usuario no ha sido encontrado.
- *         content:
- *           application/json:
- *             examples:
- *              example:
- *               $ref: '#/components/examples/404'
- */
-router.post(
-  `/logout`,
-  userAuthentication.checkAuthenticated,
-  userAuthentication.checkBlocked,
-  userController.logOut
-);
+router.post(`/login`,loginSchema, validateRequsestSchema, passport.authenticate('local'), userController.loginUser);
+
 
 /**
  * @swagger
@@ -646,12 +320,7 @@ router.post(
  *              example:
  *               $ref: '#/components/examples/404'
  */
-router.post(
-  "/resetForgottenPassword/sendMail",
-  emailInputSchema,
-  validateRequsestSchema,
-  userController.resetForgottenPasswordEmail
-);
+router.post('/resetForgottenPassword/sendMail',emailInputSchema, validateRequsestSchema, userController.resetForgottenPasswordEmail);
 
 /**
  * @swagger
@@ -734,12 +403,284 @@ router.post(
  *              $ref: '#/components/examples/404'
  */
 
-router.post(
-  "/resetForgottenPassword/resetPassword",
-  resetPasswordSchema,
-  validateRequsestSchema,
-  userController.resetPassword
-);
+router.post('/resetForgottenPassword/resetPassword',resetPasswordSchema, validateRequsestSchema,userController.resetPassword);
+
+router.use(userAuthentication.checkAuthenticated, userAuthentication.checkBlocked);
+
+/**
+ *  @swagger
+ *  users/me/getInfo:
+ *    get:
+ *      tags:
+ *        - Users
+ *      summary: Get user info
+ *      description: Get user info for the authenticated and non-blocked user.
+ *      operationId: getUserInfo
+ *      responses:
+ *        200:
+ *          description: Successful operation
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: "#/components/schemas/Userme"
+ *        204:
+ *         description: "No content"
+ *         content:
+ *           application/json:
+ *             examples:
+ *              example:
+ *                 $ref: "#/components/examples/204"
+ */
+
+router.get(`/me/getInfo/`, userController.getInfo);
+
+/**
+ *  @swagger
+ *  /users/me/updatePassword:
+ *    put:
+ *      tags:
+ *        - Users
+ *      summary: Update user password
+ *      description: Update the password for the authenticated and non-blocked user.
+ *      operationId: updateUserPassword
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/UpdatePassword"
+ *      responses:
+ *        200:
+ *          description: Successful operation
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: "#/components/schemas/Users"
+ *        404:
+ *          description: Not found
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/404"
+ */
+
+router.put(`/me/updatePassword/`,updatePasswordSchema, validateRequsestSchema, userController.updatePassword);
+
+/**
+ * @swagger
+ * /users/me/updateInfo:
+ *   put:
+ *     tags:
+ *       - Users
+ *     summary: Update a user.
+ *     description: Update the authenticated and non-blocked user with the attributes specified in the body.
+ *     operationId: updateUser
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/UpdateUser"
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/examples/200Update"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/400"
+ *       404:
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
+ */
+
+
+router.put(`/me/updateInfo/`, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
+
+/**
+ * @swagger
+ * /users/me/deleteUser/:
+ *    delete:
+ *      tags:
+ *        - Users
+ *      summary: Eliminar un usuario concreta
+ *      description: Eliminar la usuario especificado en el path.
+ *      operationId: deleteUsuario
+ *      parameters:
+ *        - name: ID
+ *          in: path
+ *          description: Identificador de el usuario que queremos eliminar
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        200:
+ *          description: Successful operation
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                  $ref: "#/components/examples/200Delete"
+ *        404:
+ *          description: Not found
+ *          content:
+ *            application/json:
+ *              examples:
+ *                example:
+ *                  $ref: "#/components/examples/404"
+ */
+
+router.delete(`/me/deleteUser/`, userController.deleteUser);
+
+
+/**
+ * @swagger
+ * /users/logout:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Cerrar sesión con un usuario existente.
+ *     description: Cerrar sesión con un usuario existente en la aplicación.
+ *     operationId: postLogout
+ *     responses:
+ *       200:
+ *         description: Operación exitosa.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User logged out successfully."
+ *       400:
+ *         description: Solicitud incorrecta.
+ *         content:
+ *           application/json:
+ *             examples:
+ *              example:
+ *               $ref: '#/components/examples/400'
+ *       401:
+ *         description: No autorizado.
+ *         content:
+ *           application/json:
+ *             examples:
+ *              example:
+ *               $ref: '#/components/examples/401'
+ *       404:
+ *         description: El usuario no ha sido encontrado.
+ *         content:
+ *           application/json:
+ *             examples:
+ *              example:
+ *               $ref: '#/components/examples/404'
+ */
+
+router.post(`/logout`,userController.logOut);
+
+router.use(userAuthentication.checkAdmin);
+
+ 
+ /**
+ * @swagger
+ * /users/admin/getAllUsers/:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Obtener todas los usuarios
+ *     description: Obtener todas las usuarios de la DB con todos sus atributos.
+ *     operationId: getAllUsuarios
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Users"
+ *       204:
+ *         description: "No content"
+ *         content:
+ *           application/json:
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/204"
+ */
+
+router.get(`/admin/getAllUsers/`,  userController.getAllUsers);
+  /**
+   * @swagger
+   *  /users/admin/getAllUsers/count:
+   *      get:
+   *          tags:
+   *            - Users
+   *          summary: Obtener la cantidad de users en la base de datos.
+   *          description: Obtener en una variable el numero de instancias en la base de datos de users.
+   *          operationId: countAllUsers
+   *          responses:
+   *            200:
+   *              description: Successful operation
+   *              content:
+   *                integer:
+   *                  schema:
+   *                    type: integer
+   *                    example: 207
+   *            404:
+   *              description: Not found
+   *              content:
+   *                application/json:
+   *                  examples:
+   *                   example:
+   *                      $ref: "#/components/examples/404"
+   */
+router.get(`/admin/getAllUsers/count`, userController.countAllUsers), 
+  /**
+   * @swagger
+   * /users/admin/getUser/:email:
+   *  get:
+   *    tags:
+   *      - Users
+   *    summary: Obtener el Email de todas las usuaris
+   *    description: Obtener los atributos email y ID de todos las usuarios de la DB.
+   *    operationId: getDirAllUsers
+   *    responses:
+   *      200:
+   *        description: Successful operation
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: array
+   *              items:
+   *                $ref: "#/components/schemas/Email"
+   *      204:
+   *        description: "No content"
+   *        content:
+   *          application/json:
+   *            examples:
+   *              example:
+   *                $ref: "#/components/examples/204"
+   *      404:
+   *        description: Not found
+   *        content:
+   *          application/json:
+   *            examples:
+   *              example:
+   *                $ref: "#/components/examples/404"
+   */
+router.get(`/admin/getUser/:email/`, userController.findByEmail);
 
 router.use(handleError);
 

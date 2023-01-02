@@ -9,12 +9,13 @@ function initialize(passport, findUserByEmail){
     
         try{
             const user = await findUserByEmail(email);
- 
-            if(await bcrpyt.compare(password, user.password)){
-                return done(null, user)
-            }else{
-                return done(new IncorrectPassword(), false)
+            if(await bcrpyt.compare(password, user.password) === false){
+                return done(new IncorrectPassword(), false);
             }
+            if(user.isBlocked === true){
+                return done({message: 'This user is blocked'}, false);
+            }
+            return done(null, user);   
         }catch(err){
             return done(err);
         }  

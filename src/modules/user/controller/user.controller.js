@@ -41,14 +41,21 @@ class userController{
         }catch(err){
             next(err);
         }
-        
-
     }
 
     async updateInfo(req,res,next){
         try{
             await userService.updateInfo(req.user.email, req.body);
             res.json({message: "User fields updated successfully."});
+        }catch(err){
+            next(err);
+        }
+    }
+
+    async uploadProfileImage(req,res,next){
+        try{
+            await userService.uploadProfileImage(req.user.email, req.files['profileImage']);
+            res.json({message: "User profile image uploaded successfully."});
         }catch(err){
             next(err);
         }
@@ -141,7 +148,17 @@ class userController{
         }
     }
 
+    async getAchievements(req,res,next){
+        res.json({ achievements: req.user.achievements});
+    }
 
+    async getProfileImage(req,res,next){
+        try{
+            res.json(req.user.profileImagePath);
+        }catch(err){
+            next(err);
+        }
+    }
 }
 
 module.exports = new userController();

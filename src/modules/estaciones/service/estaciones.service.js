@@ -3,35 +3,43 @@ const axios = require("axios");
 
 const estacionesRepository = require("../repository/estaciones.repository");
 const EstacionNotFoundError = require("../../../errors/estaciones.errors/estacionNotFound");
+const EstacionNoContentError = require("../../../errors/estaciones.errors/estacionNoContent");
+const EstacionWrongAttrError = require("../../../errors/estaciones.errors/estacionWrongAttr");
+const EstacionFaltaLatCoordsError = require("../../../errors/estaciones.errors/estacionFaltaLatCoords");
+const EstacionFaltaLongCoordsError = require("../../../errors/estaciones.errors/estacionFaltaLongCoords");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class estacionesService {
-  async scanTable(query, body) {
+  async scanTable(query) {
     var data = await estacionesRepository.scanTable();
     data = data.Items;
-    if (Object.keys(data).length == 0) {
-      throw new EstacionNotFoundError();
-    } else {
-      for (var param in query) {
-        if (param == "potencia") {
-          data = data.filter((d) => d.potencia <= query[param]);
-        } else if (param == "tipoConexion") {
-          data = data.filter((d) => d.tipoConexion == query[param]);
-        } else if (param == "tipoCorriente") {
-          data = data.filter((d) => d.tipoCorriente == query[param]);
-        } else if (param == "tipoVehiculo") {
-          data = data.filter((d) => d.tipoVehiculo == query[param]);
-        } else if (param == "tipoVelocidad") {
-          data = data.filter((d) => d.tipoVelocidad == query[param]);
-        } else if (param == "distancia") {
-          console.log(query[param]);
-          data = data.filter(
-            (d) =>
-              distance(d.latitud, d.longitud, body.latitud, body.longitud) <=
-              query[param]
-          );
+    for (var param in query) {
+      if (param == "potencia") {
+        data = data.filter((d) => d.potencia <= query[param]);
+      } else if (param == "tipoConexion") {
+        data = data.filter((d) => d.tipoConexion == query[param]);
+      } else if (param == "tipoCorriente") {
+        data = data.filter((d) => d.tipoCorriente == query[param]);
+      } else if (param == "tipoVehiculo") {
+        data = data.filter((d) => d.tipoVehiculo == query[param]);
+      } else if (param == "tipoVelocidad") {
+        data = data.filter((d) => d.tipoVelocidad == query[param]);
+      } else if (param == "distancia") {
+        if (typeof query.latitud === "undefined") {
+          throw new EstacionFaltaLatCoordsError();
         }
+        if (typeof query.longitud === "undefined") {
+          throw new EstacionFaltaLongCoordsError();
+        }
+        data = data.filter(
+          (d) =>
+            distance(d.latitud, d.longitud, param.latitud, param.longitud) <=
+            query[param]
+        );
       }
+    }
+    if (Object.keys(data).length == 0) {
+      throw new EstacionNoContentError();
     }
 
     return data;
@@ -77,7 +85,7 @@ class estacionesService {
 
   async postEstacion(data) {
     const estacion = data;
-    estacion.ID = uuidv4();
+    estacion.id = uuidv4();
     const newEstacion = estacionesRepository.postOrUpdateEstacion(estacion);
     return newEstacion;
   }
@@ -101,11 +109,7 @@ class estacionesService {
     const data = await estacionesRepository.deleteByID(estacionID);
     if (!data.Attributes) {
       throw new EstacionNotFoundError();
-    } else return data.Attributes;
-  }
-  async scanTablealter() {
-    const data = await estacionesRepository.scanTable();
-    return data.Items;
+    } 
   }
 }
 

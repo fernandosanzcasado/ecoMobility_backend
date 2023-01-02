@@ -32,6 +32,8 @@ class userRepository{
                     dateJoined: Date.now(),
                     isSuperuser: false,
                     isBlocked: false,
+                    achievements: data.achievements,
+                    profileImagePath: null
                 },    
             };
 
@@ -58,6 +60,25 @@ class userRepository{
                ReturnValues: "ALL_NEW", 
         };
         return await db.update(params).promise();
+    }
+
+    async uploadProfileImage(email, path){
+        const params = {
+            ExpressionAttributeNames: {
+                "#UP": "profileImagePath", 
+               }, 
+               ExpressionAttributeValues: {
+                ':p' : path,
+              }, 
+               Key: {
+                email: email
+               }, 
+               TableName: this.tableName, 
+               UpdateExpression: "SET #UP = :p", 
+        };
+        return await db.update(params).promise();
+
+
     }
 
     async updateUser(email,data){
@@ -117,7 +138,7 @@ class userRepository{
         const params = {
             TableName: this.tableName,
         }
-        return db.scan(params).promise();
+        return await db.scan(params).promise();
     }
 
 }
