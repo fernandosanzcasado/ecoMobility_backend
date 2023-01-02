@@ -1,18 +1,63 @@
 const bicingService = require("../service/bicing.service");
 
 class bicingController {
+
+  *swagger
+  */bicing/all:
+  *  get:
+  *    summary: Get information for all Bicing stations
+  *    description: Returns an array of objects with information about all Bicing stations
+  *    responses:
+  *      '200':
+  *        description: A successful response
+  *        content:
+  *          application/json:
+  *            schema:
+  *              type: array
+  *              items:
+  *                type: object
+  *                properties:
+  *                  id:
+  *                    type: integer
+  *                    description: The ID of the Bicing station
+  *                  coordinates:
+  *                    type: string
+  *                    description: The latitude and longitude of the Bicing station
+  *                  num_bikes_available:
+  *                    type: integer
+  *                    description: The number of bikes available at the Bicing station
+  *                  num_bikes_available_types:
+  *                    type: object
+  *                    description: The number of bikes available at the Bicing station, broken down by type
+  *                  num_docks_available:
+  *                    type: integer
+  *                    description: The number of docks available at the Bicing station
+  *                  Street:
+  *                    type: string
+  *                    description: The street address of the Bicing station
+  *                  nseaters:
+  *                    type: integer
+  *                    description: The number of seats available at the Bicing station
+  *                  'Number of docks available':
+  *                    type: integer
+  *                    description: The number of docks available at the Bicing station
+  *                  'Postal Code':
+  *                    type: string
+  *                    description: The postal code of the Bicing station
+  *                  'Total capacity':
+  *                    type: integer
+  *                    description: The total capacity of the Bicing station
+  *                  is_charging_station:
+  *                    type: boolean
+  *                    description: Whether the Bicing station is a charging station
   async bicingAll(req, res) {
     try {
       console.log("Fetching data from Bicing API...");
       const data = await bicingService.bicingInfo();
 
-      //console.log("Received data from Bicing API:", data);
 
       const stations = data.information.stations;
-      //console.log("Stations:", stations);
-      console.log("PRUEBAAAAAAAA:");
 
-      // create a new array of objects with the desired information
       const cleanedData = stations.map((station) => {
         console.log(station.id);
         const status = data.status.stations.find((s) => s.id === station.id);
@@ -38,7 +83,98 @@ class bicingController {
       res.json(err);
     }
   }
+  
 
+  /bicing/{id}:
+    get:
+      summary: Get information for a specific Bicing station
+      description: Returns an object with information about a specific Bicing station
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  coordinates:
+                    type: string
+                    description: The latitude and longitude of the Bicing station
+                  num_bikes_available:
+                    type: integer
+                    description: The number of bikes available at the Bicing station
+                  num_bikes_available_types:
+                    type: object
+                    description: The number of bikes available at the Bicing station, broken down by type
+                  num_docks_available:
+                    type: integer
+                    description: The number of docks available at the Bicing station
+                  Street:
+                    type: string
+                    description: The street address of the Bicing station
+                  nseaters:
+                    type: integer
+                    description: The number of seats available at the Bicing station
+                  go:
+                    type: integer
+                    description: The distance to the nearest station
+  /bicing/coords:
+    get:
+      summary: Get the coordinates for all Bicing stations
+      description: Returns an array of objects with the ID and coordinates for all Bicing stations
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: The ID of the Bicing station
+                    coordinates:
+                      type: string
+                      description: The latitude and longitude of the Bicing station
+      security:
+        - apiKeyAuth: []
+
+  /bicing/{id}/coords:
+    get:
+      summary: Get the coordinates for a specific Bicing station
+      description: Returns an object with the ID and coordinates for a specific Bicing station
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the Bicing station
+                  coordinates:
+                    type: string
+                    description: The latitude and longitude of the Bicing station
+      security:
+        - apiKeyAuth: []
   async bicingAllById(req, res) {
     try {
       const id = req.params.id;
@@ -67,6 +203,56 @@ class bicingController {
       res.json(err);
     }
   }
+
+  /bicing/info:
+    get:
+      summary: Get information for all Bicing stations
+      description: Returns an array of objects with information about all Bicing stations
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: The ID of the Bicing station
+                    coordinates:
+                      type: string
+                      description: The latitude and longitude of the Bicing station
+                    num_bikes_available:
+                      type: integer
+                      description: The number of bikes available at the Bicing station
+                    num_bikes_available_types:
+                      type: object
+                      description: The number of bikes available at the Bicing station, broken down by type
+                    num_docks_available:
+                      type: integer
+                      description: The number of docks available at the Bicing station
+                    Street:
+                      type: string
+                      description: The street address of the Bicing station
+                    nseaters:
+                      type: integer
+                      description: The number of seats available at the Bicing station
+                    'Number of docks available':
+                      type: integer
+                      description: The number of docks available at the Bicing station
+                    'Postal Code':
+                      type: string
+                      description: The postal code of the Bicing station
+                    'Total capacity':
+                      type: integer
+                      description: The total capacity of the Bicing station
+                    is_charging_station:
+                      type: boolean
+                      description: Whether the Bicing station is a charging station
+      security:
+        - apiKeyAuth: []
   async bicingCoords(req, res) {
     try {
       const data = await bicingService.bicingInfo();
@@ -84,7 +270,52 @@ class bicingController {
       res.json(err);
     }
   }
-
+  
+  /bicing/{id}:
+    get:
+      summary: Get information for a specific Bicing station
+      description: Returns an object with information about a specific Bicing station
+        parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  coordinates:
+                    type: string
+                    description: The latitude and longitude of the Bicing station
+                  num_bikes_available:
+                    type: integer
+                    description: The number of bikes available at the Bicing station
+                  num_bikes_available_types:
+                    type: object
+                    description: The number of bikes available at the Bicing station, broken down by type
+                  num_docks_available:
+                    type: integer
+                    description: The number of docks available at the Bicing station
+                  Street:
+                    type: string
+                    description: The street address of the Bicing station
+                  nseaters:
+                    type: integer
+                    description: The number of seats available at the Bicing station
+                  go:
+                    type: integer
+                    description: The distance to the nearest station
+                  'Number of docks available':
+                    type: integer
+                    description: The number of docks available at the Bicing station
+                  coordinates:
+                    type: string
   async bicingCoordsById(req, res) {
     try {
       const id = req.params.id;
@@ -133,7 +364,6 @@ class bicingController {
 
   async bicingCount(req, res) {
     try {
-      console.log("controller count");
       const data = await bicingService.bicingCount();
       res.json(data);
     } catch (err) {
