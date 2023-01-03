@@ -6,27 +6,37 @@ class bicingController {
       console.log("Fetching data from Bicing API...");
       const data = await bicingService.bicingInfo();
 
-      const stations = data.information.stations;
+      const infoStations = data.information.stations;
+      const statusStations = data.status.stations;
 
-      const cleanedData = stations.map((station) => {
-        console.log(station.id);
-        const status = data.status.stations.find((s) => s.id === station.id);
+      const mixedStations = infoStations.filter((infoItem) =>
+        statusStations.some(
+          (statusItem) => statusItem.station_id === infoItem.station_id
+        )
+      );
+
+      const cleanedData = mixedStations.map((station) => {
+        const info = infoStations.find(
+          (s) => s.station_id === station.station_id
+        );
+        const status = statusStations.find(
+          (s) => s.station_id === station.station_id
+        );
         return {
-          id: station.id, // use id from station object
-          coordinates: `(${station.lat}, ${station.lon})`, // include latitude and longitude
-          num_bikes_available: status.num_bikes_available, // use num_bikes_available from status object
-          num_bikes_available_types: status.num_bikes_available_types, // use num_bikes_available_types from status object
-          num_docks_available: status.num_docks_available, // use num_docks_available from status object
-          Street: station.address, // use address from station object
-          nseaters: station.slots, // use slots from station object
-          "Number of docks availabe": status.num_docks_available, // use num_docks_available from station object
-          "Postal Code": station.post_code, // use post_code from station object
-          "Total capacity": station.capacity, // use capacity from station object
-          is_charging_station: status.is_charging_station, // use is_charging_station from status object
+          id: info.station_id, // use id from station object
+          lat: info.lat, // latitude
+          lon: info.lon, // longitude
+          numBikesAvailable: status.num_bikes_available, // use num_bikes_available from status object
+          numBikesAvailable_types: status.num_bikes_available_types, // use num_bikes_available_types from status object
+          numDocksAvailable: status.num_docks_available, // use num_docks_available from status object
+          street: info.address, // use address from station object
+          slots: info.slots, // use slots from station object
+          postalCode: info.post_code, // use post_code from station object
+          totalCapacity: info.capacity, // use capacity from station object
+          isChargingInfo: status.is_charging_station, // use is_charging_station from status object
         };
       });
 
-      console.log("Cleaned data:", cleanedData);
       res.json(cleanedData);
     } catch (err) {
       console.error(err);
