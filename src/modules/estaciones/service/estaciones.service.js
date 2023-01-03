@@ -7,6 +7,7 @@ const EstacionNoContentError = require("../../../errors/estaciones.errors/estaci
 const EstacionWrongAttrError = require("../../../errors/estaciones.errors/estacionWrongAttr");
 const EstacionFaltaLatCoordsError = require("../../../errors/estaciones.errors/estacionFaltaLatCoords");
 const EstacionFaltaLongCoordsError = require("../../../errors/estaciones.errors/estacionFaltaLongCoords");
+const jaccardIndex = require("../../../helpers/jaccard");
 
 //fitxer que s'encarrega de tota la logica relacionada amb els usuaris
 class estacionesService {
@@ -14,21 +15,11 @@ class estacionesService {
     var data = await estacionesRepository.scanTable();
     data = data.Items;
     for (var param in query) {
-      if (param == "potencia") {
-        data = data.filter((d) => d.potencia <= query[param]);
-      } else if (param == "tipoConexion") {
-        data = data.filter((d) => d.tipoConexion == query[param]);
-      } else if (param == "tipoCorriente") {
-        data = data.filter((d) => d.tipoCorriente == query[param]);
-      } else if (param == "tipoVehiculo") {
-        data = data.filter((d) => d.tipoVehiculo == query[param]);
-      } else if (param == "tipoVelocidad") {
-        data = data.filter((d) => d.tipoVelocidad == query[param]);
-      } else if (param == "distancia") {
-        if (typeof query.latitud === "undefined") {
+      if (param === "distancia") {
+        if (!query.latitud) {
           throw new EstacionFaltaLatCoordsError();
         }
-        if (typeof query.longitud === "undefined") {
+        if (!query.longitud) {
           throw new EstacionFaltaLongCoordsError();
         }
         data = data.filter(
@@ -36,6 +27,20 @@ class estacionesService {
             distance(d.latitud, d.longitud, param.latitud, param.longitud) <=
             query[param]
         );
+        continue;
+      }
+
+      if (param === "potencia") {
+        data = data.filter((d) => {
+          d[param] <= query[param];
+        });
+        continue;
+      }
+
+      if (param !== "distancia" && param !== "potencia") {
+        data = data.filter((d) => {
+          return jaccardIndex(d[param], query[param]) >= 0.4;
+        });
       }
     }
     if (Object.keys(data).length == 0) {
@@ -109,7 +114,7 @@ class estacionesService {
     const data = await estacionesRepository.deleteByID(estacionID);
     if (!data.Attributes) {
       throw new EstacionNotFoundError();
-    } 
+    }
   }
 }
 
@@ -131,7 +136,6 @@ function distance(lat1, lon1, lat2, lon2) {
     dist = (dist * 180) / Math.PI;
     dist = dist * 60 * 1.1515;
     dist = dist * 1.609344;
-    console.log(dist);
     return dist;
   }
 }
