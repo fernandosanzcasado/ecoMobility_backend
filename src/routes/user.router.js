@@ -434,6 +434,9 @@ router.use(userAuthentication.checkAuthenticated, userAuthentication.checkBlocke
 
 router.get(`/me/getInfo/`, userController.getInfo);
 
+router.get(`/me/getAchievements/`, userController.getAchievements);
+router.get(`/me/getProfileImage/`, userController.getProfileImage);
+
 /**
  *  @swagger
  *  /users/me/updatePassword:
@@ -507,6 +510,8 @@ router.put(`/me/updatePassword/`,updatePasswordSchema, validateRequsestSchema, u
 
 
 router.put(`/me/updateInfo/`, updateUserInfoSchema, validateRequsestSchema, userController.updateInfo);
+
+router.put(`/me/uploadProfileImage/`, uploadFileSchema, validateRequsestSchema, userController.uploadProfileImage);
 
 /**
  * @swagger
@@ -589,6 +594,8 @@ router.delete(`/me/deleteUser/`, userController.deleteUser);
  */
 
 router.post(`/logout`,userController.logOut);
+
+
 
 router.use(userAuthentication.checkAdmin);
 
@@ -681,6 +688,8 @@ router.get(`/admin/getAllUsers/count`, userController.countAllUsers),
    *                $ref: "#/components/examples/404"
    */
 router.get(`/admin/getUser/:email/`, userController.findByEmail);
+
+router.put(`/admin/updateUser/:email/`, userController.updateUser);
 
 router.use(handleError);
 
