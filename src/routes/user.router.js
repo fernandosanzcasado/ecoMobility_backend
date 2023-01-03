@@ -15,6 +15,7 @@ const updateUserInfoSchema = require('../schemas/updateUserInfoSchema');
 const emailInputSchema = require('../schemas/emailInputSchema');
 const resetPasswordSchema = require("../schemas/resetPasswordSchema");
 const uploadFileSchema = require("../schemas/uploadFileSchema");
+const adminUpdateUser = require('../schemas/adminUpdateUser');
 
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
@@ -689,7 +690,7 @@ router.get(`/admin/getAllUsers/count`, userController.countAllUsers),
    */
 router.get(`/admin/getUser/:email/`, userController.findByEmail);
 
-router.put(`/admin/updateUser/:email/`, userController.updateUser);
+router.put(`/admin/updateUser/:email/`, adminUpdateUser, validateRequsestSchema, userController.updateUser);
 
 router.use(handleError);
 
