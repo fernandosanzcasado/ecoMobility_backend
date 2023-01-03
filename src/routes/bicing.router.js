@@ -13,13 +13,16 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *         id:
  *           type: integer
  *           example: 1
- *         coordinates:
- *           type: string
- *           example: "(41.39, 2.16)"
- *         num_bikes_available:
+ *         lat:
+ *           type: Number
+ *           example: "41.39"
+ *         lon:
+ *           type:Number
+ *           example:"2.16"
+ *         numBikesAvailable:
  *           type: integer
  *           example: 4
- *         num_bikes_available_types:
+ *         numBikesAvailableTypes:
  *           type: object
  *           properties:
  *             electric:
@@ -28,25 +31,22 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *             mechanical:
  *               type: integer
  *               example: 2
- *         num_docks_available:
+ *         numDocksAvailable:
  *           type: integer
  *           example: 19
- *         Street:
+ *         street:
  *           type: string
  *           example: "Gran Via de les Corts Catalanes, 715"
- *         nseaters:
- *           type: integer
- *           example: 23
- *         "Number of docks available":
+ *         " docks available":
  *           type: integer
  *           example: 19
- *         "Postal Code":
+ *         postalCode:
  *           type: string
  *           example: "08015"
- *         "Total capacity":
+ *         totalCapacity:
  *           type: integer
  *           example: 23
- *         is_charging_station:
+ *         isChargingInfo:
  *           type: boolean
  *           example: false
  *     BicingCoordenadas:
@@ -181,9 +181,12 @@ router.get("/coordenadas", bicingController.bicingCoords);
  *                   id:
  *                     type: integer
  *                     example: 1
- *                   coordinates:
- *                     type: string
- *                     example: "(41.3985182, 2.1917991)"
+ *                   lon:
+ *                     type:Number
+ *                     example:"2.16"
+ *                   lat:
+ *                     type: Number
+ *                     example: "41.39"
  *                   num_bikes_available:
  *                     type: integer
  *                     example: 13
@@ -202,16 +205,13 @@ router.get("/coordenadas", bicingController.bicingCoords);
  *                   Street:
  *                     type: string
  *                     example: "Gran Via de les Corts Catalanes, 715"
- *                   nseaters:
+ *                   slots:
  *                     type: integer
  *                     example: 23
- *                   "Number of docks available":
- *                     type: integer
- *                     example: 7
- *                   "Postal Code":
+ *                   postalCode:
  *                     type: integer
  *                     example: 8015
- *                   "Total capacity":
+ *                   totalCapacity:
  *                     type: integer
  *                     example: 30
  *                   is_charging_station:
@@ -355,9 +355,12 @@ router.get("/coordenadas/:id", bicingController.bicingCoordsById);
  *                 id:
  *                   type: string
  *                   example: "1"
- *                 coordinates:
- *                   type: string
- *                   example: "(41.397952, 2.1817253)"
+ *                 lon:
+ *                   type:Number
+ *                   example:"2.16"
+ *                 lat:
+ *                   type: Number
+ *                   example: "41.39"
  *                 num_bikes_available:
  *                   type: integer
  *                   example: 6
@@ -370,16 +373,16 @@ router.get("/coordenadas/:id", bicingController.bicingCoordsById);
  *                 Street:
  *                   type: string
  *                   example: "Gran Via de les Corts Catalanes, 715"
- *                 nseaters:
+ *                 slots:
  *                   type: integer
  *                   example: 23
- *                 "Number of docks availabe":
+ *                 numDocksAvailable:
  *                   type: integer
  *                   example: 17
  *                 "Postal Code":
  *                   type: integer
  *                   example: 8013
- *                 "Total capacity":
+ *                 totalCapacity:
  *                   type: integer
  *                   example: 30
  *                 is_charging_station:
@@ -424,12 +427,18 @@ router.get("/info/:id", bicingController.bicingInfoById);
  *             schema:
  *               type: object
  *               properties:
- *                 coordinates:
- *                   type: string
- *                   example: "(41.3972128, 2.1683059)"
- *                 num_bikes_available:
+ *                 id:
  *                   type: integer
- *                   example: 10
+ *                   example: 1
+ *                 lon:
+ *                   type:Number
+ *                   example:"2.16"
+ *                 lat:
+ *                   type: Number
+ *                   example: "41.39"
+ *                 num_bikes_available:
+ *                    type: integer
+ *                    example: 10
  *                 num_bikes_available_types:
  *                   type: object
  *                   example: { "mechanical": 10 }
@@ -439,19 +448,19 @@ router.get("/info/:id", bicingController.bicingInfoById);
  *                 Street:
  *                   type: string
  *                   example: "Gran Via de les Corts Catalanes, 715"
- *                 nseaters:
+ *                 slots:
  *                   type: integer
  *                   example: 23
- *                 "Number of docks availabe":
+ *                 numDocksAvailable:
  *                   type: boolean
  *                   example: true
  *                 coordinates:
  *                   type: string
  *                   example: "(41.3972128, 2.1683059)"
- *                 "Postal Code":
+ *                 postalCode:
  *                   type: string
  *                   example: "08015"
- *                 "Total capacity":
+ *                 totalCapacity:
  *                   type: integer
  *                   example: 33
  *                 is_charging_station:
@@ -491,34 +500,34 @@ router.get("/info/:id", bicingController.bicingInfoById);
  *                 id:
  *                   type: integer
  *                   example: 1
- *                 coordinates:
- *                   type: string
- *                   example: "(41.397952, 2.180042)"
- *                 num_bikes_available:
+ *                 lat:
+ *                   type: Number
+ *                   example: "41.39"
+ *                 lon:
+ *                   type:Number
+ *                   example:"2.16"
+ *                 numBikesAvailable:
  *                   type: integer
  *                   example: 10
- *                 num_bikes_available_types:
+ *                 numBikesAvailableTypes:
  *                   type: object
  *                   example: {"mechanical": 5, "ebike": 5}
- *                 num_docks_available:
- *                   type: integer
- *                   example: 15
- *                 Street:
+ *                 street:
  *                   type: string
  *                   example: "Gran Via de les Corts Catalanes, 715"
- *                 nseaters:
+ *                 slots:
  *                   type: integer
  *                   example: 23
- *                 "Number of docks availabe":
+ *                 numDocksAvailable:
  *                   type: integer
  *                   example: 15
- *                 "Postal Code":
+ *                 postalCode:
  *                   type: integer
  *                   example: 8010
- *                 "Total capacity":
+ *                 totalCapacity:
  *                   type: integer
  *                   example: 38
- *                 is_charging_station:
+ *                 isChargingInfo:
  *                   type: boolean
  *                   example: false
  */

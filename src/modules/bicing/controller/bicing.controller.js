@@ -27,7 +27,7 @@ class bicingController {
           lat: info.lat, // latitude
           lon: info.lon, // longitude
           numBikesAvailable: status.num_bikes_available, // use num_bikes_available from status object
-          numBikesAvailable_types: status.num_bikes_available_types, // use num_bikes_available_types from status object
+          numBikesAvailableTypes: status.num_bikes_available_types, // use num_bikes_available_types from status object
           numDocksAvailable: status.num_docks_available, // use num_docks_available from status object
           street: info.address, // use address from station object
           slots: info.slots, // use slots from station object
@@ -53,17 +53,16 @@ class bicingController {
       const status = data.status;
 
       const responseData = {
-        coordinates: `(${station.lat}, ${station.lon})`, // include latitude and longitude
+        lat: station.lat,
+        lon: station.lon, // include latitude and longitude
         num_bikes_available: status.num_bikes_available,
         num_bikes_available_types: status.num_bikes_available_types,
         num_docks_available: status.num_docks_available,
         Street: station.address,
-        nseaters: station.slots,
-        go: station.nearby_distance,
-        "Number of docks availabe": station._ride_code_support,
-        coordinates: `(${station.lat}, ${station.lon})`,
-        "Postal Code": station.post_code,
-        "Total capacity": station.capacity,
+        slots: station.slots,
+        numDocksAvailable: station._ride_code_support,
+        PostalCode: station.post_code,
+        capacity: station.capacity,
         is_charging_station: status.is_charging_station,
       };
 
@@ -77,12 +76,12 @@ class bicingController {
     try {
       const data = await bicingService.bicingInfo();
       const stations = data.information.stations;
-      console.log("Stations:", stations);
 
       // create a new array of objects with the desired information
       const cleanedData = stations.map((station) => ({
         id: station.station_id,
-        coordinates: `(${station.lat}, ${station.lon})`,
+        lat: station.lat,
+        lon: station.lon, // include latitude and longitude
       }));
 
       res.json(cleanedData);
@@ -98,7 +97,8 @@ class bicingController {
 
       const cleanedData = {
         id: station.station_id,
-        coordinates: `(${station.lat}, ${station.lon})`,
+        lat: station.lat,
+        lon: station.lon, // include latitude and longitude`
       };
 
       res.json(cleanedData);
@@ -115,9 +115,11 @@ class bicingController {
       const cleanedData = data.information.stations.map((station) => {
         return {
           id: station.id,
-          coordinates: `(${station.lat}, ${station.lon})`, // include latitude and longitude
+          lat: station.lat,
+          lon: station.lon, // include latitude and longitude
+          // include latitude and longitude
           Street: station.address, // basic information
-          "Postal Code": station.post_code,
+          PostalCode: station.post_code,
         };
       });
 
