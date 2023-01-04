@@ -43,6 +43,9 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *         postalCode:
  *           type: string
  *           example: "08015"
+ *         status:
+ *           type: string
+ *           example:"IN_SERVICE"
  *         totalCapacity:
  *           type: integer
  *           example: 23
