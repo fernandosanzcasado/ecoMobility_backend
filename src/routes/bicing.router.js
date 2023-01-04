@@ -490,46 +490,6 @@ router.get("/info/:id", bicingController.bicingInfoById);
  *           application/json:
  *             schema:
  *                 $ref: "#/components/examples/403"
- *       200:
- *         description: Successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 lat:
- *                   type: Number
- *                   example: "41.39"
- *                 lon:
- *                   type:Number
- *                   example:"2.16"
- *                 numBikesAvailable:
- *                   type: integer
- *                   example: 10
- *                 numBikesAvailableTypes:
- *                   type: object
- *                   example: {"mechanical": 5, "ebike": 5}
- *                 street:
- *                   type: string
- *                   example: "Gran Via de les Corts Catalanes, 715"
- *                 slots:
- *                   type: integer
- *                   example: 23
- *                 numDocksAvailable:
- *                   type: integer
- *                   example: 15
- *                 postalCode:
- *                   type: integer
- *                   example: 8010
- *                 totalCapacity:
- *                   type: integer
- *                   example: 38
- *                 isChargingInfo:
- *                   type: boolean
- *                   example: false
  */
 
 router.get("/:id", bicingController.bicingAllById);

@@ -114,7 +114,7 @@ class bicingController {
       // create a new array of objects with the desired information
       const cleanedData = data.information.stations.map((station) => {
         return {
-          id: station.id,
+          id: station.station_id,
           lat: station.lat,
           lon: station.lon, // include latitude and longitude
           // include latitude and longitude
