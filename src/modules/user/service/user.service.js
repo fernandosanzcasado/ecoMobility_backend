@@ -4,7 +4,7 @@ const { json } = require("body-parser");
 const transporter = require("../../../helpers/nodemailer");
 const tokenService = require("../../token/service/token.service");
 const userRepository = require("../repository/user.repository");
-const BLOBsRepository = require('../../BLOBs.repository');
+const BLOBsRepository = require("../../BLOBs.repository");
 
 const UserNotFoundError = require("../../../errors/user.errors/userNotFound");
 const IncorrectPassword = require("../../../errors/user.errors/incorrectPassword");
@@ -43,7 +43,7 @@ class userService {
       name: data.name,
       surnames: data.surnames,
       isSuperuser: data.isSuperuser,
-      isBlocked: data.isBlocked 
+      isBlocked: data.isBlocked,
     });
     return updatedUser.Attributes;
   }
@@ -57,27 +57,33 @@ class userService {
     }
   }
 
-
-
   async updateInfo(email, info) {
     return await userRepository.updateUserInfo(email, info);
   }
 
-  async uploadProfileImage(email, imageInfo){
-    const extension = imageInfo.name.toLowerCase().split('.');
-  
-    if(imageInfo.size > 1000000){
+  async uploadProfileImage(email, imageInfo) {
+    const extension = imageInfo.name.toLowerCase().split(".");
+
+    if (imageInfo.size > 1000000) {
       throw new ProfilePictureTooBig();
     }
 
-    const profileImagePath = 'ecomobility/users/' + email +'/' + imageInfo.md5 + '.' + extension[extension.length - 1];
+    const profileImagePath =
+      "ecomobility/users/" +
+      email +
+      "/" +
+      imageInfo.md5 +
+      "." +
+      extension[extension.length - 1];
 
-    const uploadedImage = await BLOBsRepository.uploadImage(profileImagePath, imageInfo.data, imageInfo.mimetype);
+    const uploadedImage = await BLOBsRepository.uploadImage(
+      profileImagePath,
+      imageInfo.data,
+      imageInfo.mimetype
+    );
     await userRepository.uploadProfileImage(email, uploadedImage.Location);
-    
+
     return;
-
-
   }
 
   async deleteUser(email) {
@@ -114,8 +120,8 @@ class userService {
 
     const achievements = [];
 
-    for(var i = 0; i < 7; ++i){
-      achievements.push({id: i, value: 0});
+    for (var i = 0; i < 7; ++i) {
+      achievements.push({ id: i, value: 0 });
     }
 
     const newUser = await userRepository.createUser({
@@ -127,35 +133,34 @@ class userService {
     });
     return newUser;
   }
-
-  async resetForgottenPasswordEmail(email){
+  async resetForgottenPasswordEmail(email) {
     const user = await userRepository.findByEmail(email);
 
-    if(!user.Item){
+    if (!user.Item) {
       throw new UserNotFoundError();
     }
-    
+
     const newToken = await tokenService.createToken(email);
-  
-    const mailOptions  = {
+
+    const mailOptions = {
       from: process.env.MAIL_USERNAME,
-      to:  email,
-      subject: 'Reset your EcoMobility password',
-      text: `Hi ${user.Item.name},\nYou recently requested to reset the password for your EcoMobility account. To reset your password please follow the next steps:\n -1. Copy this token: ${newToken}.\n -2.Go to reset password on the app and click on "Reset Password Code".\n -3.Introduce the code and this will redirect you to a screen where you will be able to reset your password.\n\nIf you did not request a password reset, please ignore this email or reply to let us know.\nEcomobility Team`
+      to: email,
+      subject: "Reset your EcoMobility password",
+      text: `Hi ${user.Item.name},\nYou recently requested to reset the password for your EcoMobility account. To reset your password please follow the next steps:\n -1. Copy this token: ${newToken}.\n -2.Go to reset password on the app and click on "Reset Password Code".\n -3.Introduce the code and this will redirect you to a screen where you will be able to reset your password.\n\nIf you did not request a password reset, please ignore this email or reply to let us know.\nEcomobility Team`,
     };
 
-    transporter.sendMail(mailOptions, function(err) {
+    transporter.sendMail(mailOptions, function (err) {
       if (err) {
         throw err;
       }
-  });
-  return newToken;  
+    });
+    return newToken;
   }
 
-  async resetPassword(token, newPassword){
+  async resetPassword(token, newPassword) {
     const validToken = await tokenService.findToken(token);
 
-    if(validToken){
+    if (validToken) {
       await tokenService.updateExpirationDate(validToken.token);
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -163,19 +168,17 @@ class userService {
     }
 
     return validToken;
-    
   }
 
-  async getAllUsers(){
+  async getAllUsers() {
     const users = await userRepository.getAllUsers();
     return users.Items;
   }
 
-  async countAllUsers(){
+  async countAllUsers() {
     const users = await userRepository.getAllUsers();
     return users.Count;
   }
-
 }
 
 module.exports = new userService();
