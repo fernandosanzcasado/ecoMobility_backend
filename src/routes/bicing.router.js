@@ -37,15 +37,12 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *         street:
  *           type: string
  *           example: "Gran Via de les Corts Catalanes, 715"
- *         " docks available":
- *           type: integer
- *           example: 19
  *         postalCode:
  *           type: string
  *           example: "08015"
  *         status:
  *           type: string
- *           example:"IN_SERVICE"
+ *           example: "IN_SERVICE"
  *         totalCapacity:
  *           type: integer
  *           example: 23
@@ -92,7 +89,7 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *       - Bicing
  *     summary: Get all bicing stations
  *     description: Retrieve all bicing stations in the database with all their attributes
- *     operationId: getAllBicingStations
+ *     operationId: bicingAll
  *     responses:
  *       200:
  *         description: Successful operation
@@ -134,7 +131,7 @@ router.get("/", bicingController.bicingAll);
  *       - Bicing
  *     summary: Obtener coordenadas de todas las estaciones de Bicing
  *     description: Obtener las coordenadas de todas las estaciones de Bicing disponibles en la DB.
- *     operationId: getCoordenadasAll
+ *     operationId: bicingCoords
  *     responses:
  *       200:
  *         description: Successful operation
@@ -170,7 +167,7 @@ router.get("/coordenadas", bicingController.bicingCoords);
  *       - Bicing
  *     summary: Get all Bicing stations' information
  *     description: Get all Bicing stations' information including latitude, longitude, street name, number of available bikes and bike docks, and whether it's a charging station.
- *     operationId: getAllBicingInfo
+ *     operationId: bicingInfo
  *     responses:
  *       200:
  *         description: Successful operation
@@ -244,7 +241,7 @@ router.get("/info", bicingController.bicingInfo);
  *      - Bicing
  *    summary: Obtener la cantidad de estaciones de Bicing en la base de datos.
  *    description: Obtener en una variable el numero de instancias en la base de datos de estaciones de Bicing.
- *    operationId: countBicingStations
+ *    operationId: bicingCount
  *    responses:
  *      200:
  *        description: Successful operation
@@ -285,7 +282,7 @@ router.get("/count", bicingController.bicingCount);
  *       - Bicing
  *     summary: Obtener las coordenadas de una estación de Bicing específica
  *     description: Obtener las coordenadas de una estación de Bicing específica a partir de su ID
- *     operationId: getBicingCoordsById
+ *     operationId: bicingCoordsById
  *     parameters:
  *       - name: id
  *         in: path
@@ -333,7 +330,7 @@ router.get("/coordenadas/:id", bicingController.bicingCoordsById);
  *       - Bicing
  *     summary: Obtener información de una estación de bicing por ID
  *     description: Obtener información detallada de una estación de bicing específica por su ID.
- *     operationId: getBicingInfoById
+ *     operationId: bicingInfoById
  *     parameters:
  *       - name: id
  *         in: path
@@ -408,7 +405,7 @@ router.get("/info/:id", bicingController.bicingInfoById);
  *       - Bicing
  *     summary: Obtener información de una estación de Bicing por ID
  *     description: Obtener toda la información de una estación de Bicing específica por su ID.
- *     operationId: getBicingById
+ *     operationId: bicingAllById
  *     parameters:
  *       - name: id
  *         in: path

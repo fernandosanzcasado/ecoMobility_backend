@@ -1,5 +1,5 @@
 const bicingRepository = require("../repository/bicing.repository");
-const EstacionNotFoundError = require("../../../errors/estaciones.errors/estacionNotFound");
+const EstacionNotFoundError = require("../../../errors/bicing.errors/EstacionNotFoundError");
 
 class bicingService {
   async bicingAll() {
