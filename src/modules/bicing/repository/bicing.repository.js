@@ -27,10 +27,7 @@ class bicingRepository {
     const data = await axios.get(FIRST_URL).catch((err) => {
       throw new BicingServerError(err.message);
     });
-    console.log(id);
-    const matchingStations = data.data.data.filter((s) => s.station_id === id);
-    const station = matchingStations[0];
-    console.log(station);
+    const station = data.data.data.stations.find((s) => s.station_id == id);
 
     if (!station) {
       throw new EstacionNotFoundError(`Station with id ${id} not found`);

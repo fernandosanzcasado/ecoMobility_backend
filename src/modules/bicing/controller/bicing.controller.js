@@ -142,7 +142,7 @@ class bicingController {
       const data = await bicingService.bicingInfoById(id);
       res.json(data);
     } catch (err) {
-      res.json(err);
+      res.error(err);
     }
   }
 
