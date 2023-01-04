@@ -54,7 +54,7 @@ class bicingController {
       const status = data.status;
 
       const responseData = {
-        id: info.station_id, // use id from station object
+        id: station.station_id, // use id from station object
         lat: station.lat,
         lon: station.lon, // include latitude and longitude
         num_bikes_available: status.num_bikes_available,
@@ -142,7 +142,7 @@ class bicingController {
       const data = await bicingService.bicingInfoById(id);
       res.json(data);
     } catch (err) {
-      res.error(err);
+      res.json(err);
     }
   }
 
