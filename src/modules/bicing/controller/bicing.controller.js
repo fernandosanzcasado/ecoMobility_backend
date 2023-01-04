@@ -95,8 +95,7 @@ class bicingController {
 
   async bicingCoordsById(req, res) {
     try {
-      const id = req.params.id;
-      const station = await bicingService.bicingCoordsById(id);
+      const station = await bicingService.bicingCoordsById(req.params.id);
 
       const cleanedData = {
         id: station.station_id,
