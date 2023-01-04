@@ -187,9 +187,6 @@ router.get("/coordenadas", bicingController.bicingCoords);
  *                   lat:
  *                     type: Number
  *                     example: "41.39"
- *                   num_bikes_available:
- *                     type: integer
- *                     example: 13
  *                   num_bikes_available_types:
  *                     type: object
  *                     properties:
@@ -214,9 +211,6 @@ router.get("/coordenadas", bicingController.bicingCoords);
  *                   totalCapacity:
  *                     type: integer
  *                     example: 30
- *                   is_charging_station:
- *                     type: boolean
- *                     example: false
  *       400:
  *         description: Bad request
  *         content:

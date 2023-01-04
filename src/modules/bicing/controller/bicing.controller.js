@@ -28,6 +28,7 @@ class bicingController {
           lon: info.lon, // longitude
           numBikesAvailable: status.num_bikes_available, // use num_bikes_available from status object
           numBikesAvailableTypes: status.num_bikes_available_types, // use num_bikes_available_types from status object
+          status: status.status,
           numDocksAvailable: status.num_docks_available, // use num_docks_available from status object
           street: info.address, // use address from station object
           slots: info.slots, // use slots from station object
@@ -53,10 +54,12 @@ class bicingController {
       const status = data.status;
 
       const responseData = {
+        id: info.station_id, // use id from station object
         lat: station.lat,
         lon: station.lon, // include latitude and longitude
         num_bikes_available: status.num_bikes_available,
         num_bikes_available_types: status.num_bikes_available_types,
+        status: status.status,
         num_docks_available: status.num_docks_available,
         Street: station.address,
         slots: station.slots,
@@ -120,6 +123,11 @@ class bicingController {
           // include latitude and longitude
           Street: station.address, // basic information
           PostalCode: station.post_code,
+          slots: station.slots,
+          numDocksAvailable: station._ride_code_support,
+          PostalCode: station.post_code,
+          capacity: station.capacity,
+          num_bikes_available_types: status.num_bikes_available_types,
         };
       });
 
