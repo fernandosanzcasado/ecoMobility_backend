@@ -1,5 +1,4 @@
 const bicingRepository = require("../repository/bicing.repository");
-const EstacionNotFoundError = require("../../../errors/estaciones.errors/estacionNotFound");
 
 class bicingService {
   async bicingAll() {
@@ -23,8 +22,8 @@ class bicingService {
     return coords;
   }
 
-  async bicingCoordsById(id) {
-    const data = await bicingRepository.bicingInformationById(id);
+  async bicingCoordsById(stationId) {
+    const data = await bicingRepository.bicingInformationById(stationId);
     return data;
   }
 

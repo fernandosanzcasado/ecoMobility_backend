@@ -7,18 +7,18 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  * @swagger
  * components:
  *   schemas:
- *     BicingData:
+ *     Bicingex:
  *       type: object
  *       properties:
  *         id:
  *           type: integer
  *           example: 1
  *         lat:
- *           type: Number
+ *           type: float
  *           example: "41.39"
  *         lon:
- *           type:Number
- *           example:"2.16"
+ *           type: float
+ *           example: "2.16"
  *         numBikesAvailable:
  *           type: integer
  *           example: 4
@@ -37,15 +37,12 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *         street:
  *           type: string
  *           example: "Gran Via de les Corts Catalanes, 715"
- *         " docks available":
- *           type: integer
- *           example: 19
  *         postalCode:
  *           type: string
  *           example: "08015"
  *         status:
  *           type: string
- *           example:"IN_SERVICE"
+ *           example: "IN_SERVICE"
  *         totalCapacity:
  *           type: integer
  *           example: 23
@@ -58,9 +55,12 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *         id:
  *           type: integer
  *           example: 1
- *         coordinates:
- *           type: string
- *           example: "(41.3985182, 2.1917991)"
+ *         lat:
+ *           type: float
+ *           example: "41.39"
+ *         lon:
+ *           type: float
+ *           example: "2.16"
  *   examples:
  *     200:
  *       value:
@@ -82,6 +82,12 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *         status: 404
  *         error: "Not found"
  *         message: "ID not found"
+ *     401:
+ *       value:
+ *         status: 401
+ *         error: "Unauthorized"
+ *         message: "Unauthorized"
+
  */
 
 /**
@@ -92,7 +98,7 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *       - Bicing
  *     summary: Get all bicing stations
  *     description: Retrieve all bicing stations in the database with all their attributes
- *     operationId: getAllBicingStations
+ *     operationId: bicingAll
  *     responses:
  *       200:
  *         description: Successful operation
@@ -101,14 +107,15 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *             schema:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/Bicing"
- *       400:
- *         description: "Bad request"
+ *                 $ref: "#/components/schemas/Bicingex"
+ *       401:
+ *         description: "Unauthorized"
  *         content:
  *           application/json:
  *             examples:
  *               example:
- *                 $ref: "#/components/examples/400"
+ *                 $ref: "#/components/examples/401"
+ *
  *       404:
  *         description: "Not found"
  *         content:
@@ -124,6 +131,7 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *               example:
  *                 $ref: "#/components/examples/500"
  */
+
 router.get("/", bicingController.bicingAll);
 
 /**
@@ -134,7 +142,7 @@ router.get("/", bicingController.bicingAll);
  *       - Bicing
  *     summary: Obtener coordenadas de todas las estaciones de Bicing
  *     description: Obtener las coordenadas de todas las estaciones de Bicing disponibles en la DB.
- *     operationId: getCoordenadasAll
+ *     operationId: bicingCoords
  *     responses:
  *       200:
  *         description: Successful operation
@@ -151,13 +159,6 @@ router.get("/", bicingController.bicingAll);
  *             examples:
  *               example:
  *                 $ref: "#/components/examples/401"
- *       404:
- *         description: Not found
- *         content:
- *           application/json:
- *             examples:
- *               example:
- *                 $ref: "#/components/examples/404"
  */
 
 router.get("/coordenadas", bicingController.bicingCoords);
@@ -170,7 +171,7 @@ router.get("/coordenadas", bicingController.bicingCoords);
  *       - Bicing
  *     summary: Get all Bicing stations' information
  *     description: Get all Bicing stations' information including latitude, longitude, street name, number of available bikes and bike docks, and whether it's a charging station.
- *     operationId: getAllBicingInfo
+ *     operationId: bicingInfo
  *     responses:
  *       200:
  *         description: Successful operation
@@ -184,12 +185,12 @@ router.get("/coordenadas", bicingController.bicingCoords);
  *                   id:
  *                     type: integer
  *                     example: 1
- *                   lon:
- *                     type:Number
- *                     example:"2.16"
  *                   lat:
- *                     type: Number
+ *                     type: float
  *                     example: "41.39"
+ *                   lon:
+ *                     type: float
+ *                     example: "2.16"
  *                   num_bikes_available_types:
  *                     type: object
  *                     properties:
@@ -214,24 +215,20 @@ router.get("/coordenadas", bicingController.bicingCoords);
  *                   totalCapacity:
  *                     type: integer
  *                     example: 30
- *       400:
- *         description: Bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/examples/400"
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
- *             schema:
- *               $ref: "#/components/examples/401"
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/401"
  *       404:
  *         description: Not found
  *         content:
  *           application/json:
- *             schema:
- *               $ref: "#/components/examples/404"
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
  */
 
 router.get("/info", bicingController.bicingInfo);
@@ -244,7 +241,7 @@ router.get("/info", bicingController.bicingInfo);
  *      - Bicing
  *    summary: Obtener la cantidad de estaciones de Bicing en la base de datos.
  *    description: Obtener en una variable el numero de instancias en la base de datos de estaciones de Bicing.
- *    operationId: countBicingStations
+ *    operationId: bicingCount
  *    responses:
  *      200:
  *        description: Successful operation
@@ -285,7 +282,7 @@ router.get("/count", bicingController.bicingCount);
  *       - Bicing
  *     summary: Obtener las coordenadas de una estación de Bicing específica
  *     description: Obtener las coordenadas de una estación de Bicing específica a partir de su ID
- *     operationId: getBicingCoordsById
+ *     operationId: bicingCoordsById
  *     parameters:
  *       - name: id
  *         in: path
@@ -304,9 +301,12 @@ router.get("/count", bicingController.bicingCount);
  *                 id:
  *                   type: integer
  *                   example: 4
- *                 coordinates:
- *                   type: string
- *                   example: "(41.397952, 2.180042)"
+ *                 lat:
+ *                   type: float
+ *                   example: "41.39"
+ *                 lon:
+ *                   type: float
+ *                   example: "2.16"
  *       400:
  *         description: Bad request
  *         content:
@@ -333,7 +333,7 @@ router.get("/coordenadas/:id", bicingController.bicingCoordsById);
  *       - Bicing
  *     summary: Obtener información de una estación de bicing por ID
  *     description: Obtener información detallada de una estación de bicing específica por su ID.
- *     operationId: getBicingInfoById
+ *     operationId: bicingInfoById
  *     parameters:
  *       - name: id
  *         in: path
@@ -352,12 +352,12 @@ router.get("/coordenadas/:id", bicingController.bicingCoordsById);
  *                 id:
  *                   type: string
  *                   example: "1"
- *                 lon:
- *                   type:Number
- *                   example:"2.16"
  *                 lat:
- *                   type: Number
+ *                   type: float
  *                   example: "41.39"
+ *                 lon:
+ *                   type: float
+ *                   example: "2.16"
  *                 num_bikes_available:
  *                   type: integer
  *                   example: 6
@@ -386,17 +386,19 @@ router.get("/coordenadas/:id", bicingController.bicingCoordsById);
  *                   type: boolean
  *                   example: false
  *       400:
- *         description: Invalid ID
+ *         description: Invalid ID Request
  *         content:
  *           application/json:
- *             schema:
- *               $ref: "#/components/examples/400"
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/400"
  *       404:
- *         description: ID not found
+ *         description: ID Not found
  *         content:
  *           application/json:
- *             schema:
- *               $ref: "#/components/examples/404"
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
  */
 
 router.get("/info/:id", bicingController.bicingInfoById);
@@ -408,7 +410,7 @@ router.get("/info/:id", bicingController.bicingInfoById);
  *       - Bicing
  *     summary: Obtener información de una estación de Bicing por ID
  *     description: Obtener toda la información de una estación de Bicing específica por su ID.
- *     operationId: getBicingById
+ *     operationId: bicingAllById
  *     parameters:
  *       - name: id
  *         in: path
@@ -422,71 +424,23 @@ router.get("/info/:id", bicingController.bicingInfoById);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 lon:
- *                   type:Number
- *                   example:"2.16"
- *                 lat:
- *                   type: Number
- *                   example: "41.39"
- *                 num_bikes_available:
- *                    type: integer
- *                    example: 10
- *                 num_bikes_available_types:
- *                   type: object
- *                   example: { "mechanical": 10 }
- *                 num_docks_available:
- *                   type: integer
- *                   example: 13
- *                 Street:
- *                   type: string
- *                   example: "Gran Via de les Corts Catalanes, 715"
- *                 slots:
- *                   type: integer
- *                   example: 23
- *                 numDocksAvailable:
- *                   type: boolean
- *                   example: true
- *                 coordinates:
- *                   type: string
- *                   example: "(41.3972128, 2.1683059)"
- *                 postalCode:
- *                   type: string
- *                   example: "08015"
- *                 totalCapacity:
- *                   type: integer
- *                   example: 33
- *                 is_charging_station:
- *                   type: boolean
- *                   example: true
- *       404:
- *         description: ID not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/examples/404"
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Bicingex"
  *       400:
- *         description: "Invalid fields"
+ *         description: Bad ID request
  *         content:
  *           application/json:
- *             schema:
- *                 $ref: "#/components/examples/400InvalidFields"
- *       401:
- *         description: "Unauthorized"
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/400"
+ *       404:
+ *         description: ID Not found
  *         content:
  *           application/json:
- *             schema:
- *                 $ref: "#/components/examples/401"
- *       403:
- *         description: "Forbidden"
- *         content:
- *           application/json:
- *             schema:
- *                 $ref: "#/components/examples/403"
+ *             examples:
+ *               example:
+ *                 $ref: "#/components/examples/404"
  */
 
 router.get("/:id", bicingController.bicingAllById);

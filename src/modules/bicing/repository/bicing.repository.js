@@ -1,6 +1,7 @@
 const axios = require("axios");
 
 const BicingServerError = require("../../../errors/bicing.errors/BicingServerError");
+const EstacionNotFoundError = require("../../../errors/bicing.errors/EstacionNotFoundError");
 
 const FIRST_URL =
   "https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/station_information";
@@ -26,7 +27,8 @@ class bicingRepository {
     const data = await axios.get(FIRST_URL).catch((err) => {
       throw new BicingServerError(err.message);
     });
-    const station = data.data.data.stations.find((s) => s.station_id === id);
+    const station = data.data.data.stations.find((s) => s.station_id == id);
+
     if (!station) {
       throw new EstacionNotFoundError(`Station with id ${id} not found`);
     }
@@ -37,7 +39,7 @@ class bicingRepository {
     const data = await axios.get(SECOND_URL).catch((err) => {
       throw new BicingServerError(err.message);
     });
-    const station = data.data.data.stations.find((s) => s.station_id === id);
+    const station = data.data.data.stations.find((s) => s.station_id == id);
     if (!station) {
       throw new EstacionNotFoundError(`Station with id ${id} not found`);
     }
