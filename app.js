@@ -19,6 +19,7 @@ const swaggerOptions = {
     servers: [
       {
         url: "http://localhost:3000/api/v2/",
+        url: "http://15.188.52.76:3000/api/v2/",
       },
     ],
   },
