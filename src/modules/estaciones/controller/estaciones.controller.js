@@ -7,7 +7,7 @@ class estacionesController {
       const data = await estacionesService.scanTable(req.query);
       res.json(data);
     } catch (err) {
-      res.json(err);
+      res.status(err.status).json(err);
     }
   }
 
