@@ -23,6 +23,7 @@ class routesRepository{
                     endingDate: null,
                     km: 0,
                     CO2: 0,
+                    cancelled: false
                 }
             };
             return await db.put(params).promise();
@@ -37,6 +38,24 @@ class routesRepository{
             },
         };
         return await db.get(params).promise();
+    }
+
+
+    async getLastRoute(email){
+        const params = {
+            TableName: this.tableName,
+            IndexName: 'email-startingDate-index',
+            KeyConditionExpression: '#E = :e',
+            ExpressionAttributeNames: {
+                "#E": 'email',  
+               },
+            ExpressionAttributeValues: {
+                ':e' : email,
+            },
+            ScanIndexForward: 'False',
+            Limit: '1'
+        }
+        return await db.query(params).promise();
     }
 
     async updateRoute(id,email,data){

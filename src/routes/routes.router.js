@@ -11,8 +11,8 @@ const handleError = require("../middleware/errorHandler");
 const userAuthentication = require("../middleware/userAuthentication");
 
 
-const router = express.Router();
 
+const router = express.Router();
 
 
 router.use(userAuthentication.checkAuthenticated, userAuthentication.checkBlocked);
@@ -20,6 +20,8 @@ router.use(userAuthentication.checkAuthenticated, userAuthentication.checkBlocke
 router.post(`/`, createRouteSchema, validateRequsestSchema, routesController.createRoute);
 router.get(`/:id`, routesController.getRoute);
 router.put(`/:id`, updateRouteSchema, validateRequsestSchema, routesController.updateRoute);
+
+router.use(handleError);
 
 
 
