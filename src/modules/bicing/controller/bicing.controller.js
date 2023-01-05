@@ -38,10 +38,10 @@ class bicingController {
         };
       });
 
-      res.json(cleanedData);
+      res.status(200).json(cleanedData);
     } catch (err) {
       console.error(err);
-      res.json(err);
+      res.status(400).json(err);
     }
   }
 
@@ -69,9 +69,9 @@ class bicingController {
         is_charging_station: status.is_charging_station,
       };
 
-      res.json(responseData);
+      res.status(200).json(responseData);
     } catch (err) {
-      res.json(err);
+      res.status(400).json(err);
     }
   }
 
@@ -87,9 +87,9 @@ class bicingController {
         lon: station.lon, // include latitude and longitude
       }));
 
-      res.json(cleanedData);
+      res.status(200).json(cleanedData);
     } catch (err) {
-      res.json(err);
+      res.status(400).json(err);
     }
   }
 
@@ -103,9 +103,9 @@ class bicingController {
         lon: station.lon, // include latitude and longitude`
       };
 
-      res.json(cleanedData);
+      res.status(200).json(cleanedData);
     } catch (err) {
-      res.json(err);
+      res.status(400).json(err);
     }
   }
 
@@ -130,9 +130,9 @@ class bicingController {
         };
       });
 
-      res.json(cleanedData);
+      res.status(200).json(cleanedData);
     } catch (err) {
-      res.json(err);
+      res.status(400).json(err);
     }
   }
 
@@ -140,18 +140,18 @@ class bicingController {
     try {
       const id = req.params.id;
       const data = await bicingService.bicingInfoById(id);
-      res.json(data);
+      res.status(200).json(data);
     } catch (err) {
-      res.json(err);
+      res.status(400).json(err);
     }
   }
 
   async bicingCount(req, res) {
     try {
       const data = await bicingService.bicingCount();
-      res.json(data);
+      res.status(200).json(data);
     } catch (err) {
-      res.json(err);
+      res.status(400).json(err);
     }
   }
 }
