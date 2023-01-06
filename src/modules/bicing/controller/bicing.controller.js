@@ -3,7 +3,6 @@ const bicingService = require("../service/bicing.service");
 class bicingController {
   async bicingAll(req, res) {
     try {
-      console.log("Fetching data from Bicing API...");
       const data = await bicingService.bicingInfo();
 
       const infoStations = data.information.stations;
@@ -113,25 +112,38 @@ class bicingController {
     try {
       const data = await bicingService.bicingInfo();
 
-      // create a new array of objects with the desired information
-      const cleanedData = data.information.stations.map((station) => {
+      const infoStations = data.information.stations;
+      const statusStations = data.status.stations;
+
+      const mixedStations = infoStations.filter((infoItem) =>
+        statusStations.some(
+          (statusItem) => statusItem.station_id === infoItem.station_id
+        )
+      );
+
+      const cleanedData = mixedStations.map((station) => {
+        const info = infoStations.find(
+          (s) => s.station_id === station.station_id
+        );
+        const status = statusStations.find(
+          (s) => s.station_id === station.station_id
+        );
         return {
-          id: station.station_id,
-          lat: station.lat,
-          lon: station.lon, // include latitude and longitude
-          // include latitude and longitude
-          Street: station.address, // basic information
-          PostalCode: station.post_code,
-          slots: station.slots,
-          numDocksAvailable: station._ride_code_support,
-          PostalCode: station.post_code,
-          capacity: station.capacity,
-          num_bikes_available_types: status.num_bikes_available_types,
+          id: info.station_id, // use id from station object
+          lat: info.lat, // latitude
+          lon: info.lon, // longitude
+          numBikesAvailableTypes: status.num_bikes_available_types, // use num_bikes_available_types from status object
+          status: status.status,
+          numDocksAvailable: status.num_docks_available, // use num_docks_available from status object
+          street: info.address, // use address from station object
+          postalCode: info.post_code, // use post_code from station object
+          totalCapacity: info.capacity, // use capacity from station object
         };
       });
 
       res.status(200).json(cleanedData);
     } catch (err) {
+      console.error(err);
       res.status(400).json(err);
     }
   }
