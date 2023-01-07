@@ -24,7 +24,7 @@ class estacionesService {
         }
         data = data.filter(
           (d) =>
-            distance(d.latitud, d.longitud, param.latitud, param.longitud) <=
+            distance(d.latitud, d.longitud, query["latitud"], query["longitud"]) <=
             query[param]
         );
         continue;
