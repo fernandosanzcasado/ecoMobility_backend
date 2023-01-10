@@ -42,7 +42,6 @@ class estacionesService {
           jaccardIndex(d[param], query[param]) >= 0.4
         );
       }
-      else throw new EstacionWrongAttrError(param);
     }
     if (Object.keys(data).length == 0) {
       throw new EstacionNoContentError();
