@@ -30,17 +30,17 @@ class estacionesService {
         continue;
       }
 
-      if (param === "potencia") {
-        data = data.filter((d) => {
-          d[param] <= query[param];
-        });
+      else if (param === "potencia") {
+        data = data.filter((d) => 
+          d[param] <= query[param]
+        );
         continue;
       }
 
-      if (param !== "distancia" && param !== "potencia") {
-        data = data.filter((d) => {
-          return jaccardIndex(d[param], query[param]) >= 0.4;
-        });
+      else if (param !== "latitud" && param !== "longitud") {
+        data = data.filter((d) => 
+          jaccardIndex(d[param], query[param]) >= 0.4
+        );
       }
     }
     if (Object.keys(data).length == 0) {
