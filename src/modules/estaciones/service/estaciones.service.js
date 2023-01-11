@@ -32,7 +32,7 @@ class estacionesService {
 
       if (param === "potencia") {
         data = data.filter((d) => {
-          d[param] <= query[param];
+          return d[param] <= query[param];
         });
         continue;
       }

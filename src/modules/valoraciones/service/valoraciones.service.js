@@ -4,6 +4,7 @@ const axios = require("axios");
 const ValoracionNotFoundError = require("../../../errors/valoraciones.errors/valoracionNotFound");
 const ValoracionWrongAttrError = require("../../../errors/valoraciones.errors/valoracionWrongAttr");
 const ValoracionNoContentError = require("../../../errors/valoraciones.errors/valoracionNoContent");
+const EstacionNoContentError = require("../../../errors/estaciones.errors/estacionNoContent");
 
 const valoracionesRepository = require("../repository/valoraciones.repository");
 
@@ -11,32 +12,23 @@ const estacionesService = require("../../estaciones/service/estaciones.service")
 const userService = require("../../user/service/user.service");
 
 class valoracionesService {
-  async scanTable() {
+  async scanTable(query) {
     var data = await valoracionesRepository.scanTable();
     data = data.Items;
+    for (var param in query) {
+      console.log(data);
+      if (param === "emailUser") {
+        data = data.filter((d) => d.emailUser === query[param]);
+        continue;
+      } else if (param === "idEstacion") {
+        data = data.filter((d) => d.idEstacion === query[param]);
+        continue;
+      }
+    }
+    if (Object.keys(data).length == 0) {
+      throw new EstacionNoContentError();
+    }
     return data;
-  }
-
-  async userVal(id) {
-    const data = await valoracionesRepository.scanTable();
-    const valUser = data.Items.filter(
-      (valoracion) => valoracion.emailUser === id
-    );
-    if (Object.keys(valUser).length == 0) {
-      throw new ValoracionNoContentError();
-    }
-    return valUser;
-  }
-
-  async estacionVal(id) {
-    const data = await valoracionesRepository.scanTable();
-    const valEstacion = data.Items.filter(
-      (valoracion) => valoracion.idEstacion === id
-    );
-    if (Object.keys(valEstacion).length == 0) {
-      throw new ValoracionNoContentError();
-    }
-    return valEstacion;
   }
 
   async infoVal(valoracionId) {

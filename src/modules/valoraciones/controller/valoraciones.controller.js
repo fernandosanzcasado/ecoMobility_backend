@@ -3,25 +3,7 @@ const valoracionesService = require("../service/valoraciones.service");
 class valoracionesController {
   async scanTable(req, res) {
     try {
-      const data = await valoracionesService.scanTable();
-      res.json(data);
-    } catch (err) {
-      res.json(err);
-    }
-  }
-
-  async userVal(req, res) {
-    try {
-      const data = await valoracionesService.userVal(req.params.emailUser);
-      res.json(data);
-    } catch (err) {
-      res.json(err);
-    }
-  }
-
-  async estacionVal(req, res) {
-    try {
-      const data = await valoracionesService.estacionVal(req.params.idEstacion);
+      const data = await valoracionesService.scanTable(req.query);
       res.json(data);
     } catch (err) {
       res.json(err);
