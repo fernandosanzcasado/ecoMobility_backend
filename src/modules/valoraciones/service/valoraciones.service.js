@@ -16,7 +16,6 @@ class valoracionesService {
     var data = await valoracionesRepository.scanTable();
     data = data.Items;
     for (var param in query) {
-      console.log(data);
       if (param === "emailUser") {
         data = data.filter((d) => d.emailUser === query[param]);
         continue;
