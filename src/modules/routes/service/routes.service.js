@@ -60,6 +60,10 @@ class routesService{
         return;
     }
 
+    async getUserRoutes(email){
+        return await routesRepository.getUserRoutes(email);
+    }
+
 
 
 
