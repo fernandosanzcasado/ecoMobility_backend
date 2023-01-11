@@ -19,17 +19,28 @@ const createServer = async () => {
     console.log(`App listening at http://localhost:${portBack}`);
   });
 
-  io.on("connection", (socket) => {
-    console.log("Servidor conectadoooooooooooo" + socket.id);
-    socket.on("chat message", (msg) => {
-      console.log(msg);
-      socket.emit("Server response", msg);
-    });
-  });
-
   serverSocket.listen(portSocket, () =>
     console.log("Socket listening at http://localhost:" + portSocket)
   );
+
+  io.on("connection", (socket) => {
+    console.log("Servidor conectado " + socket.id);
+
+    socket.on("front_back", (msg) => {
+      console.log(socket.id);
+      console.log("Chat message from app : " + msg);
+      io.emit("admin_back", msg);
+
+      // io.emit("broad", "EMIT BROADCAST HARDCODE");
+    });
+
+    socket.on("admin_back", (msg) => {
+      console.log(socket.id);
+      console.log("Chat message from admin : " + msg);
+      io.emit("front_back", msg);
+      // io.emit("broad", "EMIT BROADCAST HARDCODE");
+    });
+  });
 };
 
 module.exports = {
