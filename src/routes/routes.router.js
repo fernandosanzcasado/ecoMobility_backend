@@ -20,7 +20,7 @@ router.use(userAuthentication.checkAuthenticated, userAuthentication.checkBlocke
 router.post(`/`, createRouteSchema, validateRequsestSchema, routesController.createRoute);
 router.get(`/:id`, routesController.getRoute);
 router.put(`/:id`, updateRouteSchema, validateRequsestSchema, routesController.updateRoute);
-
+router.get(`/user/getRoutes`, routesController.getUserRoutes);
 router.use(handleError);
 
 

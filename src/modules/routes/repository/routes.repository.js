@@ -81,6 +81,23 @@ class routesRepository{
     }
 
 
+    async getUserRoutes(email){
+        const params = {
+            TableName: this.tableName,
+            IndexName: 'email-startingDate-index',
+            KeyConditionExpression: '#E = :e',
+            ExpressionAttributeNames: {
+                "#E": 'email',  
+               },
+            ExpressionAttributeValues: {
+                ':e' : email,
+            },
+            ScanIndexForward: 'False',
+        }
+        return await db.query(params).promise();
+    }
+
+
 
 }
 
