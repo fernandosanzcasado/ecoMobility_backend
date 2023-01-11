@@ -28,7 +28,7 @@ const createServer = async () => {
   });
 
   serverSocket.listen(portSocket, () =>
-    console.log("Server running on port " + portSocket)
+    console.log("Socket listening at http://localhost:" + portSocket)
   );
 };
 
