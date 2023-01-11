@@ -1,10 +1,14 @@
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
 
-const ValoracionNotFoundError = require("../../../errors/estaciones.errors/valoracionNotFound");
-const ValoracionWrongAttrError = require("../../../errors/estaciones.errors/valoracionWrongAttr");
+const ValoracionNotFoundError = require("../../../errors/valoraciones.errors/valoracionNotFound");
+const ValoracionWrongAttrError = require("../../../errors/valoraciones.errors/valoracionWrongAttr");
+const ValoracionNoContentError = require("../../../errors/valoraciones.errors/valoracionNoContent");
 
-const valoracionesRepository = require("../repository/estaciones.repository");
+const valoracionesRepository = require("../repository/valoraciones.repository");
+
+const estacionesService = require("../../estaciones/service/estaciones.service");
+const userService = require("../../user/service/user.service");
 
 class valoracionesService {
   async scanTable() {
@@ -15,13 +19,23 @@ class valoracionesService {
 
   async userVal(id) {
     const data = await valoracionesRepository.scanTable();
-    const valUser = data.Items.filter(valoracion => valoracion.gmailUser === id);
+    const valUser = data.Items.filter(
+      (valoracion) => valoracion.emailUser === id
+    );
+    if (Object.keys(valUser).length == 0) {
+      throw new ValoracionNoContentError();
+    }
     return valUser;
   }
 
   async estacionVal(id) {
     const data = await valoracionesRepository.scanTable();
-    const valEstacion = data.Items.filter(valoracion => valoracion.idEstacion === id);
+    const valEstacion = data.Items.filter(
+      (valoracion) => valoracion.idEstacion === id
+    );
+    if (Object.keys(valEstacion).length == 0) {
+      throw new ValoracionNoContentError();
+    }
     return valEstacion;
   }
 
@@ -33,33 +47,20 @@ class valoracionesService {
   }
 
   async postVal(data) {
-    const valoracion = data;
-    const attributes = ["gmailUser", "idEstacion", "val"];
-    Object.entries(data).forEach(([key, value]) => {
-        if (!attributes.includes(key)){
-            throw new ValoracionWrongAttrError(key);
-        }
-    });
-    valoracion.id = uuidv4();
-    const newValoracion = valoracionesRepository.postOrUpdateVal(valoracion);
+    const val = data;
+    await userService.findByEmail(data.emailUser);
+    await estacionesService.findById(data.idEstacion);
+    val.id = uuidv4();
+    const newValoracion = valoracionesRepository.postOrUpdateVal(val);
     return newValoracion;
   }
 
-  async update(valoracionId, data) {
-    const valoracion = await valoracionesRepository.infoVal(valoracionId);
-    if (!valoracion.Item) {
-      throw new ValoracionNotFoundError();
-    } else {
-      Object.entries(data).forEach(([key, value]) => {
-        if (key in ["gmailUser", "idEstacion", "Val"]){
-        valoracion.Item[key] = value;
-        }
-        else throw new ValoracionWrongAttrError(key);
-      });
-    }
-    const newVal = await valoracionesRepository.postOrUpdateVal(
-        valoracion.Item
-    );
+  async updateVal(id, valoracion) {
+    const val = await this.infoVal(id);
+    val.valoracion = valoracion;
+    console.log(val);
+
+    const newVal = await valoracionesRepository.postOrUpdateVal(val);
     return newVal;
   }
 

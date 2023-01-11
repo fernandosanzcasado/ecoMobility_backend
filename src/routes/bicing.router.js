@@ -37,7 +37,7 @@ const bicingController = require("../modules/bicing/controller/bicing.controller
  *         street:
  *           type: string
  *           example: "Gran Via de les Corts Catalanes, 715"
- *         " docks available":
+ *         docks available:
  *           type: integer
  *           example: 19
  *         postalCode:

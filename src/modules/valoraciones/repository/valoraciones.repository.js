@@ -2,7 +2,7 @@ const db = require("../../../helpers/database");
 
 class valoracionesRepository {
   constructor() {
-    this.tableName = "Valoraciones";
+    this.tableName = "Valoracion";
   }
 
   async scanTable() {
@@ -12,11 +12,11 @@ class valoracionesRepository {
     return await db.scan(params).promise();
   }
 
-  async findById(valoracionID) {
+  async findById(id) {
     const params = {
       TableName: this.tableName,
       Key: {
-        id: valoracionID,
+        id: id,
       },
     };
     return await db.get(params).promise();

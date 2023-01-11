@@ -11,13 +11,21 @@ class valoracionesController {
   }
 
   async userVal(req, res) {
-    const data = await estacionesService.userVal(req.id);
-    res.json(data);
+    try {
+      const data = await valoracionesService.userVal(req.params.emailUser);
+      res.json(data);
+    } catch (err) {
+      res.json(err);
+    }
   }
 
   async estacionVal(req, res) {
-    const data = await estacionesService.estacionVal(req.id);
-    res.json(data);
+    try {
+      const data = await valoracionesService.estacionVal(req.params.idEstacion);
+      res.json(data);
+    } catch (err) {
+      res.json(err);
+    }
   }
 
   async infoVal(req, res) {
@@ -40,7 +48,10 @@ class valoracionesController {
 
   async updateVal(req, res) {
     try {
-      const data = await valoracionesService.updateVal(req.params.id, req.body);
+      const data = await valoracionesService.updateVal(
+        req.params.id,
+        req.body.valoracion
+      );
       res.json(data);
     } catch (err) {
       res.json(err);
