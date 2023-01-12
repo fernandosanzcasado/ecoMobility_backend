@@ -179,6 +179,52 @@ class userService {
     const users = await userRepository.getAllUsers();
     return users.Count;
   }
+
+
+  async createPostEnviaNotificacion(token) {
+    console.log("ETRO A LA FUNCION DE LA NOTI");
+    let axiosheaders = {
+      headers: {
+        host: "exp.host",
+        accept: "application/json",
+        "accept-encoding": "gzip, deflate",
+        "content-type": "application/json",
+      },
+    };
+    console.log("Entro a createPostEnviaNotificacion");
+    console.log(token);
+    return await axios
+      .post(
+        "https://exp.host/--/api/v2/push/send",
+        {
+          to: token,
+          title: "cacacac",
+          body: "AAAAAAAAAAAAA",
+        },
+        axiosheaders
+      )
+      .then(function (response) {
+        console.log("Funciona el createPostRecoverPassword");
+        return true;
+      })
+      .catch(function (error) {
+        console.log("Da error el createPostRecoverPassword");
+        console.log(error.response.data.message);
+        return false;
+      });
+  }
+
+  async updateExponentPushToken(email,exponentPushToken){
+    await userRepository.updateExponentPushToken(email,exponentPushToken);
+  }
+
+  async getUsersExponentPushToken(){
+    return await userRepository.getUsersExponentPushToken()
+  }
+  
+  
+
 }
 
 module.exports = new userService();
+

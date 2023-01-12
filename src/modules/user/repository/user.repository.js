@@ -141,6 +141,32 @@ class userRepository{
         return await db.scan(params).promise();
     }
 
+
+    async updateExponentPushToken(email,exponentPushToken){
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                email: email
+            },
+            ExpressionAttributeNames: {
+                "#EPT": "exponentPushToken" 
+               }, 
+               ExpressionAttributeValues: {
+                ':ept': exponentPushToken,
+              },
+              UpdateExpression: "SET #EPT = :ept", 
+        };
+        await db.update(params).promise();
+    }
+
+    async getUsersExponentPushToken(){
+        const params = {
+            TableName: this.tableName,
+            ProjectionExpression: "exponentPushToken"
+        }
+        return await db.scan(params).promise();
+    }
+
 }
 
 module.exports = new userRepository();

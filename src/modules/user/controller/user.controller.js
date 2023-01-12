@@ -89,7 +89,8 @@ class userController{
 
     async loginUser(req,res,next){
         try{
-            const data = await userService.findByEmail(req.body.email);
+            await userService.updateExponentPushToken(req.user.email, req.body.exponentPushToken);
+            const data = await userService.findByEmail(req.user.email);
             res.json(data);    
         }catch(err){
             next(err);
@@ -159,6 +160,11 @@ class userController{
             next(err);
         }
     }
+
+    intervalId = setInterval(async function() {
+        const tokens = await userService.getUsersExponentPushToken();
+        await userService.createPostEnviaNotificacion(tokens);
+        }, 1000 * 60 * 60 * 24); 
 }
 
 module.exports = new userController();
