@@ -4,6 +4,7 @@ const routesRepository = require('../repository/routes.repository');
 const RouteInCourse = require('../../../errors/routes.errors/routeInCourse');
 const RouteNotFound = require("../../../errors/routes.errors/routeNotFound");
 const RouteAlreadyFinished = require("../../../errors/routes.errors/routeAlreadyFinished");
+const userService = require("../../user/service/user.service");
 
 
 
@@ -57,6 +58,8 @@ class routesService{
             km: data.km,
             CO2: CO2,  
         });
+        const ecoPoints = parseInt(0.01*(CO2 * 1.15),10);
+        await userService.addEcoPoints(email,ecoPoints);
         return;
     }
 
