@@ -1,3 +1,7 @@
+const bicingController = require("../../../modules/bicing/controller/bicing.controller");
+const bicingService = require("../../../modules/bicing/service/bicing.service");
+const bicingRepository = require("../../../modules/bicing/repository/bicing.repository");
+
 describe("bicingAllById", () => {
   test("should return the information and status of a station by its id", async () => {
     const id = 1;

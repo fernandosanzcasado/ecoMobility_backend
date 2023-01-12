@@ -1,3 +1,7 @@
+const bicingController = require("../../../modules/bicing/controller/bicing.controller");
+const bicingService = require("../../../modules/bicing/service/bicing.service");
+const bicingRepository = require("../../../modules/bicing/repository/bicing.repository");
+
 describe("bicingCoords", () => {
   test("should return the coordinates of all stations", async () => {
     // Set up a mock implementation of the `bicingInformation` method in the repository

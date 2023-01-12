@@ -1,3 +1,7 @@
+const bicingController = require("../../../modules/bicing/controller/bicing.controller");
+const bicingService = require("../../../modules/bicing/service/bicing.service");
+const bicingRepository = require("../../../modules/bicing/repository/bicing.repository");
+
 describe("bicingInfo", () => {
   test("should return bicing information in the expected format", async () => {
     const information = {
