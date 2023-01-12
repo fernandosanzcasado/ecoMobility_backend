@@ -220,7 +220,8 @@ class userRepository{
                TableName: this.tableName, 
                UpdateExpression: "SET #EP = #EP + :ep",
         };
-        return await db.update(params).promise(); 
+        return await db.update(params).promise();
+    } 
 
     async getRanking(){
         const params = {

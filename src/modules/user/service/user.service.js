@@ -238,6 +238,7 @@ class userService {
   async addEcoPoints(email,ecoPoints){
     await userRepository.addEcoPoints(email,ecoPoints);
     return;
+  }
 
   async getRanking(){
     return await userRepository.getRanking();
