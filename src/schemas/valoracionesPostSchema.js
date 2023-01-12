@@ -5,13 +5,9 @@ const valoracionesPostSchema = [
     .notEmpty()
     .withMessage("El idEstacion es un campo obligatorio")
     .trim()
-    .matches(/^[0-9a-f-]+$/i)
+    .matches(/^[0-9a-z-]+$/i)
     .withMessage(
-      "El idEstacion debe contener sólo dígitos hexadecimales i guiones"
-    )
-    .isLength({ min: 36, max: 36 })
-    .withMessage(
-      "El idEstacion debe contener 36 carácteres y estar agrupados en 8-4-4-4-12"
+      "El idEstacion debe contener sólo dígitos alfanumericos i guiones"
     ),
   check("emailUser")
     .notEmpty()

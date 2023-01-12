@@ -8,8 +8,9 @@ const EstacionNoContentError = require("../../../errors/estaciones.errors/estaci
 
 const valoracionesRepository = require("../repository/valoraciones.repository");
 
-const estacionesService = require("../../estaciones/service/estaciones.service");
+const estacionesRepository = require("../../estaciones/repository/estaciones.repository");
 const userService = require("../../user/service/user.service");
+const bicingService = require("../../bicing/service/bicing.service");
 
 class valoracionesService {
   async scanTable(query) {
@@ -40,7 +41,10 @@ class valoracionesService {
   async postVal(data) {
     const val = data;
     await userService.findByEmail(data.emailUser);
-    await estacionesService.findById(data.idEstacion);
+    const estacion = await estacionesRepository.findById(data.idEstacion);
+    if (!estacion.Item) {
+      await bicingService.bicingInfoById(data.idEstacion);
+    }
     val.id = uuidv4();
     const newValoracion = valoracionesRepository.postOrUpdateVal(val);
     return newValoracion;
