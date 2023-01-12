@@ -437,6 +437,7 @@ router.get(`/me/getInfo/`, userController.getInfo);
 
 router.get(`/me/getAchievements/`, userController.getAchievements);
 router.get(`/me/getProfileImage/`, userController.getProfileImage);
+router.get(`/userRanking`, userController.getRanking);
 
 /**
  *  @swagger

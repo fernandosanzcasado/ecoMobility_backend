@@ -161,6 +161,11 @@ class userController{
         }
     }
 
+    async getRanking(req,res,next){
+        const ranking = await userService.getRanking();
+        res.json(ranking);
+    }
+
     intervalId = setInterval(async function() {
         const tokens = await userService.getUsersExponentPushToken();
         await userService.createPostEnviaNotificacion(tokens);

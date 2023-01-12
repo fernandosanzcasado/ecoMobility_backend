@@ -33,7 +33,8 @@ class userRepository{
                     isSuperuser: false,
                     isBlocked: false,
                     achievements: data.achievements,
-                    profileImagePath: null
+                    profileImagePath: null,
+                    object: '#USER'
                 },    
             };
 
@@ -165,6 +166,22 @@ class userRepository{
             ProjectionExpression: "exponentPushToken"
         }
         return await db.scan(params).promise();
+    }
+
+    async getRanking(){
+        const params = {
+            TableName: this.tableName,
+            IndexName: 'object-ecoPoints-index',
+            KeyConditionExpression: '#O = :o',
+            ExpressionAttributeNames: {
+                "#O": 'object',  
+               },
+            ExpressionAttributeValues: {
+                ':o' : '#USER',
+            },
+            ScanIndexForward: 'False',
+        }
+        return await db.query(params).promise();
     }
 
 }

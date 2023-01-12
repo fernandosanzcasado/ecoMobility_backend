@@ -221,6 +221,10 @@ class userService {
   async getUsersExponentPushToken(){
     return await userRepository.getUsersExponentPushToken()
   }
+
+  async getRanking(){
+    return await userRepository.getRanking();
+  }
   
   
 
