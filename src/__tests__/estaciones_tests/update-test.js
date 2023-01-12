@@ -4,8 +4,8 @@ const EstacionNotFoundError = require("../../errors/estaciones.errors/estacionNo
 
 const mockResponse = {
   Item: {
-    ID: "10",
-    DIRECCIO: "C/Jordi Girona, 1-3",
+    id: "10",
+    direccio: "C/Jordi Girona, 1-3",
   },
 };
 
@@ -30,16 +30,16 @@ afterEach(() => {
 describe("Update estació by Id testing!", () => {
   test("Passarà amb éxit ja que crida a la funció postOrUpdateEstacion de estacionesRepository amb un id vàlid", () => {
     const inputData = {
-      LATITUD: "23.89135485",
-      LONGITUD: "81.68531686",
+      latitud: "23.89135485",
+      longitud: "81.68531686",
     };
     const inputId = "10";
 
     const newData = {
-      ID: "10",
-      DIRECCIO: "C/Jordi Girona, 1-3",
-      LATITUD: "23.89135485",
-      LONGITUD: "81.68531686",
+      id: "10",
+      direccio: "C/Jordi Girona, 1-3",
+      latitud: "23.89135485",
+      longitud: "81.68531686",
     };
     expect.assertions(1);
     estacionesService
@@ -53,8 +53,8 @@ describe("Update estació by Id testing!", () => {
 
   test("Passarà ja que s'espera un error per cridar a la funció postOrUpdateEstacion de estacionesRepository amb un id invàlid", () => {
     const inputData = {
-      LATITUD: "23.89135485",
-      LONGITUD: "81.68531686",
+      latitud: "23.89135485",
+      longitud: "81.68531686",
     };
     const inputId = 15;
     expect.assertions(1);

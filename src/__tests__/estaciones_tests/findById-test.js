@@ -4,9 +4,9 @@ const EstacionNotFoundError = require("../../errors/estaciones.errors/estacionNo
 
 const mockResponse = {
   Item: {
-    ID: "10",
-    LATITUD: "23.89135485",
-    LONGITUD: "81.68531686",
+    id: "10",
+    latitud: "23.89135485",
+    longitud: "81.68531686",
   },
 };
 
@@ -25,9 +25,9 @@ describe("Get estació by Id testing!", () => {
   test("Passarà amb éxit ja que crida a la funció findById de estacionesRepository amb un id vàlid", () => {
     const input = 10;
     const output = {
-      ID: "10",
-      LATITUD: "23.89135485",
-      LONGITUD: "81.68531686",
+      id: "10",
+      latitud: "23.89135485",
+      longitud: "81.68531686",
     };
     expect.assertions(1);
     estacionesService
