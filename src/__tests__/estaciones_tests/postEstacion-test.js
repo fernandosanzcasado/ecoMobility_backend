@@ -4,8 +4,8 @@ const EstacionNotFoundError = require("../../errors/estaciones.errors/estacionNo
 
 const mockResponse = {
   Item: {
-    ID: "10",
-    DIRECCIO: "C/Jordi Girona, 1-3",
+    id: "10",
+    direccio: "C/Jordi Girona, 1-3",
   },
 };
 
@@ -21,8 +21,8 @@ afterEach(() => {
 describe("Post estació testing!", () => {
   test("Passarà ja que crida a la funció postOrUpdateEstacion de estacionesRepository", () => {
     const input = {
-      LATITUD: "23.89135485",
-      LONGITUD: "81.68531686",
+      latitud: "23.89135485",
+      longitud: "81.68531686",
     };
     expect.assertions(1);
     estacionesService

@@ -36,6 +36,7 @@ class userRepository{
                     achievements: data.achievements,
                     profileImagePath: null,
                     ecoPoints: 0
+                    object: '#USER'
                 },    
             };
 
@@ -169,6 +170,7 @@ class userRepository{
         return await db.scan(params).promise();
     }
 
+
     async addFavouriteStation(email,stationId){
         const params = {
             ExpressionAttributeNames: {
@@ -220,6 +222,20 @@ class userRepository{
         };
         return await db.update(params).promise(); 
 
+    async getRanking(){
+        const params = {
+            TableName: this.tableName,
+            IndexName: 'object-ecoPoints-index',
+            KeyConditionExpression: '#O = :o',
+            ExpressionAttributeNames: {
+                "#O": 'object',  
+               },
+            ExpressionAttributeValues: {
+                ':o' : '#USER',
+            },
+            ScanIndexForward: 'False',
+        }
+        return await db.query(params).promise();
     }
 
 }

@@ -161,6 +161,7 @@ class userController{
         }
     }
 
+
     async addFavouriteStation(req,res,next){
         try{
             console.log("pito");
@@ -181,8 +182,10 @@ class userController{
     }
 
     
-
-
+    async getRanking(req,res,next){
+        const ranking = await userService.getRanking();
+        res.json(ranking);
+    }
 
     intervalId = setInterval(async function() {
         const tokens = await userService.getUsersExponentPushToken();

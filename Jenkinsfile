@@ -4,9 +4,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                script {
-                    echo 'hello world'
-                }
+                sh 'npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
             }
         }
     }

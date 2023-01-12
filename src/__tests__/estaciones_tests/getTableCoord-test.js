@@ -3,8 +3,8 @@ const estacionesRepository = require("../../modules/estaciones/repository/estaci
 
 const mockResponse = {
   Item: {
-    ID: "Hola",
-    DIRECCIO: "C/Jordi Girona, 1-3",
+    id: "Hola",
+    direccio: "C/Jordi Girona, 1-3",
   },
 };
 

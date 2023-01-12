@@ -224,6 +224,7 @@ class userService {
     return await userRepository.getUsersExponentPushToken()
   }
 
+
   async addFavouriteStation(email,stationId){
     await userRepository.addFavouriteStation(email,stationId);
     return;
@@ -237,6 +238,9 @@ class userService {
   async addEcoPoints(email,ecoPoints){
     await userRepository.addEcoPoints(email,ecoPoints);
     return;
+
+  async getRanking(){
+    return await userRepository.getRanking();
   }
   
   
