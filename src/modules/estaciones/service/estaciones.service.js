@@ -24,23 +24,23 @@ class estacionesService {
         }
         data = data.filter(
           (d) =>
-            distance(d.latitud, d.longitud, param.latitud, param.longitud) <=
+            distance(d.latitud, d.longitud, query["latitud"], query["longitud"]) <=
             query[param]
         );
         continue;
       }
 
-      if (param === "potencia") {
-        data = data.filter((d) => {
-          return d[param] <= query[param];
-        });
+      else if (param === "potencia") {
+        data = data.filter((d) => 
+          d[param] <= query[param]
+        );
         continue;
       }
 
-      if (param !== "distancia" && param !== "potencia") {
-        data = data.filter((d) => {
-          return jaccardIndex(d[param], query[param]) >= 0.4;
-        });
+      else if (["tipoCorriente","tipoConexion", "tipoVelocidad", "tipoVehiculo"].includes(param)) {
+        data = data.filter((d) => 
+          jaccardIndex(d[param], query[param]) >= 0.4
+        );
       }
     }
     if (Object.keys(data).length == 0) {

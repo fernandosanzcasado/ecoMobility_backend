@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 const dotenv = require("dotenv");
 const swaggerUI = require("swagger-ui-express");
@@ -19,6 +20,7 @@ const swaggerOptions = {
     servers: [
       {
         url: "http://localhost:3000/api/v2/",
+        url: "http://15.188.52.76:3000/api/v2/",
       },
     ],
   },
@@ -28,6 +30,13 @@ const swaggerOptions = {
 const specs = swaggerJsDoc(swaggerOptions);
 
 const app = express();
+
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:3001",
+  })
+);
 
 app.use("/apiDocs", swaggerUI.serve, swaggerUI.setup(specs));
 

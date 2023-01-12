@@ -35,6 +35,15 @@ class routesController{
         }
     }
 
+    async getUserRoutes(req,res,next){
+        try{
+            const userRoutes = await routesService.getUserRoutes(req.user.email);
+            res.json(userRoutes);
+        }catch(err){
+            next(err);
+        }
+    }
+
 
 
 }
