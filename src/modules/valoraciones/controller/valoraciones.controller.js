@@ -6,7 +6,7 @@ class valoracionesController {
       const data = await valoracionesService.scanTable(req.query);
       res.json(data);
     } catch (err) {
-      res.json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -15,7 +15,7 @@ class valoracionesController {
       const data = await valoracionesService.infoVal(req.params.id);
       res.json(data);
     } catch (err) {
-      res.json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -24,7 +24,7 @@ class valoracionesController {
       const data = await valoracionesService.postVal(req.body);
       res.json(data);
     } catch (err) {
-      res.json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -36,7 +36,7 @@ class valoracionesController {
       );
       res.json(data);
     } catch (err) {
-      res.json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -45,7 +45,7 @@ class valoracionesController {
       await valoracionesService.deleteVal(req.params.id);
       res.json(`Valoración ` + req.params.id + " deleted successfully");
     } catch (err) {
-      res.json(err);
+      res.status(err.status).json(err);
     }
   }
 }

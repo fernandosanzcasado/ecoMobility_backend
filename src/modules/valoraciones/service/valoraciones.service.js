@@ -49,9 +49,8 @@ class valoracionesService {
   async updateVal(id, valoracion) {
     const val = await this.infoVal(id);
     val.valoracion = valoracion;
-    console.log(val);
-
     const newVal = await valoracionesRepository.postOrUpdateVal(val);
+    console.log(newVal);
     return newVal;
   }
 
