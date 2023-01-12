@@ -15,7 +15,8 @@ const updateUserInfoSchema = require('../schemas/updateUserInfoSchema');
 const emailInputSchema = require('../schemas/emailInputSchema');
 const resetPasswordSchema = require("../schemas/resetPasswordSchema");
 const uploadFileSchema = require("../schemas/uploadFileSchema");
-const adminUpdateUser = require('../schemas/adminUpdateUser');
+const adminUpdateUserSchema = require('../schemas/adminUpdateUser');
+const addOrDeleteFavouriteSchema = require("../schemas/addOrDeleteFavouriteStationSchema");
 
 const validateRequsestSchema = require('../middleware/validateRequestSchema');
 const initializePassport = require('../middleware/passport');
@@ -596,6 +597,9 @@ router.delete(`/me/deleteUser/`, userController.deleteUser);
 
 router.post(`/logout`,userController.logOut);
 
+router.post(`/me/addFavouriteStation`, addOrDeleteFavouriteSchema, validateRequsestSchema, userController.addFavouriteStation);
+router.delete(`/me/deleteFavouriteStation`, addOrDeleteFavouriteSchema, validateRequsestSchema, userController.deleteFavouriteStation);
+
 
 
 router.use(userAuthentication.checkAdmin);
@@ -690,7 +694,7 @@ router.get(`/admin/getAllUsers/count`, userController.countAllUsers),
    */
 router.get(`/admin/getUser/:email/`, userController.findByEmail);
 
-router.put(`/admin/updateUser/:email/`, adminUpdateUser, validateRequsestSchema, userController.updateUser);
+router.put(`/admin/updateUser/:email/`, adminUpdateUserSchema, validateRequsestSchema, userController.updateUser);
 
 router.use(handleError);
 

@@ -161,6 +161,29 @@ class userController{
         }
     }
 
+    async addFavouriteStation(req,res,next){
+        try{
+            console.log("pito");
+            await userService.addFavouriteStation(req.user.email,req.body.stationId);
+            res.json({message : "Station added to favourites."});
+        }catch(err){
+            next(err);
+        }
+    }
+
+    async deleteFavouriteStation(req,res,next){
+        try{
+            await userService.deleteFavouriteStation(req.user.email,req.body.stationId);
+            res.json({message : "Station removed from favourites."});
+        }catch(err){
+            next(err);
+        }
+    }
+
+    
+
+
+
     intervalId = setInterval(async function() {
         const tokens = await userService.getUsersExponentPushToken();
         await userService.createPostEnviaNotificacion(tokens);

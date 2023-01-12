@@ -5,6 +5,8 @@ const transporter = require("../../../helpers/nodemailer");
 const tokenService = require("../../token/service/token.service");
 const userRepository = require("../repository/user.repository");
 const BLOBsRepository = require("../../BLOBs.repository");
+const estacionesService = require("../../estaciones/service/estaciones.service");
+const bicingService = require("../../bicing/service/bicing.service");
 
 const UserNotFoundError = require("../../../errors/user.errors/userNotFound");
 const IncorrectPassword = require("../../../errors/user.errors/incorrectPassword");
@@ -220,6 +222,21 @@ class userService {
 
   async getUsersExponentPushToken(){
     return await userRepository.getUsersExponentPushToken()
+  }
+
+  async addFavouriteStation(email,stationId){
+    await userRepository.addFavouriteStation(email,stationId);
+    return;
+  }
+
+  async deleteFavouriteStation(email,stationId){
+    await userRepository.deleteFavouriteStation(email,stationId);
+    return;
+  }
+
+  async addEcoPoints(email,ecoPoints){
+    await userRepository.addEcoPoints(email,ecoPoints);
+    return;
   }
   
   
