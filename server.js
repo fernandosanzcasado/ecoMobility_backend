@@ -1,12 +1,26 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
+
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:3001",
+  })
+);
+
 const portBack = 3000;
 const portSocket = 3030;
 
 const bodyParser = require("body-parser");
 
 const serverSocket = require("http").createServer(app);
-const io = require("socket.io")(serverSocket);
+const io = require("socket.io")(serverSocket, {
+  cors: {
+    origin: "http://localhost:3001",
+    methods: ["GET", "POST"],
+  },
+});
 
 const createServer = async () => {
   app.use(bodyParser.json());
