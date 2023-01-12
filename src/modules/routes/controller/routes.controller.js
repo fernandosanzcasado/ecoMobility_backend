@@ -28,7 +28,7 @@ class routesController{
 
     async updateRoute(req,res,next){
         try{
-            await routesService.updateRoute(req.params.id,req.user.email, req.body);
+            await routesService.updateRoute(req.user.email, req.body);
             res.json({message: 'Route updated successfully.'});
         }catch(err){
             next(err);
@@ -39,6 +39,15 @@ class routesController{
         try{
             const userRoutes = await routesService.getUserRoutes(req.user.email);
             res.json(userRoutes);
+        }catch(err){
+            next(err);
+        }
+    }
+
+    async getLastRoute(req,res,next){
+        try{
+            const lastRoute = await routesService.getLastRoute(req.user.email);
+            res.json(lastRoute);
         }catch(err){
             next(err);
         }

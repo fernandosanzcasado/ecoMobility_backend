@@ -19,7 +19,8 @@ router.use(userAuthentication.checkAuthenticated, userAuthentication.checkBlocke
 
 router.post(`/`, createRouteSchema, validateRequsestSchema, routesController.createRoute);
 router.get(`/:id`, routesController.getRoute);
-router.put(`/:id`, updateRouteSchema, validateRequsestSchema, routesController.updateRoute);
+router.put(`/`, updateRouteSchema, validateRequsestSchema, routesController.updateRoute);
+router.get(`/user/getLastRoute`, routesController.getLastRoute);
 router.get(`/user/getRoutes`, routesController.getUserRoutes);
 router.use(handleError);
 

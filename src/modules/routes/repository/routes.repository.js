@@ -97,7 +97,22 @@ class routesRepository{
         return await db.query(params).promise();
     }
 
-
+    async getLastRoute(email){
+        const params = {
+            TableName: this.tableName,
+            IndexName: 'email-startingDate-index',
+            KeyConditionExpression: '#E = :e',
+            ExpressionAttributeNames: {
+                "#E": 'email',
+               },
+            ExpressionAttributeValues: {
+                ':e' : email,
+            },
+            ScanIndexForward: 'False',
+            Limit: '1'
+        }
+        return await db.query(params).promise();
+    }
 
 }
 

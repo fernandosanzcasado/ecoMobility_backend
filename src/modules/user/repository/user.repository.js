@@ -35,7 +35,7 @@ class userRepository{
                     isBlocked: false,
                     achievements: data.achievements,
                     profileImagePath: null,
-                    ecoPoints: 0
+                    ecoPoints: 0,
                     object: '#USER'
                 },    
             };
@@ -229,12 +229,16 @@ class userRepository{
             IndexName: 'object-ecoPoints-index',
             KeyConditionExpression: '#O = :o',
             ExpressionAttributeNames: {
-                "#O": 'object',  
+                "#O": 'object',
+                "#N": 'name', 
+                "#SN": 'surnames',   
+                "#EP": 'ecoPoints', 
                },
             ExpressionAttributeValues: {
                 ':o' : '#USER',
             },
             ScanIndexForward: 'False',
+            ProjectionExpression: '#N, #SN, #EP'
         }
         return await db.query(params).promise();
     }
