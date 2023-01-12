@@ -74,7 +74,7 @@ class userController{
     }
 
     async getInfo(req,res,next){
-            res.json({ email: req.user.email, name: req.user.name, surnames: req.user.surnames});
+            res.json({ email: req.user.email, name: req.user.name, surnames: req.user.surnames, ecoPoints: req.user.ecoPoints, favouriteStations: req.user.favouriteStations});
     }
     
 
