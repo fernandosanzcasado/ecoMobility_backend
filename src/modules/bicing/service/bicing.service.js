@@ -13,15 +13,6 @@ class bicingService {
     return { information, status };
   }
 
-  async bicingCoords() {
-    const data = await bicingRepository.bicingInformation();
-    const coords = data.information.stations.map((s) => ({
-      lat: s.lat,
-      lon: s.lon,
-    }));
-    return coords;
-  }
-
   async bicingCoordsById(stationId) {
     const data = await bicingRepository.bicingInformationById(stationId);
     return data;
