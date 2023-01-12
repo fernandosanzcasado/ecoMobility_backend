@@ -74,7 +74,7 @@ class userController{
     }
 
     async getInfo(req,res,next){
-            res.json({ email: req.user.email, name: req.user.name, surnames: req.user.surnames});
+            res.json({ email: req.user.email, name: req.user.name, surnames: req.user.surnames, ecoPoints: req.user.ecoPoints, favouriteStations: req.user.favouriteStations});
     }
     
 
@@ -161,6 +161,27 @@ class userController{
         }
     }
 
+
+    async addFavouriteStation(req,res,next){
+        try{
+            console.log("pito");
+            await userService.addFavouriteStation(req.user.email,req.body.stationId);
+            res.json({message : "Station added to favourites."});
+        }catch(err){
+            next(err);
+        }
+    }
+
+    async deleteFavouriteStation(req,res,next){
+        try{
+            await userService.deleteFavouriteStation(req.user.email,req.body.stationId);
+            res.json({message : "Station removed from favourites."});
+        }catch(err){
+            next(err);
+        }
+    }
+
+    
     async getRanking(req,res,next){
         const ranking = await userService.getRanking();
         res.json(ranking);

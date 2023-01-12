@@ -1,5 +1,6 @@
 const db = require('../../../helpers/database');
 const { json } = require('body-parser');
+const { DocumentClient } = require('aws-sdk/clients/dynamodb');
 
 //fitxer que s'encarrega de gestionar operacions a la base de dades de la taula usuaris(ex:crear objectes, fer update dels objectes,
 //borrar objectes o fer un get dels objectes).
@@ -34,6 +35,7 @@ class userRepository{
                     isBlocked: false,
                     achievements: data.achievements,
                     profileImagePath: null,
+                    ecoPoints: 0
                     object: '#USER'
                 },    
             };
@@ -167,6 +169,59 @@ class userRepository{
         }
         return await db.scan(params).promise();
     }
+
+
+    async addFavouriteStation(email,stationId){
+        const params = {
+            ExpressionAttributeNames: {
+                "#FS": "favouriteStations",
+               }, 
+               ExpressionAttributeValues: {
+                ':fs' : db.createSet([stationId]),
+              }, 
+               Key: {
+                email: email
+               }, 
+               TableName: this.tableName, 
+               UpdateExpression: "ADD #FS :fs",
+        };
+        return await db.update(params).promise();    
+    }
+
+
+    async deleteFavouriteStation(email,stationId){
+        const params = {
+            ExpressionAttributeNames: {
+                "#FS": "favouriteStations",
+               }, 
+               ExpressionAttributeValues: {
+                ':fs' : db.createSet([stationId]),
+              }, 
+               Key: {
+                email: email
+               }, 
+               TableName: this.tableName, 
+               UpdateExpression: "DELETE #FS :fs",
+        };
+        return await db.update(params).promise();  
+    }
+
+    async addEcoPoints(email, ecoPoints){
+        const params = {
+            ExpressionAttributeNames: {
+                "#EP": "ecoPoints",
+               }, 
+               ExpressionAttributeValues: {
+                ':ep' : ecoPoints,
+              }, 
+               Key: {
+                email: email
+               }, 
+               TableName: this.tableName, 
+               UpdateExpression: "SET #EP = #EP + :ep",
+        };
+        return await db.update(params).promise();
+    } 
 
     async getRanking(){
         const params = {
