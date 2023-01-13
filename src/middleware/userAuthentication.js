@@ -19,7 +19,7 @@ function checkBlocked(req,res,next){
     }
     req.logOut(function(err) {
         if (err) { return next(err); }
-        res.json({message: "This user is blocked."});
+        res.status(403).json({message: "This user is blocked."});
       });   
 }
 

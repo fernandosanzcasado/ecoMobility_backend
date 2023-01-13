@@ -39,8 +39,7 @@ class bicingController {
 
       res.status(200).json(cleanedData);
     } catch (err) {
-      console.error(err);
-      res.status(400).json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -70,7 +69,7 @@ class bicingController {
 
       res.status(200).json(responseData);
     } catch (err) {
-      res.status(400).json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -88,7 +87,7 @@ class bicingController {
 
       res.status(200).json(cleanedData);
     } catch (err) {
-      res.status(400).json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -104,7 +103,7 @@ class bicingController {
 
       res.status(200).json(cleanedData);
     } catch (err) {
-      res.status(400).json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -144,7 +143,7 @@ class bicingController {
       res.status(200).json(cleanedData);
     } catch (err) {
       console.error(err);
-      res.status(400).json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -154,7 +153,7 @@ class bicingController {
       const data = await bicingService.bicingInfoById(id);
       res.status(200).json(data);
     } catch (err) {
-      res.status(400).json(err);
+      res.status(err.status).json(err);
     }
   }
 
@@ -163,7 +162,7 @@ class bicingController {
       const data = await bicingService.bicingCount();
       res.status(200).json(data);
     } catch (err) {
-      res.status(400).json(err);
+      res.status(err.status).json(err);
     }
   }
 }

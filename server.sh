@@ -26,8 +26,11 @@ if [ -n "$errorLogs" ]; then
   rm $errorLogs
 fi
 
+# Instalar dependencias y guardar el log en un fichero temporal
+npm i >> npm_install.log
+rm npm_install.log
+
 # Ejecutar el comando 'npm start' y redirigir el output a la carpeta 'logs' con el nombre de la fecha y hora actuales
-npm i
 npm start >>logs/"server_$fecha_hora".log 2>>logs/"error_$fecha_hora".log &
 
 # Si el comando 'npm start' se ha ejecutado correctamente, imprimir "Deploy success"

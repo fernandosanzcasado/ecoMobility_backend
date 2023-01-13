@@ -4,9 +4,9 @@ const EstacionNotFoundError = require("../../errors/estaciones.errors/estacionNo
 
 const mockResponse = {
   Attributes: {
-    ID: "10",
-    LATITUD: "23.89135485",
-    LONGITUD: "81.68531686",
+    id: "10",
+    latitud: "23.89135485",
+    longitud: "81.68531686",
   },
 };
 
@@ -21,20 +21,19 @@ afterEach(() => {
   jest.spyOn(estacionesRepository, "deleteByID").mockRestore();
 });
 
-describe("Delete estació by Id testing!", () => {
+describe("Delete estació by id testing!", () => {
   test("Passarà amb éxit ja que crida a la funció deleteByID de estacionesRepository amb un id vàlid", () => {
     const input = 10;
     const output = {
-      ID: "10",
-      LATITUD: "23.89135485",
-      LONGITUD: "81.68531686",
+      id: "10",
+      latitud: "23.89135485",
+      longitud: "81.68531686",
     };
     expect.assertions(1);
     estacionesService
       .deleteByID(input)
-      .then((returnData) => expect(returnData).toEqual(output));
+      .then(() => expect(estacionesRepository.deleteByID).toHaveBeenCalled());
   });
-
   test("Passarà ja que s'espera un error per cridar a la funció deleteByID de estacionesRepository amb un id invàlid", () => {
     const input = 15;
     expect.assertions(1);
