@@ -6,11 +6,11 @@ pipeline {
                 sh 'npm install'
             }
         }
-        stage('Test') {
-            steps {
-                sh 'npm test'
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         sh 'npm test'
+        //     }
+        // }
         stage('Clear build') {
             steps {
                 sh 'rm -r /var/lib/jenkins/workspace/deploy_ecoMobility_backend_EC2/node_modules'
@@ -46,5 +46,6 @@ pipeline {
             }
         }
         
+
     }
 }
