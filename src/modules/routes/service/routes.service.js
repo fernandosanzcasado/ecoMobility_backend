@@ -58,10 +58,12 @@ class routesService{
         const CO2 = data.km * 222.45 - data.km * 5.04
         await routesRepository.updateRoute(routeToUpdate.Items[0].id, email,{
             km: data.km,
-            CO2: CO2,  
+            CO2: CO2,
+            cancelled: data.cancelled  
         });
-        const ecoPoints = parseInt(0.01*(CO2 * 1.15),10);
+        const ecoPoints = parseInt(0.001*(CO2 * 1.15),10);
         await userService.addEcoPoints(email,ecoPoints);
+        //await userService.updateAchievement(email,1,data.km);
         return;
     }
 

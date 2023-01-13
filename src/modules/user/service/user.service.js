@@ -241,8 +241,14 @@ class userService {
   }
 
   async getRanking(){
-    return await userRepository.getRanking();
+    return await (await userRepository.getRanking());
   }
+  
+  /*
+  async updateAchievement(email, logroId, value){
+    await userRepository.updateAchievement(email,logroId,value);
+  }
+  */
   
   
 

@@ -68,14 +68,16 @@ class routesRepository{
             ExpressionAttributeNames: {
                 "#KM": "km",
                 "#CO2": "CO2",
-                "#ED": "endingDate" 
+                "#ED": "endingDate",
+                "#C": "cancelled"
                }, 
                ExpressionAttributeValues: {
                 ':km' : data.km,
                 ':co2': data.CO2,
                 ':ed': Date.now(),
+                ':c': data.cancelled
               },
-              UpdateExpression: "SET #KM = :km, #CO2 = :co2, #ED = :ed", 
+              UpdateExpression: "SET #KM = :km, #CO2 = :co2, #ED = :ed, #C = :c", 
         };
         await db.update(params).promise();
     }

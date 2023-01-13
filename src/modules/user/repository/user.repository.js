@@ -242,6 +242,11 @@ class userRepository{
         }
         return await db.query(params).promise();
     }
+    /*
+    async updateAchievement(email,logroId,value){
+
+    }
+    */
 
 }
 
