@@ -19,8 +19,8 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:3000/api/v2/",
-        url: "http://15.188.52.76:3000/api/v2/",
+        url: "http://localhost:3001/api/v2/",
+        url: "http://15.188.52.76:3001/api/v2/",
       },
     ],
   },
@@ -41,7 +41,7 @@ app.use(
 app.use("/apiDocs", swaggerUI.serve, swaggerUI.setup(specs));
 
 dotenv.config();
-const portBack = 3000;
+const portBack = 3001;
 const portSocket = 3030;
 
 const bodyParser = require("body-parser");

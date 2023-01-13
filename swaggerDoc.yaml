@@ -9,7 +9,7 @@ info:
     email: ecomobilityupc@gmail.com
 
 servers:
-  - url: http://localhost:3000/api/v1/
+  - url: http://localhost:3001/api/v1/
     description: API v1.0
 tags:
   - name: Estaciones

@@ -4,8 +4,8 @@ fecha_hora=$(date +%H-%M-%S_%d-%m-%Y)
 # Ejecutar el comando 'screen'. No es necesario
 # screen
 
-# Obtener la lista de procesos que están escuchando en el puerto 3000
-procesos=$(lsof -t -i :3000)
+# Obtener la lista de procesos que están escuchando en el puerto 3001
+procesos=$(lsof -t -i :3001)
 
 # Si hay algún proceso en la lista, matarlos
 if [ -n "$procesos" ]; then
